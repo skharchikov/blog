@@ -1,6 +1,6 @@
 use leptos::*;
 use leptos_router::*;
-use crate::components::{Nav, PostList, PostView};
+use crate::components::{Nav, PostList, PostView, About};
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -11,6 +11,7 @@ pub fn App() -> impl IntoView {
                 <main class="main-content">
                     <Routes>
                         <Route path="/" view=PostList />
+                        <Route path="/about" view=About />
                         <Route path="/post/:slug" view=PostView />
                     </Routes>
                 </main>
