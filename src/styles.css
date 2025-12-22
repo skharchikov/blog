@@ -439,12 +439,8 @@ body::before {
     padding: 0.5rem;
     padding-bottom: 0; /* Remove bottom padding to align with logo */
     border-radius: 0.5rem;
-    background-color: #ffffff; /* White background in light mode */
+    background-color: transparent; /* Transparent to match page background */
     pointer-events: none;
-}
-
-body.dark-mode .programmer-animation {
-    background-color: #000000; /* Black background in dark mode */
 }
 
 .programmer-animation.visible {
