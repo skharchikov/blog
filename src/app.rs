@@ -1,12 +1,24 @@
 use leptos::*;
 use leptos_router::*;
-use crate::components::{Nav, Home, Projects, PostList, PostView, Contacts};
+use crate::components::{Nav, Home, Projects, PostList, PostView, Contacts, XmasTree};
 
 #[component]
 pub fn App() -> impl IntoView {
     view! {
         <Router>
             <div class="app-container">
+                <div class="snow-container">
+                    <div class="snowflake">"❄"</div>
+                    <div class="snowflake">"❅"</div>
+                    <div class="snowflake">"❆"</div>
+                    <div class="snowflake">"❄"</div>
+                    <div class="snowflake">"❅"</div>
+                    <div class="snowflake">"❆"</div>
+                    <div class="snowflake">"❄"</div>
+                    <div class="snowflake">"❅"</div>
+                    <div class="snowflake">"❆"</div>
+                    <div class="snowflake">"❄"</div>
+                </div>
                 <div class="corner-tl"></div>
                 <div class="corner-tr"></div>
                 <div class="corner-bl"></div>
@@ -25,6 +37,7 @@ pub fn App() -> impl IntoView {
                 <footer class="footer">
                     <p>"Built with Leptos 🦀"</p>
                 </footer>
+                <XmasTree />
             </div>
         </Router>
     }
