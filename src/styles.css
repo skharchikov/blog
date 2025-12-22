@@ -358,6 +358,7 @@ body::before {
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    position: relative;
 }
 
 .home-logo {
@@ -426,6 +427,37 @@ body::before {
 
 .github-link:hover {
     color: var(--text-primary);
+}
+
+/* Programmer Animation */
+.programmer-animation {
+    opacity: 0;
+    transition: opacity 2s ease-in-out; /* Slow fade-in */
+    position: absolute;
+    left: -10rem;
+    bottom: 4rem; /* Move up slightly to align with logo baseline */
+    padding: 0.5rem;
+    padding-bottom: 0; /* Remove bottom padding to align with logo */
+    border-radius: 0.5rem;
+    background-color: #ffffff; /* White background in light mode */
+    pointer-events: none;
+}
+
+body.dark-mode .programmer-animation {
+    background-color: #000000; /* Black background in dark mode */
+}
+
+.programmer-animation.visible {
+    opacity: 1;
+}
+
+.programmer-gif {
+    width: 128px;
+    height: 128px;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    display: block;
 }
 
 .xmas-tree {
@@ -1229,6 +1261,16 @@ body::before {
     /* Scale down home logo for mobile */
     .home-logo {
         font-size: 2rem;
+    }
+
+    .programmer-animation {
+        position: static;
+        margin-bottom: 1rem;
+    }
+
+    .programmer-gif {
+        width: 96px;
+        height: 96px;
     }
 
     .home-github svg {

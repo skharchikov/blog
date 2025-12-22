@@ -1,4 +1,5 @@
 use leptos::*;
+use crate::components::Programmer;
 
 #[component]
 pub fn Home() -> impl IntoView {
@@ -49,6 +50,7 @@ pub fn Home() -> impl IntoView {
     view! {
         <div class="home-container">
             <div class="home-content">
+                <Programmer visible={show_github} />
                 <h1 class="home-logo">
                     {move || typed_text.get()}
                     <span
