@@ -37,17 +37,32 @@ pub fn Nav() -> impl IntoView {
         set_dark_mode.update(|mode| *mode = !*mode);
     };
 
+    let location = use_location();
+    let is_home = move || location.pathname.get() == "/";
+
     view! {
         <nav class="navbar">
             <div class="nav-content">
-                <A href="/" class="nav-brand">
-                    <h1>"My Rust Blog"</h1>
-                </A>
-                <div class="nav-links">
-                    <A href="/" class="nav-link">"Home"</A>
-                    <A href="/about" class="nav-link">"About"</A>
+                <div class="nav-left">
+                    <A
+                        href="/"
+                        class=move || if is_home() {
+                            "nav-link back-link hidden"
+                        } else {
+                            "nav-link back-link"
+                        }
+                    >
+                        "← back"
+                    </A>
+                </div>
+                <div class="nav-center">
+                    <A href="/projects" class="nav-link">"projects"</A>
+                    <A href="/posts" class="nav-link">"posts"</A>
+                    <A href="/contacts" class="nav-link">"contacts"</A>
+                </div>
+                <div class="nav-right">
                     <button class="dark-mode-toggle" on:click=toggle_dark_mode>
-                        {move || if dark_mode.get() { "☀️" } else { "🌙" }}
+                        "☀"
                     </button>
                 </div>
             </div>

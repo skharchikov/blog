@@ -1,18 +1,25 @@
 use leptos::*;
 use leptos_router::*;
-use crate::components::{Nav, PostList, PostView, About};
+use crate::components::{Nav, Home, Projects, PostList, PostView, Contacts};
 
 #[component]
 pub fn App() -> impl IntoView {
     view! {
         <Router>
             <div class="app-container">
+                <div class="corner-tl"></div>
+                <div class="corner-tr"></div>
+                <div class="corner-bl"></div>
+                <div class="corner-br"></div>
+
                 <Nav />
                 <main class="main-content">
                     <Routes>
-                        <Route path="/" view=PostList />
-                        <Route path="/about" view=About />
-                        <Route path="/post/:slug" view=PostView />
+                        <Route path="/" view=Home />
+                        <Route path="/projects" view=Projects />
+                        <Route path="/posts" view=PostList />
+                        <Route path="/posts/:slug" view=PostView />
+                        <Route path="/contacts" view=Contacts />
                     </Routes>
                 </main>
                 <footer class="footer">
