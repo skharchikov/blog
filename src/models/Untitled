@@ -1,0 +1,3 @@
+      pub fn find_by_slug(slug: &str) -> Option<&'static BlogPost> {
+          Self::all_posts().iter().find(|post| post.slug == slug)
+      }

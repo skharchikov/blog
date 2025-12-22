@@ -28,11 +28,7 @@ pub fn PostView() -> impl IntoView {
                                 }).collect_view()}
                             </div>
                         </header>
-                        <div class="post-content">
-                            <pre style="white-space: pre-wrap; font-family: inherit;">
-                                {&p.content}
-                            </pre>
-                        </div>
+                        <div class="post-content" inner_html={p.content.clone()}></div>
                         <nav class="post-navigation">
                             <A href="/" class="back-link">"← Back to all posts"</A>
                         </nav>

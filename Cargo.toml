@@ -11,6 +11,14 @@ console_log = "1"
 log = "0.4"
 wasm-bindgen = "0.2"
 web-sys = { version = "0.3", features = ["Window", "Storage"] }
+pulldown-cmark = "0.12"
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+
+[build-dependencies]
+pulldown-cmark = "0.12"
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
 
 [profile.release]
 opt-level = 'z'

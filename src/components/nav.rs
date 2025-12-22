@@ -27,7 +27,8 @@ pub fn Nav() -> impl IntoView {
             }
             // Save to localStorage
             if let Ok(Some(storage)) = window.local_storage() {
-                let _ = storage.set_item("darkMode", if dark_mode.get() { "true" } else { "false" });
+                let _ =
+                    storage.set_item("darkMode", if dark_mode.get() { "true" } else { "false" });
             }
         }
     });
