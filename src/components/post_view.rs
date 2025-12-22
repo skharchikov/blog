@@ -30,7 +30,7 @@ pub fn PostView() -> impl IntoView {
                         </header>
                         <div class="post-content" inner_html={p.content.clone()}></div>
                         <nav class="post-navigation">
-                            <A href="/" class="back-link">"← Back to all posts"</A>
+                            <A href="/posts" class="back-link">"← Back to all posts"</A>
                         </nav>
                     </article>
                 }.into_view(),

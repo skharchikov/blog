@@ -1272,4 +1272,47 @@ body::before {
         width: 1.5rem;
         height: 1.5rem;
     }
+
+    /* Fix project view layout on mobile */
+    .project-view .project-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        gap: 0.75rem 0.5rem;
+        align-items: start;
+    }
+
+    .project-view .project-info {
+        display: contents;
+        padding-right: 0;
+    }
+
+    .project-view .project-summary {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .project-view .project-github-button {
+        position: static;
+        grid-column: 2;
+        grid-row: 1;
+        padding: 0.5rem;
+        font-size: 0;
+        min-width: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0;
+        line-height: 0;
+    }
+
+    .project-view .project-github-button svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .project-view .project-tags {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
 }
