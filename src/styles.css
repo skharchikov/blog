@@ -361,6 +361,12 @@ body::before {
     position: relative;
 }
 
+.home-logo-container {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+}
+
 .home-logo {
     font-size: 4rem;
     font-weight: 600;
@@ -368,6 +374,7 @@ body::before {
     color: var(--text-primary);
     position: relative;
     display: inline-block;
+    line-height: 1;
 }
 
 .home-logo .cursor {
@@ -432,15 +439,9 @@ body::before {
 /* Programmer Animation */
 .programmer-animation {
     opacity: 0;
-    transition: opacity 2s ease-in-out; /* Slow fade-in */
-    position: absolute;
-    left: -10rem;
-    bottom: 4rem; /* Move up slightly to align with logo baseline */
-    padding: 0.5rem;
-    padding-bottom: 0; /* Remove bottom padding to align with logo */
-    border-radius: 0.5rem;
-    background-color: transparent; /* Transparent to match page background */
+    transition: opacity 2s ease-in-out;
     pointer-events: none;
+    transform: translateY(0.3rem);
 }
 
 .programmer-animation.visible {
@@ -454,6 +455,7 @@ body::before {
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
     display: block;
+    vertical-align: bottom;
 }
 
 .xmas-tree {
@@ -1255,18 +1257,17 @@ body::before {
     }
 
     /* Scale down home logo for mobile */
+    .home-logo-container {
+        gap: 0.5rem;
+    }
+
     .home-logo {
         font-size: 2rem;
     }
 
-    .programmer-animation {
-        position: static;
-        margin-bottom: 1rem;
-    }
-
     .programmer-gif {
-        width: 96px;
-        height: 96px;
+        width: 80px;
+        height: 80px;
     }
 
     .home-github svg {
