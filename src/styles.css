@@ -493,14 +493,14 @@ body::before {
 .projects-list {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .project-card {
     background: var(--bg-secondary);
     border: 2px solid var(--bg-secondary);
     border-radius: 1rem;
-    padding: 1.5rem;
+    padding: 1rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: all 0.1s;
 }
@@ -513,7 +513,7 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
 }
 
 .project-name {
@@ -534,7 +534,7 @@ body::before {
 .project-description {
     color: var(--text-secondary);
     line-height: 1.6;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
 }
 
 .project-card-link {
@@ -575,27 +575,38 @@ body::before {
 }
 
 .project-view .project-header {
+    position: relative;
     margin-bottom: 2rem;
     border-bottom: 1px solid var(--bg-primary);
     padding-bottom: 1.5rem;
 }
 
-.project-view .project-title-row {
+.project-view .project-info {
+    display: block;
+    padding-right: 12rem;
+}
+
+.project-view .project-summary {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.6;
+    margin: 0 0 0.75rem 0;
+    text-align: left;
+}
+
+.project-view .project-tags {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.project-view .project-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--text-primary);
+    flex-wrap: nowrap;
+    gap: 0.5rem;
     margin: 0;
-    flex: 1;
 }
 
-.project-github-button {
+.project-view .project-github-button {
+    position: absolute;
+    top: 0;
+    right: 0;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -606,8 +617,6 @@ body::before {
     text-decoration: none;
     font-size: 0.85rem;
     transition: all 0.2s ease;
-    flex-shrink: 0;
-    margin-left: auto;
 }
 
 .project-github-button:hover {
@@ -783,7 +792,7 @@ body::before {
 .post-grid {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 /* Post Cards */
@@ -791,7 +800,7 @@ body::before {
     background: var(--bg-secondary);
     border: 2px solid var(--bg-secondary);
     border-radius: 1rem;
-    padding: 2rem;
+    padding: 1.25rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: all 0.1s;
 }
@@ -801,7 +810,7 @@ body::before {
 }
 
 .post-card-header {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .post-title-link {

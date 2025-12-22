@@ -14,6 +14,7 @@ struct PostFrontMatter {
 
 #[derive(Debug, Deserialize, Serialize)]
 struct ProjectFrontMatter {
+    order: u32,
     name: String,
     slug: String,
     description: String,
@@ -143,7 +144,7 @@ fn generate_projects(out_dir: &str) {
     let mut id = 1u32;
 
     // Read all .md files from projects directory
-    let mut entries: Vec<_> = fs::read_dir(projects_dir)
+    let entries: Vec<_> = fs::read_dir(projects_dir)
         .expect("Failed to read projects directory")
         .filter_map(|e| e.ok())
         .filter(|e| {
@@ -155,17 +156,19 @@ fn generate_projects(out_dir: &str) {
         })
         .collect();
 
-    // Sort by filename for consistent ordering
-    entries.sort_by_key(|e| e.path());
-
-    for entry in entries {
+    // Parse all projects first to get their order field
+    let mut projects_with_order: Vec<_> = entries.iter().map(|entry| {
         let path = entry.path();
         let content = fs::read_to_string(&path)
             .unwrap_or_else(|_| panic!("Failed to read {:?}", path));
-
-        // Parse frontmatter and markdown
         let (frontmatter, markdown) = parse_project_content(&content);
+        (entry, frontmatter, markdown)
+    }).collect();
 
+    // Sort by order field
+    projects_with_order.sort_by_key(|(_, frontmatter, _)| frontmatter.order);
+
+    for (_entry, frontmatter, markdown) in projects_with_order {
         // Convert markdown to HTML
         let html = markdown_to_html(&markdown);
 
