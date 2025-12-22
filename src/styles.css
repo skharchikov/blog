@@ -1161,25 +1161,87 @@ body::before {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    /* Adjust Christmas tree for mobile */
+    .xmas-tree {
+        bottom: 5rem;
+        right: 0.5rem;
+        font-size: 0.6rem;
+    }
+
+    .tree-art {
+        font-size: 0.5rem;
+    }
+
     .nav-content {
-        flex-wrap: wrap;
-        gap: 1.5rem;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem;
+        align-items: center;
     }
 
-    .nav-brand h1 {
-        font-size: 1.25rem;
+    .nav-left, .nav-center, .nav-right {
+        width: 100%;
+        justify-content: center;
     }
 
-    .nav-links {
+    .nav-center {
         gap: 1.5rem;
     }
 
     .nav-link {
-        font-size: 1rem;
+        font-size: 0.95rem;
+    }
+
+    /* Keep back button visible on mobile - arrow only */
+    .nav-left {
+        justify-content: center;
+    }
+
+    .nav-link.back-link {
+        font-size: 1.5rem;
+        width: 2.5rem;
+        height: 2.5rem;
+        text-indent: 0;
+        overflow: hidden;
+        color: transparent;
+    }
+
+    /* Show only arrow using before */
+    .nav-link.back-link::before {
+        content: "←";
+        position: absolute;
+        color: var(--text-secondary);
+        text-indent: 0;
+    }
+
+    .nav-link.back-link:hover::before {
+        color: var(--text-primary);
+    }
+
+    /* Scale down home logo for mobile */
+    .home-logo {
+        font-size: 2rem;
+    }
+
+    .home-github svg {
+        width: 20px;
+        height: 20px;
     }
 
     .main-content {
-        padding: 1.5rem;
+        padding: 1rem;
+    }
+
+    /* Make cards more compact on mobile */
+    .project-card, .post-card {
+        padding: 0.75rem;
+    }
+
+    /* Ensure buttons are touch-friendly */
+    .project-github-button,
+    .project-github-link {
+        min-height: 44px;
+        padding: 0.5rem 1rem;
     }
 
     .post-full {
