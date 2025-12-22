@@ -40,12 +40,24 @@ pub fn Nav() -> impl IntoView {
     let location = use_location();
     let is_home = move || location.pathname.get() == "/";
 
+    // Determine the back link based on current path
+    let back_link = move || {
+        let path = location.pathname.get();
+        if path.starts_with("/projects/") {
+            "/projects".to_string()
+        } else if path.starts_with("/posts/") {
+            "/posts".to_string()
+        } else {
+            "/".to_string()
+        }
+    };
+
     view! {
         <nav class="navbar">
             <div class="nav-content">
                 <div class="nav-left">
                     <A
-                        href="/"
+                        href={back_link}
                         class=move || if is_home() {
                             "nav-link back-link hidden"
                         } else {

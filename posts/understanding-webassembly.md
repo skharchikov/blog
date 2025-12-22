@@ -6,8 +6,6 @@ excerpt: "A deep dive into WebAssembly and its role in modern web development"
 tags: ["webassembly", "web"]
 ---
 
-# Understanding WebAssembly
-
 WebAssembly (WASM) is a binary instruction format that runs in web browsers at near-native speed. It's a game-changer for web performance.
 
 ## What is WebAssembly?

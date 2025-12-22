@@ -1,0 +1,68 @@
+use leptos::*;
+use leptos_router::*;
+use crate::models::Project;
+
+#[component]
+pub fn ProjectView() -> impl IntoView {
+    let params = use_params_map();
+    let slug = move || params.get().get("slug").cloned().unwrap_or_default();
+
+    let project = create_memo(move |_| {
+        let slug_val = slug();
+        Project::find_by_slug(&slug_val)
+    });
+
+    view! {
+        <div class="project-view-container">
+            {move || match project.get() {
+                Some(proj) => view! {
+                    <article class="project-view">
+                        <header class="project-header">
+                            <div class="project-title-row">
+                                <h1 class="project-title">{&proj.name}</h1>
+                                <a
+                                    href={&proj.github_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="project-github-button"
+                                >
+                                    <svg
+                                        stroke="currentColor"
+                                        fill="none"
+                                        stroke-width="2"
+                                        viewBox="0 0 24 24"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        height="20"
+                                        width="20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                                    </svg>
+                                    "View on GitHub"
+                                </a>
+                            </div>
+                            {(!proj.tags.is_empty()).then(|| view! {
+                                <div class="project-tags">
+                                    {proj.tags.iter().map(|tag| {
+                                        view! {
+                                            <span class="tag">{tag}</span>
+                                        }
+                                    }).collect_view()}
+                                </div>
+                            })}
+                        </header>
+                        <div class="project-content" inner_html={&proj.content}></div>
+                    </article>
+                }.into_view(),
+                None => view! {
+                    <div class="error-container">
+                        <h1>"Project not found"</h1>
+                        <p>"The project you're looking for doesn't exist."</p>
+                        <a href="/projects" class="back-link">"← Back to projects"</a>
+                    </div>
+                }.into_view()
+            }}
+        </div>
+    }
+}

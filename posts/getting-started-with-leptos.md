@@ -6,8 +6,6 @@ excerpt: "An introduction to building reactive web applications with Leptos"
 tags: ["rust", "leptos", "webassembly"]
 ---
 
-# Getting Started with Leptos
-
 Leptos is a cutting-edge Rust web framework that brings the power of fine-grained reactivity to the web. It compiles to WebAssembly and provides a modern development experience.
 
 ## Why Leptos?
