@@ -1,4 +1,4 @@
-# My Rust Blog
+# Blog
 
 A blog application built with [Leptos](https://leptos.dev/), a reactive Rust web framework that compiles to WebAssembly.
 
