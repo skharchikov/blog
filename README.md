@@ -31,7 +31,3 @@ trunk build --release
 - `/` - Blog post list
 - `/about` - About page
 - `/post/:slug` - Individual post view
-
-## Adding Posts
-
-Edit `src/models/post.rs` and add a new `BlogPost` entry to the `all_posts()` function.
