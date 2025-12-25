@@ -1,6 +1,6 @@
 # Blog
 
-A blog application built with [Leptos](https://leptos.dev/), a reactive Rust web framework that compiles to WebAssembly.
+A blog application built with [Leptos](https://leptos.dev/), a reactive Rust web framework that compiles to WebAssembly. You can see it's running at [skh.rs](https://skh.rs) 
 
 ## Features
 
