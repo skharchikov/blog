@@ -10,7 +10,7 @@ Stumbled upon [this video](https://youtu.be/V-pACEENHBw?si=2Z3w0RLN_eex2-9K) a w
 
 ## The Build
 
-Printed all the parts on my Bambu Lab printer - took about a day for all pieces. Ordered the remaining components (screws, cables, some small electronics) and followed along with the video.
+Printed all the parts on my Bambu Lab P1S. Ordered the remaining components (screws, cables, some small electronics) and followed along with the video.
 
 The most annoying part? Soldering the FFC cable connector. That thing kept falling off. Re-soldered it 3-4 times before it finally held. Probably a skill issue on my end, but man, it was frustrating.
 
