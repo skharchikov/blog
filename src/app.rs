@@ -7,6 +7,7 @@ pub fn App() -> impl IntoView {
     view! {
         <Router>
             <div class="app-container">
+                <div class="corner-tl"></div>
                 <div class="corner-tr"></div>
                 <div class="corner-bl"></div>
                 <div class="corner-br"></div>
