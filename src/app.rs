@@ -23,7 +23,7 @@ pub fn App() -> impl IntoView {
                     </Routes>
                 </main>
                 <footer class="footer">
-                    <p>"Built with Leptos 🦀"</p>
+                    <a href="https://leptos.dev" target="_blank" rel="noopener noreferrer">{"Built with Leptos 🦀"}</a>
                 </footer>
                 // <XmasTree />
             </div>

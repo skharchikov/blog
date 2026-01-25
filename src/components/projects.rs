@@ -1,6 +1,6 @@
+use crate::models::Project;
 use leptos::*;
 use leptos_router::*;
-use crate::models::Project;
 
 #[component]
 pub fn Projects() -> impl IntoView {
@@ -10,7 +10,7 @@ pub fn Projects() -> impl IntoView {
         <div class="projects-container">
             <h1 class="page-title">"Projects"</h1>
             <div class="projects-list">
-                {projects.into_iter().map(|project| {
+                {projects.iter().map(|project| {
                     let project_url = format!("/projects/{}", project.slug);
                     view! {
                         <A href={project_url} class="project-card-link">

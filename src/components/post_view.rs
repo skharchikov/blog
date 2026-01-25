@@ -1,13 +1,14 @@
+use crate::models::BlogPost;
 use leptos::*;
 use leptos_router::*;
-use crate::models::BlogPost;
 
 #[component]
 pub fn PostView() -> impl IntoView {
     let params = use_params_map();
     let post = move || {
         params.with(|params| {
-            params.get("slug")
+            params
+                .get("slug")
                 .and_then(|slug| BlogPost::find_by_slug(slug))
         })
     };

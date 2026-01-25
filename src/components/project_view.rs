@@ -1,6 +1,6 @@
+use crate::models::Project;
 use leptos::*;
 use leptos_router::*;
-use crate::models::Project;
 
 #[component]
 pub fn ProjectView() -> impl IntoView {

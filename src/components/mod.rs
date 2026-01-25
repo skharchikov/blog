@@ -1,19 +1,18 @@
-mod nav;
+mod contacts;
 mod home;
-mod projects;
-mod project_view;
+mod nav;
 mod post_list;
 mod post_view;
-mod contacts;
-mod xmas_tree;
 mod programmer;
+mod project_view;
+mod projects;
+mod xmas_tree;
 
-pub use nav::Nav;
+pub use contacts::Contacts;
 pub use home::Home;
-pub use projects::Projects;
-pub use project_view::ProjectView;
+pub use nav::Nav;
 pub use post_list::PostList;
 pub use post_view::PostView;
-pub use contacts::Contacts;
-pub use xmas_tree::XmasTree;
 pub use programmer::Programmer;
+pub use project_view::ProjectView;
+pub use projects::Projects;

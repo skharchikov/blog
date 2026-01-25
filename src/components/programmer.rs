@@ -1,9 +1,7 @@
 use leptos::*;
 
 #[component]
-pub fn Programmer(
-    #[prop(into)] visible: Signal<bool>
-) -> impl IntoView {
+pub fn Programmer(#[prop(into)] visible: Signal<bool>) -> impl IntoView {
     let img_ref = create_node_ref::<html::Img>();
 
     // Force GIF to loop by reloading it at random intervals
@@ -32,7 +30,7 @@ pub fn Programmer(
                             // Schedule next reload
                             schedule_reload(img_clone);
                         },
-                        std::time::Duration::from_millis(random_delay as u64)
+                        std::time::Duration::from_millis(random_delay as u64),
                     );
                 }
 

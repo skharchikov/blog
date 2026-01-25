@@ -31,7 +31,11 @@ pub fn XmasTree() -> impl IntoView {
 
     // Build tree HTML with proper spacing
     let tree_html = move || {
-        let light_class = if dark_mode.get() { "light lit" } else { "light" };
+        let light_class = if dark_mode.get() {
+            "light lit"
+        } else {
+            "light"
+        };
         format!(
             "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|\n\
              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.'.'.\n\

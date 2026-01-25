@@ -1,6 +1,6 @@
+use crate::models::BlogPost;
 use leptos::*;
 use leptos_router::*;
-use crate::models::BlogPost;
 
 #[component]
 pub fn PostList() -> impl IntoView {
@@ -10,7 +10,8 @@ pub fn PostList() -> impl IntoView {
 
     let filtered_posts = move || {
         if let Some(tag) = selected_tag.get() {
-            posts.iter()
+            posts
+                .iter()
                 .filter(|post| post.tags.contains(&tag))
                 .cloned()
                 .collect::<Vec<_>>()

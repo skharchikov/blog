@@ -1,5 +1,5 @@
-use leptos::*;
 use crate::components::Programmer;
+use leptos::*;
 
 #[component]
 pub fn Home() -> impl IntoView {
@@ -73,4 +73,3 @@ pub fn Home() -> impl IntoView {
         </div>
     }
 }
-

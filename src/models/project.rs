@@ -19,6 +19,8 @@ impl Project {
     }
 
     pub fn find_by_slug(slug: &str) -> Option<&'static Project> {
-        Self::all_projects().iter().find(|project| project.slug == slug)
+        Self::all_projects()
+            .iter()
+            .find(|project| project.slug == slug)
     }
 }

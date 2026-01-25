@@ -61,8 +61,8 @@ fn generate_posts(out_dir: &str) {
 
     for entry in entries {
         let path = entry.path();
-        let content = fs::read_to_string(&path)
-            .unwrap_or_else(|_| panic!("Failed to read {:?}", path));
+        let content =
+            fs::read_to_string(&path).unwrap_or_else(|_| panic!("Failed to read {:?}", path));
 
         // Parse frontmatter and markdown
         let (frontmatter, markdown) = parse_post_content(&content);
@@ -106,8 +106,8 @@ fn parse_post_content(content: &str) -> (PostFrontMatter, String) {
         panic!("Invalid markdown file format. Expected YAML frontmatter delimited by ---");
     }
 
-    let frontmatter: PostFrontMatter = serde_yaml::from_str(parts[1].trim())
-        .expect("Failed to parse YAML frontmatter");
+    let frontmatter: PostFrontMatter =
+        serde_yaml::from_str(parts[1].trim()).expect("Failed to parse YAML frontmatter");
 
     let markdown = parts[2].trim().to_string();
 
@@ -122,8 +122,8 @@ fn parse_project_content(content: &str) -> (ProjectFrontMatter, String) {
         panic!("Invalid markdown file format. Expected YAML frontmatter delimited by ---");
     }
 
-    let frontmatter: ProjectFrontMatter = serde_yaml::from_str(parts[1].trim())
-        .expect("Failed to parse YAML frontmatter");
+    let frontmatter: ProjectFrontMatter =
+        serde_yaml::from_str(parts[1].trim()).expect("Failed to parse YAML frontmatter");
 
     let markdown = parts[2].trim().to_string();
 
@@ -157,13 +157,16 @@ fn generate_projects(out_dir: &str) {
         .collect();
 
     // Parse all projects first to get their order field
-    let mut projects_with_order: Vec<_> = entries.iter().map(|entry| {
-        let path = entry.path();
-        let content = fs::read_to_string(&path)
-            .unwrap_or_else(|_| panic!("Failed to read {:?}", path));
-        let (frontmatter, markdown) = parse_project_content(&content);
-        (entry, frontmatter, markdown)
-    }).collect();
+    let mut projects_with_order: Vec<_> = entries
+        .iter()
+        .map(|entry| {
+            let path = entry.path();
+            let content =
+                fs::read_to_string(&path).unwrap_or_else(|_| panic!("Failed to read {:?}", path));
+            let (frontmatter, markdown) = parse_project_content(&content);
+            (entry, frontmatter, markdown)
+        })
+        .collect();
 
     // Sort by order field
     projects_with_order.sort_by_key(|(_, frontmatter, _)| frontmatter.order);
