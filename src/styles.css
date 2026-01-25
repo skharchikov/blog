@@ -1078,13 +1078,14 @@ body::before {
 }
 
 .back-link {
-    color: var(--accent-color);
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s;
 }
 
 .back-link:hover {
+    color: var(--text-primary);
     text-decoration: underline;
 }
 
