@@ -16,19 +16,19 @@ An automated trading bot that finds alpha on [Polymarket](https://polymarket.com
 
 ## How It Works
 
-The bot runs two async loops. A **news scan** (every 10 min) fetches headlines from Google News RSS, Reddit and Polymarket trending, matches them to active markets by keyword overlap, then asks multiple LLM agents to assess whether the news shifts the true probability away from the current market price.
+The bot runs two async loops. A **news scan** (every 10 min) fetches headlines from Google News RSS, Reddit, CoinDesk, Reuters, and Polymarket trending, matches them to active markets by keyword overlap, then uses Bayesian updating with multiple LLM agents to assess whether the news shifts the true probability away from the current market price.
 
 A **housekeeping loop** (every 30 min) resolves settled bets, updates the calibration curve, and sends daily PnL reports to Telegram.
 
-## Multi-Agent Consensus
+## Bayesian Multi-Agent Consensus
 
-Instead of trusting a single LLM call, the bot queries 2-3 agents with different roles:
+Instead of trusting a single LLM call, the bot queries 2-3 agents with different roles. Each agent estimates a **likelihood ratio** — how much more likely is this news in worlds where YES happens vs NO:
 
-- **Skeptic** (temp 0.1) — assumes the market is efficient, pushes back against overreaction
-- **Catalyst** (temp 0.3) — hunts for fresh catalysts the market hasn't absorbed
-- **BaseRate** (temp 0.2) — ignores narratives, anchors to historical base rates
+- **Skeptic** (temp 0.1) — assumes the market is efficient, LRs biased toward 1.0
+- **Catalyst** (temp 0.3) — hunts for fresh catalysts, willing to give strong LRs
+- **BaseRate** (temp 0.2) — ignores narratives, anchors LRs to historical base rates
 
-Their estimates are aggregated via confidence-weighted averaging. When agents disagree heavily, a disagreement penalty crushes the final confidence score, preventing the bot from betting on ambiguous signals.
+Starting from the market price as the Bayesian prior, each agent's confidence-dampened LR updates the posterior sequentially via Bayes' rule: `posterior_odds = prior_odds × LR₁^c₁ × LR₂^c₂ × ...`. When agents disagree on direction (some LR > 1, some < 1), an agreement penalty crushes confidence, preventing bets on ambiguous signals.
 
 ## Calibration Tracking
 
