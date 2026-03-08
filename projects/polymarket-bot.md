@@ -52,7 +52,7 @@ Strategies share the expensive LLM scan results but evaluate signals independent
 - **rig-core**: LLM agent framework (OpenAI GPT-4o)
 - **SQLx** + **PostgreSQL**: persistence, migrations, calibration data
 - **reqwest**: HTTP client for Polymarket Gamma/CLOB APIs and news sources
-- **Telegram Bot API**: real-time alerts and daily reports
+- **Telegram Bot API**: real-time alerts and daily reports ([@Polymarket_rs_bot](https://t.me/Polymarket_rs_bot))
 - **Docker**: Alpine musl build, scratch final image (~3.5 MB), UPX compressed
 - **mimalloc**: memory allocator replacing musl's slow malloc
 - **GitHub Actions**: CI/CD with auto-deploy to Hetzner
