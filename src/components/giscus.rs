@@ -13,20 +13,6 @@ fn theme_name(is_dark: bool) -> &'static str {
     if is_dark { "dark" } else { "light" }
 }
 
-fn current_dark_mode() -> bool {
-    web_sys::window()
-        .and_then(|w| w.document())
-        .and_then(|d| d.body())
-        .map(|b| b.class_list().contains("dark-mode"))
-        .unwrap_or_else(|| {
-            web_sys::window()
-                .and_then(|w| w.local_storage().ok().flatten())
-                .and_then(|s| s.get_item("darkMode").ok().flatten())
-                .map(|v| v == "true")
-                .unwrap_or(false)
-        })
-}
-
 fn post_theme_to_giscus(theme: &str) {
     let Some(document) = web_sys::window().and_then(|w| w.document()) else {
         return;
@@ -52,24 +38,8 @@ fn post_theme_to_giscus(theme: &str) {
 }
 
 #[component]
-pub fn Giscus() -> impl IntoView {
+pub fn Giscus(#[prop(into)] dark_mode: Signal<bool>) -> impl IntoView {
     let container_ref = create_node_ref::<html::Div>();
-    let (dark_mode, set_dark_mode) = create_signal(current_dark_mode());
-
-    // Poll body.class_list for "dark-mode" toggles, mirroring the existing
-    // pattern used by the Christmas tree component.
-    create_effect(move |_| {
-        spawn_local(async move {
-            loop {
-                gloo_timers::future::TimeoutFuture::new(500).await;
-                let has_dark = current_dark_mode();
-                if has_dark != dark_mode.get_untracked() {
-                    set_dark_mode.set(has_dark);
-                }
-            }
-        });
-    });
-
     let mounted = Rc::new(Cell::new(false));
 
     create_effect(move |_| {
