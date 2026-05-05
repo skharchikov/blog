@@ -12,7 +12,7 @@ const CATEGORY_ID: &str = "DIC_kwDOQs7QAc4C8ZMb";
 
 fn theme_name(is_dark: bool) -> &'static str {
     if is_dark {
-        "transparent_dark"
+        "dark"
     } else {
         "light"
     }
@@ -81,6 +81,7 @@ pub fn Giscus(#[prop(into)] dark_mode: Signal<bool>) -> impl IntoView {
     let container_ref = create_node_ref::<html::Div>();
     let mounted = Rc::new(Cell::new(false));
     let initialized = Rc::new(Cell::new(false));
+    let listener_attached = Rc::new(Cell::new(false));
 
     {
         let mounted = mounted.clone();
@@ -89,6 +90,35 @@ pub fn Giscus(#[prop(into)] dark_mode: Signal<bool>) -> impl IntoView {
             if mounted.get() {
                 post_theme_to_giscus(theme_name(is_dark));
             }
+        });
+    }
+
+    {
+        let mounted = mounted.clone();
+        let listener_attached = listener_attached.clone();
+        create_effect(move |_| {
+            if listener_attached.get() {
+                return;
+            }
+            let Some(window) = web_sys::window() else {
+                return;
+            };
+            listener_attached.set(true);
+
+            let mounted_cb = mounted.clone();
+            let cb = Closure::<dyn FnMut(JsValue)>::new(move |event: JsValue| {
+                let origin = js_sys::Reflect::get(&event, &JsValue::from_str("origin"))
+                    .ok()
+                    .and_then(|v| v.as_string())
+                    .unwrap_or_default();
+                if origin == "https://giscus.app" {
+                    mounted_cb.set(true);
+                    post_theme_to_giscus(theme_name(dark_mode.get_untracked()));
+                }
+            });
+            let _ = window
+                .add_event_listener_with_callback("message", cb.as_ref().unchecked_ref());
+            cb.forget();
         });
     }
 

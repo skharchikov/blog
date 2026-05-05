@@ -940,12 +940,22 @@ body::before {
 .giscus,
 .giscus-frame {
     width: 100%;
-    color-scheme: normal;
+}
+
+body:not(.dark-mode) .giscus,
+body:not(.dark-mode) .giscus-frame {
+    color-scheme: light;
+}
+
+body.dark-mode .giscus,
+body.dark-mode .giscus-frame {
+    color-scheme: dark;
 }
 
 .giscus-frame {
     border: none;
     min-height: 150px;
+    background: transparent;
 }
 
 /* Markdown HTML Content Styles */
