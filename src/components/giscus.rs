@@ -1,6 +1,7 @@
 use leptos::*;
 use std::cell::Cell;
 use std::rc::Rc;
+use wasm_bindgen::closure::Closure;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
 
@@ -10,7 +11,11 @@ const CATEGORY: &str = "General";
 const CATEGORY_ID: &str = "DIC_kwDOQs7QAc4C8ZMb";
 
 fn theme_name(is_dark: bool) -> &'static str {
-    if is_dark { "dark" } else { "light" }
+    if is_dark {
+        "transparent_dark"
+    } else {
+        "light"
+    }
 }
 
 fn post_theme_to_giscus(theme: &str) {
@@ -28,7 +33,11 @@ fn post_theme_to_giscus(theme: &str) {
     };
 
     let set_config = js_sys::Object::new();
-    let _ = js_sys::Reflect::set(&set_config, &JsValue::from_str("theme"), &JsValue::from_str(theme));
+    let _ = js_sys::Reflect::set(
+        &set_config,
+        &JsValue::from_str("theme"),
+        &JsValue::from_str(theme),
+    );
     let inner = js_sys::Object::new();
     let _ = js_sys::Reflect::set(&inner, &JsValue::from_str("setConfig"), &set_config);
     let outer = js_sys::Object::new();
@@ -37,68 +46,107 @@ fn post_theme_to_giscus(theme: &str) {
     let _ = content_window.post_message(&outer, "https://giscus.app");
 }
 
+fn inject_script(container: &web_sys::HtmlElement, is_dark: bool) {
+    let Some(document) = web_sys::window().and_then(|w| w.document()) else {
+        return;
+    };
+    let Ok(script) = document.create_element("script") else {
+        return;
+    };
+    let Ok(script) = script.dyn_into::<web_sys::HtmlScriptElement>() else {
+        return;
+    };
+
+    script.set_src("https://giscus.app/client.js");
+    script.set_async(true);
+    let _ = script.set_attribute("crossorigin", "anonymous");
+    let _ = script.set_attribute("data-repo", REPO);
+    let _ = script.set_attribute("data-repo-id", REPO_ID);
+    let _ = script.set_attribute("data-category", CATEGORY);
+    let _ = script.set_attribute("data-category-id", CATEGORY_ID);
+    let _ = script.set_attribute("data-mapping", "url");
+    let _ = script.set_attribute("data-strict", "0");
+    let _ = script.set_attribute("data-reactions-enabled", "1");
+    let _ = script.set_attribute("data-emit-metadata", "0");
+    let _ = script.set_attribute("data-input-position", "bottom");
+    let _ = script.set_attribute("data-theme", theme_name(is_dark));
+    let _ = script.set_attribute("data-lang", "en");
+    let _ = script.set_attribute("data-loading", "lazy");
+
+    let _ = container.append_child(&script);
+}
+
 #[component]
 pub fn Giscus(#[prop(into)] dark_mode: Signal<bool>) -> impl IntoView {
     let container_ref = create_node_ref::<html::Div>();
     let mounted = Rc::new(Cell::new(false));
+    let initialized = Rc::new(Cell::new(false));
 
-    create_effect(move |_| {
-        let is_dark = dark_mode.get();
+    {
+        let mounted = mounted.clone();
+        create_effect(move |_| {
+            let is_dark = dark_mode.get();
+            if mounted.get() {
+                post_theme_to_giscus(theme_name(is_dark));
+            }
+        });
+    }
 
-        if mounted.get() {
-            post_theme_to_giscus(theme_name(is_dark));
-            return;
-        }
+    {
+        let mounted = mounted.clone();
+        let initialized = initialized.clone();
+        create_effect(move |_| {
+            if initialized.get() {
+                return;
+            }
+            let Some(container) = container_ref.get() else {
+                return;
+            };
+            initialized.set(true);
 
-        let Some(container) = container_ref.get() else {
-            return;
-        };
+            let element: web_sys::Element =
+                JsValue::from(&*container).unchecked_into();
+            let container_html: web_sys::HtmlElement =
+                JsValue::from(&*container).unchecked_into();
+            let mounted_cb = mounted.clone();
 
-        container.set_inner_html("");
+            let callback = Closure::<dyn FnMut(JsValue, JsValue)>::new(
+                move |entries: JsValue, observer: JsValue| {
+                    let entries: js_sys::Array = entries.unchecked_into();
+                    let any_intersecting = entries.iter().any(|e| {
+                        e.dyn_into::<web_sys::IntersectionObserverEntry>()
+                            .map(|entry| entry.is_intersecting())
+                            .unwrap_or(false)
+                    });
+                    if any_intersecting && !mounted_cb.get() {
+                        let is_dark = dark_mode.get_untracked();
+                        inject_script(&container_html, is_dark);
+                        mounted_cb.set(true);
+                        if let Ok(observer) =
+                            observer.dyn_into::<web_sys::IntersectionObserver>()
+                        {
+                            observer.disconnect();
+                        }
+                    }
+                },
+            );
 
-        let document = web_sys::window().and_then(|w| w.document());
-        let Some(document) = document else { return };
+            let init = web_sys::IntersectionObserverInit::new();
+            init.set_root_margin("400px 0px");
 
-        let Ok(script) = document.create_element("script") else {
-            return;
-        };
-        let Ok(script) = script.dyn_into::<web_sys::HtmlScriptElement>() else {
-            return;
-        };
+            if let Ok(observer) = web_sys::IntersectionObserver::new_with_options(
+                callback.as_ref().unchecked_ref(),
+                &init,
+            ) {
+                observer.observe(&element);
+            }
 
-        script.set_src("https://giscus.app/client.js");
-        script.set_async(true);
-        let _ = script.set_attribute("crossorigin", "anonymous");
-        let _ = script.set_attribute("data-repo", REPO);
-        let _ = script.set_attribute("data-repo-id", REPO_ID);
-        let _ = script.set_attribute("data-category", CATEGORY);
-        let _ = script.set_attribute("data-category-id", CATEGORY_ID);
-        let _ = script.set_attribute("data-mapping", "url");
-        let _ = script.set_attribute("data-strict", "0");
-        let _ = script.set_attribute("data-reactions-enabled", "1");
-        let _ = script.set_attribute("data-emit-metadata", "0");
-        let _ = script.set_attribute("data-input-position", "bottom");
-        let _ = script.set_attribute("data-theme", theme_name(is_dark));
-        let _ = script.set_attribute("data-lang", "en");
-
-        let _ = container.append_child(&script);
-        mounted.set(true);
-    });
+            callback.forget();
+        });
+    }
 
     view! {
         <section class="giscus-wrapper">
-            <h2 class="giscus-heading">"Discussion"</h2>
-            <p class="giscus-subheading">
-                "Comments are powered by "
-                <a
-                    href="https://github.com/skharchikov/blog/discussions"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    "GitHub Discussions"
-                </a>
-                ". A GitHub account is required to post."
-            </p>
             <div class="giscus" node_ref=container_ref></div>
         </section>
     }
