@@ -17,29 +17,26 @@ pub fn PostView() -> impl IntoView {
     view! {
         <div class="post-view-container">
             {move || match post() {
-                Some(p) => {
-                    let term = format!("post:{}", p.slug);
-                    view! {
-                        <article class="post-full">
-                            <header class="post-header">
-                                <h1 class="post-title">{&p.title}</h1>
-                                <time class="post-date">{&p.date}</time>
-                                <div class="post-tags">
-                                    {p.tags.iter().map(|tag| {
-                                        view! {
-                                            <span class="tag">{tag}</span>
-                                        }
-                                    }).collect_view()}
-                                </div>
-                            </header>
-                            <div class="post-content" inner_html={p.content.clone()}></div>
-                            <Giscus term=term />
-                            <nav class="post-navigation">
-                                <A href="/posts" class="back-link">"← Back to all posts"</A>
-                            </nav>
-                        </article>
-                    }.into_view()
-                },
+                Some(p) => view! {
+                    <article class="post-full">
+                        <header class="post-header">
+                            <h1 class="post-title">{&p.title}</h1>
+                            <time class="post-date">{&p.date}</time>
+                            <div class="post-tags">
+                                {p.tags.iter().map(|tag| {
+                                    view! {
+                                        <span class="tag">{tag}</span>
+                                    }
+                                }).collect_view()}
+                            </div>
+                        </header>
+                        <div class="post-content" inner_html={p.content.clone()}></div>
+                        <Giscus />
+                        <nav class="post-navigation">
+                            <A href="/posts" class="back-link">"← Back to all posts"</A>
+                        </nav>
+                    </article>
+                }.into_view(),
                 None => view! {
                     <div class="error-container">
                         <h1>"Post Not Found"</h1>
