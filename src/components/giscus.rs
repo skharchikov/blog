@@ -87,7 +87,18 @@ pub fn Giscus(#[prop(into)] dark_mode: Signal<bool>) -> impl IntoView {
 
     view! {
         <section class="giscus-wrapper">
-            <h2 class="giscus-heading">"Comments"</h2>
+            <h2 class="giscus-heading">"Discussion"</h2>
+            <p class="giscus-subheading">
+                "Comments are powered by "
+                <a
+                    href="https://github.com/skharchikov/blog/discussions"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    "GitHub Discussions"
+                </a>
+                ". A GitHub account is required to post."
+            </p>
             <div class="giscus" node_ref=container_ref></div>
         </section>
     }
