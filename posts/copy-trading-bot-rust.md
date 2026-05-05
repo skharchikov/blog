@@ -1,5 +1,5 @@
 ---
-title: "Building a Copy Trading Bot in Rust"
+title: "A Polymarket Copy Trader in Rust"
 date: "2026-05-05"
 slug: "copy_trading_bot_rust"
 excerpt: "Notes from wiring up a Polymarket copy trader in Rust. Loops, dedup, sizing, and the boring glue that actually matters."

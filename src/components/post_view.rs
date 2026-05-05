@@ -1,9 +1,12 @@
+use crate::components::Giscus;
 use crate::models::BlogPost;
 use leptos::*;
 use leptos_router::*;
 
 #[component]
 pub fn PostView() -> impl IntoView {
+    let dark_mode = use_context::<ReadSignal<bool>>()
+        .expect("dark mode ReadSignal not provided in App");
     let params = use_params_map();
     let post = move || {
         params.with(|params| {
@@ -30,6 +33,7 @@ pub fn PostView() -> impl IntoView {
                             </div>
                         </header>
                         <div class="post-content" inner_html={p.content.clone()}></div>
+                        <Giscus dark_mode=dark_mode />
                         <nav class="post-navigation">
                             <A href="/posts" class="back-link">"← Back to all posts"</A>
                         </nav>

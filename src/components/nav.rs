@@ -1,37 +1,10 @@
 use leptos::*;
 use leptos_router::*;
-use web_sys::window;
 
 #[component]
 pub fn Nav() -> impl IntoView {
-    // Check if dark mode is enabled in localStorage
-    let initial_dark_mode = window()
-        .and_then(|w| w.local_storage().ok().flatten())
-        .and_then(|storage| storage.get_item("darkMode").ok().flatten())
-        .map(|v| v == "true")
-        .unwrap_or(false);
-
-    let (dark_mode, set_dark_mode) = create_signal(initial_dark_mode);
-
-    // Apply dark mode class to body on mount and when toggled
-    create_effect(move |_| {
-        if let Some(window) = window() {
-            if let Some(document) = window.document() {
-                if let Some(body) = document.body() {
-                    if dark_mode.get() {
-                        let _ = body.class_list().add_1("dark-mode");
-                    } else {
-                        let _ = body.class_list().remove_1("dark-mode");
-                    }
-                }
-            }
-            // Save to localStorage
-            if let Ok(Some(storage)) = window.local_storage() {
-                let _ =
-                    storage.set_item("darkMode", if dark_mode.get() { "true" } else { "false" });
-            }
-        }
-    });
+    let set_dark_mode = use_context::<WriteSignal<bool>>()
+        .expect("dark mode WriteSignal not provided in App");
 
     let toggle_dark_mode = move |_| {
         set_dark_mode.update(|mode| *mode = !*mode);
@@ -40,7 +13,6 @@ pub fn Nav() -> impl IntoView {
     let location = use_location();
     let is_home = move || location.pathname.get() == "/";
 
-    // Determine the back link based on current path
     let back_link = move || {
         let path = location.pathname.get();
         if path.starts_with("/projects/") {

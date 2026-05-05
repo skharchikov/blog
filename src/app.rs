@@ -1,9 +1,38 @@
 use crate::components::{Contacts, Home, Nav, PostList, PostView, ProjectView, Projects};
 use leptos::*;
 use leptos_router::*;
+use web_sys::window;
 
 #[component]
 pub fn App() -> impl IntoView {
+    let initial_dark_mode = window()
+        .and_then(|w| w.local_storage().ok().flatten())
+        .and_then(|storage| storage.get_item("darkMode").ok().flatten())
+        .map(|v| v == "true")
+        .unwrap_or(false);
+
+    let (dark_mode, set_dark_mode) = create_signal(initial_dark_mode);
+    provide_context(dark_mode);
+    provide_context(set_dark_mode);
+
+    create_effect(move |_| {
+        let is_dark = dark_mode.get();
+        if let Some(window) = window() {
+            if let Some(document) = window.document() {
+                if let Some(body) = document.body() {
+                    if is_dark {
+                        let _ = body.class_list().add_1("dark-mode");
+                    } else {
+                        let _ = body.class_list().remove_1("dark-mode");
+                    }
+                }
+            }
+            if let Ok(Some(storage)) = window.local_storage() {
+                let _ = storage.set_item("darkMode", if is_dark { "true" } else { "false" });
+            }
+        }
+    });
+
     view! {
         <Router>
             <div class="app-container">
