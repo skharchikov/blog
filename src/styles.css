@@ -932,6 +932,24 @@ body::before {
     color: var(--text-primary);
 }
 
+.giscus-wrapper {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.giscus-heading {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.giscus,
+.giscus-frame {
+    width: 100%;
+}
+
 /* Markdown HTML Content Styles */
 .post-content h1,
 .post-content h2,

@@ -1,4 +1,5 @@
 mod contacts;
+mod giscus;
 mod home;
 mod nav;
 mod post_list;
@@ -9,6 +10,7 @@ mod projects;
 mod xmas_tree;
 
 pub use contacts::Contacts;
+pub use giscus::Giscus;
 pub use home::Home;
 pub use nav::Nav;
 pub use post_list::PostList;
