@@ -21,6 +21,7 @@ serde_yaml = "0.9"
 pulldown-cmark = "0.13"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9"
+syntect = { version = "5", default-features = false, features = ["default-fancy"] }
 
 [profile.release]
 opt-level = 'z'

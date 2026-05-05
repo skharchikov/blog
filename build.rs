@@ -1,7 +1,11 @@
-use pulldown_cmark::{html, Options, Parser};
+use pulldown_cmark::{html, CodeBlockKind, CowStr, Event, Options, Parser, Tag, TagEnd};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::Path;
+use syntect::highlighting::ThemeSet;
+use syntect::html::{css_for_theme_with_class_style, ClassStyle, ClassedHTMLGenerator};
+use syntect::parsing::SyntaxSet;
+use syntect::util::LinesWithEndings;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct PostFrontMatter {
@@ -23,27 +27,24 @@ struct ProjectFrontMatter {
 }
 
 fn main() {
-    // Tell Cargo to rerun if posts or projects directory changes
     println!("cargo:rerun-if-changed=posts");
     println!("cargo:rerun-if-changed=projects");
 
     let out_dir = std::env::var("OUT_DIR").unwrap();
+    let syntax_set = SyntaxSet::load_defaults_newlines();
 
-    // Generate posts
-    generate_posts(&out_dir);
-
-    // Generate projects
-    generate_projects(&out_dir);
+    generate_posts(&out_dir, &syntax_set);
+    generate_projects(&out_dir, &syntax_set);
+    generate_highlight_css(&out_dir);
 }
 
-fn generate_posts(out_dir: &str) {
+fn generate_posts(out_dir: &str, syntax_set: &SyntaxSet) {
     let posts_dir = Path::new("posts");
     let dest_path = Path::new(out_dir).join("generated_posts.rs");
 
     let mut posts_code = String::from("vec![\n");
     let mut id = 1u32;
 
-    // Read all .md files from posts directory
     let mut entries: Vec<_> = fs::read_dir(posts_dir)
         .expect("Failed to read posts directory")
         .filter_map(|e| e.ok())
@@ -56,7 +57,6 @@ fn generate_posts(out_dir: &str) {
         })
         .collect();
 
-    // Sort by filename for consistent ordering
     entries.sort_by_key(|e| e.path());
 
     for entry in entries {
@@ -64,13 +64,9 @@ fn generate_posts(out_dir: &str) {
         let content =
             fs::read_to_string(&path).unwrap_or_else(|_| panic!("Failed to read {:?}", path));
 
-        // Parse frontmatter and markdown
         let (frontmatter, markdown) = parse_post_content(&content);
+        let html = markdown_to_html(&markdown, syntax_set);
 
-        // Convert markdown to HTML
-        let html = markdown_to_html(&markdown);
-
-        // Generate Rust code for this post
         let escaped_content = escape_for_rust_string(&html);
         let tags_code = frontmatter
             .tags
@@ -99,7 +95,6 @@ fn generate_posts(out_dir: &str) {
 }
 
 fn parse_post_content(content: &str) -> (PostFrontMatter, String) {
-    // Split frontmatter from markdown
     let parts: Vec<&str> = content.splitn(3, "---").collect();
 
     if parts.len() < 3 {
@@ -115,7 +110,6 @@ fn parse_post_content(content: &str) -> (PostFrontMatter, String) {
 }
 
 fn parse_project_content(content: &str) -> (ProjectFrontMatter, String) {
-    // Split frontmatter from markdown
     let parts: Vec<&str> = content.splitn(3, "---").collect();
 
     if parts.len() < 3 {
@@ -130,10 +124,9 @@ fn parse_project_content(content: &str) -> (ProjectFrontMatter, String) {
     (frontmatter, markdown)
 }
 
-fn generate_projects(out_dir: &str) {
+fn generate_projects(out_dir: &str, syntax_set: &SyntaxSet) {
     let projects_dir = Path::new("projects");
 
-    // Create projects directory if it doesn't exist
     if !projects_dir.exists() {
         fs::create_dir(projects_dir).expect("Failed to create projects directory");
     }
@@ -143,7 +136,6 @@ fn generate_projects(out_dir: &str) {
     let mut projects_code = String::from("vec![\n");
     let mut id = 1u32;
 
-    // Read all .md files from projects directory
     let entries: Vec<_> = fs::read_dir(projects_dir)
         .expect("Failed to read projects directory")
         .filter_map(|e| e.ok())
@@ -156,7 +148,6 @@ fn generate_projects(out_dir: &str) {
         })
         .collect();
 
-    // Parse all projects first to get their order field
     let mut projects_with_order: Vec<_> = entries
         .iter()
         .map(|entry| {
@@ -168,14 +159,11 @@ fn generate_projects(out_dir: &str) {
         })
         .collect();
 
-    // Sort by order field
     projects_with_order.sort_by_key(|(_, frontmatter, _)| frontmatter.order);
 
     for (_entry, frontmatter, markdown) in projects_with_order {
-        // Convert markdown to HTML
-        let html = markdown_to_html(&markdown);
+        let html = markdown_to_html(&markdown, syntax_set);
 
-        // Generate Rust code for this project
         let escaped_content = escape_for_rust_string(&html);
         let tags_code = frontmatter
             .tags
@@ -203,7 +191,7 @@ fn generate_projects(out_dir: &str) {
     fs::write(&dest_path, projects_code).expect("Failed to write generated projects");
 }
 
-fn markdown_to_html(markdown: &str) -> String {
+fn markdown_to_html(markdown: &str, syntax_set: &SyntaxSet) -> String {
     let mut options = Options::empty();
     options.insert(Options::ENABLE_STRIKETHROUGH);
     options.insert(Options::ENABLE_TABLES);
@@ -211,9 +199,123 @@ fn markdown_to_html(markdown: &str) -> String {
     options.insert(Options::ENABLE_TASKLISTS);
 
     let parser = Parser::new_ext(markdown, options);
+
+    let mut events: Vec<Event> = Vec::new();
+    let mut in_code = false;
+    let mut code_lang = String::new();
+    let mut code_buf = String::new();
+
+    for event in parser {
+        match event {
+            Event::Start(Tag::CodeBlock(kind)) => {
+                in_code = true;
+                code_lang = match kind {
+                    CodeBlockKind::Fenced(lang) => lang.to_string(),
+                    CodeBlockKind::Indented => String::new(),
+                };
+                code_buf.clear();
+            }
+            Event::End(TagEnd::CodeBlock) if in_code => {
+                in_code = false;
+                let html = highlight_code(&code_buf, &code_lang, syntax_set);
+                events.push(Event::Html(CowStr::Boxed(html.into_boxed_str())));
+            }
+            Event::Text(t) if in_code => {
+                code_buf.push_str(&t);
+            }
+            e => events.push(e),
+        }
+    }
+
     let mut html_output = String::new();
-    html::push_html(&mut html_output, parser);
+    html::push_html(&mut html_output, events.into_iter());
     html_output
+}
+
+fn highlight_code(code: &str, lang: &str, syntax_set: &SyntaxSet) -> String {
+    let syntax = syntax_set
+        .find_syntax_by_token(lang)
+        .or_else(|| syntax_set.find_syntax_by_extension(lang))
+        .or_else(|| syntax_set.find_syntax_by_name(lang))
+        .unwrap_or_else(|| syntax_set.find_syntax_plain_text());
+
+    let mut generator =
+        ClassedHTMLGenerator::new_with_class_style(syntax, syntax_set, ClassStyle::Spaced);
+
+    for line in LinesWithEndings::from(code) {
+        let _ = generator.parse_html_for_line_which_includes_newline(line);
+    }
+
+    let highlighted = generator.finalize();
+    format!("<pre class=\"code\"><code>{}</code></pre>", highlighted)
+}
+
+fn generate_highlight_css(out_dir: &str) {
+    let theme_set = ThemeSet::load_defaults();
+    let light = theme_set
+        .themes
+        .get("InspiredGitHub")
+        .expect("InspiredGitHub theme missing");
+    let dark = theme_set
+        .themes
+        .get("base16-ocean.dark")
+        .expect("base16-ocean.dark theme missing");
+
+    let light_css = css_for_theme_with_class_style(light, ClassStyle::Spaced)
+        .expect("failed to generate light theme css");
+    let dark_css = css_for_theme_with_class_style(dark, ClassStyle::Spaced)
+        .expect("failed to generate dark theme css");
+
+    let combined = format!(
+        "{}\n{}",
+        scope_css(&light_css, "body:not(.dark-mode)"),
+        scope_css(&dark_css, "body.dark-mode"),
+    );
+
+    fs::write(Path::new(out_dir).join("highlight.css"), combined)
+        .expect("failed to write highlight.css");
+}
+
+fn scope_css(css: &str, theme_scope: &str) -> String {
+    const CONTENT_SCOPES: &[&str] = &[".post-content", ".project-content"];
+    let mut out = String::new();
+    let mut i = 0;
+    while i < css.len() {
+        let Some(brace_rel) = css[i..].find('{') else {
+            break;
+        };
+        let brace = i + brace_rel;
+        let sel_part = &css[i..brace];
+        let Some(close_rel) = css[brace..].find('}') else {
+            break;
+        };
+        let close = brace + close_rel;
+        let body_part = &css[brace..=close];
+
+        let selectors: Vec<String> = sel_part
+            .split(',')
+            .flat_map(|s| {
+                let trimmed = s.trim();
+                if trimmed.is_empty() {
+                    return Vec::new();
+                }
+                CONTENT_SCOPES
+                    .iter()
+                    .map(|cs| format!("{} {} {}", theme_scope, cs, trimmed))
+                    .collect()
+            })
+            .collect();
+
+        if !selectors.is_empty() {
+            out.push_str(&selectors.join(",\n"));
+            out.push(' ');
+            out.push_str(body_part);
+            out.push('\n');
+        }
+
+        i = close + 1;
+    }
+    out
 }
 
 fn escape_quotes(s: &str) -> String {
@@ -221,9 +323,5 @@ fn escape_quotes(s: &str) -> String {
 }
 
 fn escape_for_rust_string(s: &str) -> String {
-    // For raw strings with r###"..."###, we need to ensure the content
-    // doesn't contain the closing sequence "###
-    // Simple approach: if it contains "###, add more # to the delimiter
-    // For simplicity, we'll just use r### which should work for HTML
     s.to_string()
 }
