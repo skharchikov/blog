@@ -2,10 +2,10 @@ use pulldown_cmark::{html, CodeBlockKind, CowStr, Event, Options, Parser, Tag, T
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::Path;
-use syntect::highlighting::ThemeSet;
 use syntect::html::{css_for_theme_with_class_style, ClassStyle, ClassedHTMLGenerator};
 use syntect::parsing::SyntaxSet;
 use syntect::util::LinesWithEndings;
+use two_face::theme::{extra, EmbeddedThemeName};
 
 #[derive(Debug, Deserialize, Serialize)]
 struct PostFrontMatter {
@@ -251,15 +251,9 @@ fn highlight_code(code: &str, lang: &str, syntax_set: &SyntaxSet) -> String {
 }
 
 fn generate_highlight_css(out_dir: &str) {
-    let theme_set = ThemeSet::load_defaults();
-    let light = theme_set
-        .themes
-        .get("InspiredGitHub")
-        .expect("InspiredGitHub theme missing");
-    let dark = theme_set
-        .themes
-        .get("base16-ocean.dark")
-        .expect("base16-ocean.dark theme missing");
+    let theme_set = extra();
+    let light = theme_set.get(EmbeddedThemeName::Github);
+    let dark = theme_set.get(EmbeddedThemeName::DarkNeon);
 
     let light_css = css_for_theme_with_class_style(light, ClassStyle::Spaced)
         .expect("failed to generate light theme css");
