@@ -3,6 +3,8 @@ use leptos::*;
 use leptos_router::*;
 use web_sys::window;
 
+const HIGHLIGHT_CSS: &str = include_str!(concat!(env!("OUT_DIR"), "/highlight.css"));
+
 #[component]
 pub fn App() -> impl IntoView {
     let initial_dark_mode = window()
@@ -35,6 +37,7 @@ pub fn App() -> impl IntoView {
 
     view! {
         <Router>
+            <style inner_html=HIGHLIGHT_CSS></style>
             <div class="app-container">
                 <div class="corner-tl"></div>
                 <div class="corner-tr"></div>
