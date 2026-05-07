@@ -697,6 +697,7 @@ body::before {
     padding: 0.2rem 0.4rem;
     border-radius: 0.25rem;
     font-size: 0.9em;
+    font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Courier New', monospace;
 }
 
 .project-view .project-content pre {
@@ -705,6 +706,7 @@ body::before {
     border-radius: 0.5rem;
     overflow-x: auto;
     margin-bottom: 1rem;
+    font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Courier New', monospace;
 }
 
 .project-view .project-content pre code {
@@ -1038,7 +1040,7 @@ body::before {
     color: var(--text-primary);
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
-    font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+    font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Courier New', monospace;
     font-size: 0.875em;
     border: 1px solid var(--border-color);
 }
@@ -1050,6 +1052,7 @@ body::before {
     overflow-x: auto;
     margin: 1.5rem 0;
     border: 1px solid var(--border-color);
+    font-family: 'JetBrains Mono', 'Monaco', 'Menlo', 'Courier New', monospace;
 }
 
 .post-content pre code {
@@ -1057,6 +1060,14 @@ body::before {
     padding: 0;
     border-radius: 0;
     border: none;
+}
+
+body:not(.dark-mode) .post-content pre.code,
+body.dark-mode .post-content pre.code,
+body:not(.dark-mode) .project-content pre.code,
+body.dark-mode .project-content pre.code {
+    background: var(--tag-bg);
+    color: var(--text-primary);
 }
 
 .post-content a {
