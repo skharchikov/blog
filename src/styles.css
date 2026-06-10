@@ -16,6 +16,20 @@
     --border-color: #e5e5e5;
     --tag-bg: #f5f5f5;
     --tag-text: #666666;
+    /* modernization tokens */
+    --accent-grad: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --dur: 150ms;
+    --radius: 12px;
+    --radius-lg: 14px;
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2.5rem;
+    --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.10);
+    --card-rail: rgba(59, 130, 246, 0.0);
 }
 
 body.dark-mode {
@@ -29,6 +43,8 @@ body.dark-mode {
     --border-color: #2a2a2a;
     --tag-bg: #2a2a2a;
     --tag-text: #a3a3a3;
+    --accent-grad: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 body {
@@ -1329,5 +1345,51 @@ body.dark-mode .project-content pre.code {
     .project-view .project-tags {
         grid-column: 1 / -1;
         grid-row: 2;
+    }
+}
+
+/* ===== Modernization: shared interaction primitives ===== */
+
+/* Unified card hover used by post, project, and contact cards */
+.post-card,
+.project-card,
+.contact-button {
+    transition: transform var(--dur) var(--ease),
+                border-color var(--dur) var(--ease),
+                box-shadow var(--dur) var(--ease);
+}
+
+.post-card:hover,
+.project-card:hover,
+.contact-button:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Visible keyboard focus on everything interactive */
+a:focus-visible,
+button:focus-visible,
+.post-card-link:focus-visible,
+.project-card-link:focus-visible,
+.tag-filter-btn:focus-visible,
+.tag:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 3px;
+    border-radius: var(--radius);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+    .post-card:hover,
+    .project-card:hover,
+    .contact-button:hover {
+        transform: none;
     }
 }
