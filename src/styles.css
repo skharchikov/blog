@@ -831,11 +831,6 @@ body::before {
     color: var(--text-primary);
 }
 
-.tag-filter-btn.active {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
-    color: white;
-}
 
 .post-grid {
     display: flex;
@@ -850,7 +845,6 @@ body::before {
     border-radius: 1rem;
     padding: 1.25rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    transition: all 0.1s;
 }
 
 .post-card:hover {
@@ -861,18 +855,6 @@ body::before {
     margin-bottom: 0.75rem;
 }
 
-.post-title-link {
-    text-decoration: none;
-    color: var(--text-primary);
-    font-size: 1.375rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    transition: color 0.2s;
-}
-
-.post-title-link:hover {
-    color: var(--accent-color);
-}
 
 .post-date {
     display: block;
@@ -1392,4 +1374,76 @@ button:focus-visible,
     .contact-button:hover {
         transform: none;
     }
+}
+
+/* ===== Modernization: posts page ===== */
+
+.page-title .prompt {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.post-grid {
+    gap: var(--space-5); /* airier rhythm */
+}
+
+.post-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Accent gradient rail that fades in on hover */
+.post-card {
+    position: relative;
+    overflow: hidden;
+    padding-left: var(--space-5);
+}
+
+.post-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent-grad);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+}
+
+.post-card-link:hover .post-card::before,
+.post-card-link:focus-visible .post-card::before {
+    opacity: 1;
+}
+
+.post-card-title {
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    transition: color var(--dur) var(--ease);
+}
+
+.post-card-title::before {
+    content: "$ ";
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.post-card-link:hover .post-card-title {
+    color: var(--accent-color);
+}
+
+.post-empty {
+    color: var(--text-tertiary);
+    font-size: 0.9375rem;
+    padding: var(--space-4) 0;
+}
+
+/* Active filter pill uses the accent gradient */
+.tag-filter-btn.active {
+    background: var(--accent-grad);
+    border-color: transparent;
+    color: #fff;
 }
