@@ -1447,3 +1447,68 @@ button:focus-visible,
     border-color: transparent;
     color: #fff;
 }
+
+/* ===== Modernization: home hero ===== */
+
+.home-prompt {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--accent-color);
+    font-size: 1.125rem;
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+    margin-bottom: var(--space-2);
+}
+
+.home-prompt.visible {
+    opacity: 1;
+}
+
+.home-logo .cursor.gradient-caret {
+    background: var(--accent-grad);
+    border-radius: 2px;
+}
+
+.home-tagline,
+.home-chips {
+    opacity: 0;
+    transition: opacity 0.6s var(--ease);
+}
+
+.home-tagline.visible,
+.home-chips.visible {
+    opacity: 1;
+}
+
+.home-tagline {
+    margin-top: var(--space-4);
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.home-tagline b {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.home-chips {
+    margin-top: var(--space-5);
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.chip {
+    font-size: 0.8125rem;
+    padding: var(--space-1) var(--space-3);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+}
+
+.chip.hot {
+    border-color: transparent;
+    background: var(--accent-grad);
+    color: #fff;
+}
