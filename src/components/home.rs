@@ -1,6 +1,14 @@
 use crate::components::Programmer;
 use leptos::*;
 
+/// True when the user has requested reduced motion at the OS level.
+fn prefers_reduced_motion() -> bool {
+    web_sys::window()
+        .and_then(|w| w.match_media("(prefers-reduced-motion: reduce)").ok().flatten())
+        .map(|mql| mql.matches())
+        .unwrap_or(false)
+}
+
 #[component]
 pub fn Home() -> impl IntoView {
     let full_text = "skharchikov";
@@ -10,6 +18,14 @@ pub fn Home() -> impl IntoView {
 
     // Typing animation with realistic variable speed
     create_effect(move |_| {
+        // Honor reduced-motion: render the final state immediately, no typing.
+        if prefers_reduced_motion() {
+            set_typed_text.set(full_text.to_string());
+            set_cursor_state.set("stopped");
+            set_show_github.set(true);
+            return;
+        }
+
         let chars: Vec<char> = full_text.chars().collect();
 
         spawn_local(async move {
