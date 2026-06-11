@@ -1512,3 +1512,30 @@ button:focus-visible,
     background: var(--accent-grad);
     color: #fff;
 }
+
+/* ===== Modernization: nav ===== */
+
+.nav-home-glyph {
+    color: var(--accent-color);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.nav-link {
+    position: relative;
+}
+
+.nav-link.current {
+    color: var(--text-primary);
+}
+
+.nav-link.current::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.4rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent-grad);
+}
