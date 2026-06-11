@@ -551,10 +551,6 @@ body::before {
     transition: all 0.1s;
 }
 
-.project-card:hover {
-    border-color: var(--accent-color);
-}
-
 .project-header {
     display: flex;
     align-items: center;
@@ -1538,4 +1534,12 @@ button:focus-visible,
     height: 2px;
     border-radius: 2px;
     background: var(--accent-grad);
+}
+
+/* ===== Modernization: project + contact polish ===== */
+
+.project-tags .tag,
+.post-tags .tag {
+    border-radius: var(--radius);
+    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }

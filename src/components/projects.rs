@@ -22,6 +22,7 @@ pub fn Projects() -> impl IntoView {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         class="project-github-link"
+                                        aria-label="View on GitHub"
                                         on:click=move |ev| {
                                             ev.stop_propagation();
                                         }
