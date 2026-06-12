@@ -8,7 +8,7 @@ pub fn Projects() -> impl IntoView {
 
     view! {
         <div class="projects-container">
-            <h1 class="page-title">"Projects"</h1>
+            <h1 class="page-title"><span class="prompt">"~/projects $ "</span>"ls"</h1>
             <div class="projects-list">
                 {projects.iter().map(|project| {
                     let project_url = format!("/projects/{}", project.slug);

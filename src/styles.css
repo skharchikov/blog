@@ -372,9 +372,22 @@ body::before {
 .home-content {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+    align-items: flex-start;
+    gap: var(--space-4);
     position: relative;
+}
+
+/* Hero: gif + name on one row; the tagline sits underneath, both left-aligned
+   to the gif. Because the gif is the row's first child, it stays put as the
+   command swaps to the name. */
+.home-hero {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5rem;
+}
+
+.home-logo {
+    white-space: nowrap;
 }
 
 .home-logo-container {
@@ -384,13 +397,16 @@ body::before {
 }
 
 .home-logo {
-    font-size: 4rem;
+    /* Same size as the command line above it — authentic shell output */
+    font-size: clamp(2rem, 7vw, 3.25rem);
     font-weight: 600;
     letter-spacing: -0.02em;
     color: var(--text-primary);
     position: relative;
     display: inline-block;
-    line-height: 1;
+    line-height: 1.1;
+    min-height: 1.1em;
+    margin: 0;
 }
 
 .home-logo .cursor {
@@ -401,7 +417,7 @@ body::before {
     width: 0.6em;
     height: 1em;
     background-color: var(--text-primary);
-    animation: blink 1s step-end infinite;
+    animation: blink 1.6s step-end infinite;
 }
 
 .home-logo .cursor.slow-blink {
@@ -457,7 +473,6 @@ body::before {
     opacity: 0;
     transition: opacity 2s ease-in-out;
     pointer-events: none;
-    transform: translateY(0.3rem);
 }
 
 .programmer-animation.visible {
@@ -1446,17 +1461,9 @@ button:focus-visible,
 
 /* ===== Modernization: home hero ===== */
 
-.home-prompt {
-    font-family: 'IBM Plex Mono', monospace;
+/* The `~ $ ` prompt shown inline on the hero line while `whoami` is typed */
+.home-logo .prompt {
     color: var(--accent-color);
-    font-size: 1.125rem;
-    opacity: 0;
-    transition: opacity var(--dur) var(--ease);
-    margin-bottom: var(--space-2);
-}
-
-.home-prompt.visible {
-    opacity: 1;
 }
 
 .home-logo .cursor.gradient-caret {
@@ -1464,21 +1471,19 @@ button:focus-visible,
     border-radius: 2px;
 }
 
-.home-tagline,
-.home-chips {
+.home-tagline {
     opacity: 0;
     transition: opacity 0.6s var(--ease);
 }
 
-.home-tagline.visible,
-.home-chips.visible {
+.home-tagline.visible {
     opacity: 1;
 }
 
 .home-tagline {
-    margin-top: var(--space-4);
     color: var(--text-secondary);
     font-size: 1rem;
+    text-align: left;
 }
 
 .home-tagline b {
@@ -1486,27 +1491,9 @@ button:focus-visible,
     font-weight: 600;
 }
 
-.home-chips {
-    margin-top: var(--space-5);
-    display: flex;
-    gap: var(--space-2);
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.chip {
-    font-size: 0.8125rem;
-    padding: var(--space-1) var(--space-3);
-    border: 2px solid var(--border-color);
-    border-radius: var(--radius);
-    color: var(--text-secondary);
-    background: var(--bg-secondary);
-}
-
-.chip.hot {
-    border-color: transparent;
-    background: var(--accent-grad);
-    color: #fff;
+.home-tagline .tagline-cmd {
+    color: var(--accent-color);
+    font-weight: 600;
 }
 
 /* ===== Modernization: nav ===== */
@@ -1542,4 +1529,39 @@ button:focus-visible,
 .post-tags .tag {
     border-radius: var(--radius);
     transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+/* Match project cards to the Terminal++ post cards: gradient rail + $ prefix */
+.project-card {
+    position: relative;
+    overflow: hidden;
+    padding-left: var(--space-5);
+}
+
+.project-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent-grad);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+}
+
+.project-card-link:hover .project-card::before,
+.project-card-link:focus-visible .project-card::before {
+    opacity: 1;
+}
+
+.project-name::before {
+    content: "$ ";
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.project-card-link:hover .project-name {
+    color: var(--accent-color);
+    transition: color var(--dur) var(--ease);
 }
