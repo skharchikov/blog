@@ -9,6 +9,8 @@ pub struct BlogPost {
     pub excerpt: String,
     pub content: String,
     pub tags: Vec<String>,
+    /// Optional read-time override (minutes). Falls back to a word-count estimate.
+    pub read_time: Option<u32>,
 }
 
 static POSTS: OnceLock<Vec<BlogPost>> = OnceLock::new();

@@ -14,6 +14,8 @@ struct PostFrontMatter {
     slug: String,
     excerpt: String,
     tags: Vec<String>,
+    #[serde(default)]
+    read_time: Option<u32>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -75,15 +77,21 @@ fn generate_posts(out_dir: &str, syntax_set: &SyntaxSet) {
             .collect::<Vec<_>>()
             .join(", ");
 
+        let read_time_code = match frontmatter.read_time {
+            Some(n) => format!("Some({})", n),
+            None => "None".to_string(),
+        };
+
         posts_code.push_str(&format!(
-            "    BlogPost {{\n        id: {},\n        title: \"{}\".to_string(),\n        slug: \"{}\".to_string(),\n        date: \"{}\".to_string(),\n        excerpt: \"{}\".to_string(),\n        content: r###\"{}\"###.to_string(),\n        tags: vec![{}].into_iter().map(|s| s.to_string()).collect(),\n    }},\n",
+            "    BlogPost {{\n        id: {},\n        title: \"{}\".to_string(),\n        slug: \"{}\".to_string(),\n        date: \"{}\".to_string(),\n        excerpt: \"{}\".to_string(),\n        content: r###\"{}\"###.to_string(),\n        tags: vec![{}].into_iter().map(|s| s.to_string()).collect(),\n        read_time: {},\n    }},\n",
             id,
             escape_quotes(&frontmatter.title),
             escape_quotes(&frontmatter.slug),
             escape_quotes(&frontmatter.date),
             escape_quotes(&frontmatter.excerpt),
             escaped_content,
-            tags_code
+            tags_code,
+            read_time_code
         ));
 
         id += 1;

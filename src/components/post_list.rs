@@ -2,10 +2,12 @@ use crate::models::BlogPost;
 use leptos::*;
 use leptos_router::*;
 
-/// Estimate read time in minutes from raw post content (~200 wpm, min 1).
-fn read_minutes(content: &str) -> usize {
-    let words = content.split_whitespace().count();
-    std::cmp::max(1, (words + 199) / 200)
+/// Read time in minutes: the post's explicit override, or a ~200 wpm estimate.
+fn read_minutes(post: &BlogPost) -> u32 {
+    post.read_time.unwrap_or_else(|| {
+        let words = post.content.split_whitespace().count();
+        std::cmp::max(1, (words + 199) / 200) as u32
+    })
 }
 
 #[component]
@@ -19,7 +21,7 @@ pub fn PostList() -> impl IntoView {
     let selected_tag = move || query.with(|q| q.get("tag").cloned());
 
     let filtered_posts = move || {
-        if let Some(tag) = selected_tag() {
+        let mut list = if let Some(tag) = selected_tag() {
             posts
                 .iter()
                 .filter(|post| post.tags.contains(&tag))
@@ -27,7 +29,10 @@ pub fn PostList() -> impl IntoView {
                 .collect::<Vec<_>>()
         } else {
             posts.to_vec()
-        }
+        };
+        // Newest first (dates are "YYYY-MM-DD", so a string compare sorts correctly).
+        list.sort_by(|a, b| b.date.cmp(&a.date));
+        list
     };
 
     let all_tags = move || {
@@ -107,7 +112,7 @@ pub fn PostList() -> impl IntoView {
                     } else {
                         items.into_iter().map(|post| {
                             let nav_tag = nav_tag.clone();
-                            let minutes = read_minutes(&post.content);
+                            let minutes = read_minutes(&post);
                             view! {
                                 <A href={format!("/posts/{}", post.slug)} class="post-card-link">
                                     <article class="post-card">
