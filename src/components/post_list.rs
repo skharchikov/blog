@@ -20,15 +20,11 @@ pub fn PostList() -> impl IntoView {
     // Selected tag is derived from the URL (?tag=...), not local state.
     let selected_tag = move || query.with(|q| q.get("tag").cloned());
 
+    // Returns borrowed posts (all_posts is 'static) — no deep clone of bodies.
     let filtered_posts = move || {
-        let mut list = if let Some(tag) = selected_tag() {
-            posts
-                .iter()
-                .filter(|post| post.tags.contains(&tag))
-                .cloned()
-                .collect::<Vec<_>>()
-        } else {
-            posts.to_vec()
+        let mut list: Vec<&'static BlogPost> = match selected_tag() {
+            Some(tag) => posts.iter().filter(|post| post.tags.contains(&tag)).collect(),
+            None => posts.iter().collect(),
         };
         // Newest first (dates are "YYYY-MM-DD", so a string compare sorts correctly).
         list.sort_by(|a, b| b.date.cmp(&a.date));
@@ -48,7 +44,7 @@ pub fn PostList() -> impl IntoView {
     };
 
     // Count of posts carrying a given tag (for the "(n)" badge).
-    let count_for = move |tag: &str| posts.iter().filter(|p| p.tags.contains(&tag.to_string())).count();
+    let count_for = move |tag: &str| posts.iter().filter(|p| p.tags.iter().any(|t| t == tag)).count();
 
     // Navigate helpers: "All" clears the query, a tag sets ?tag=...
     let nav_all = {
@@ -112,35 +108,35 @@ pub fn PostList() -> impl IntoView {
                     } else {
                         items.into_iter().map(|post| {
                             let nav_tag = nav_tag.clone();
-                            let minutes = read_minutes(&post);
+                            let minutes = read_minutes(post);
                             view! {
-                                <A href={format!("/posts/{}", post.slug)} class="post-card-link">
-                                    <article class="post-card">
-                                        <div class="post-card-header">
-                                            <h2 class="post-card-title">{&post.title}</h2>
-                                            <time class="post-date">{format!("{} · {} min", post.date, minutes)}</time>
-                                        </div>
-                                        <p class="post-excerpt">{&post.excerpt}</p>
-                                        <div class="post-tags">
-                                            {post.tags.iter().map(|tag| {
-                                                let tag_click = tag.clone();
-                                                let nav_tag = nav_tag.clone();
-                                                view! {
-                                                    <span
-                                                        class="tag"
-                                                        on:click=move |ev| {
-                                                            ev.prevent_default();
-                                                            ev.stop_propagation();
-                                                            nav_tag(&tag_click);
-                                                        }
-                                                    >
-                                                        {tag}
-                                                    </span>
-                                                }
-                                            }).collect_view()}
-                                        </div>
-                                    </article>
-                                </A>
+                                // Stretched-link card: the title is the real link and its
+                                // ::after covers the whole card (whole-card click), while the
+                                // tag buttons sit above it — no nested anchors, all keyboard
+                                // accessible.
+                                <article class="post-card">
+                                    <div class="post-card-header">
+                                        <h2 class="post-card-title">
+                                            <A href={format!("/posts/{}", post.slug)} class="post-card-link">{&post.title}</A>
+                                        </h2>
+                                        <time class="post-date">{format!("{} · {} min", post.date, minutes)}</time>
+                                    </div>
+                                    <p class="post-excerpt">{&post.excerpt}</p>
+                                    <div class="post-tags">
+                                        {post.tags.iter().map(|tag| {
+                                            let tag_click = tag.clone();
+                                            let nav_tag = nav_tag.clone();
+                                            view! {
+                                                <button
+                                                    class="tag"
+                                                    on:click=move |_| nav_tag(&tag_click)
+                                                >
+                                                    {tag}
+                                                </button>
+                                            }
+                                        }).collect_view()}
+                                    </div>
+                                </article>
                             }
                         }).collect_view().into_view()
                     }

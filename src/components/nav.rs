@@ -53,6 +53,7 @@ pub fn Nav() -> impl IntoView {
                     <button
                         class="dark-mode-toggle"
                         aria-label="Toggle dark mode"
+                        attr:aria-pressed={move || if dark_mode.get() { "true" } else { "false" }}
                         on:click=toggle_dark_mode
                     >
                         {move || if dark_mode.get() { "☾" } else { "☀" }}
