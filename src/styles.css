@@ -1549,3 +1549,12 @@ button:focus-visible,
     color: var(--accent-color);
     transition: color var(--dur) var(--ease);
 }
+
+/* Keep cards compact on mobile — overrides the rail's padding-left from the
+   base rules above (which would otherwise win by source order). */
+@media (max-width: 768px) {
+    .post-card,
+    .project-card {
+        padding-left: 0.75rem;
+    }
+}

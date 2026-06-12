@@ -3,9 +3,30 @@ use leptos::*;
 use leptos_router::*;
 
 /// Read time in minutes: the post's explicit override, or a ~200 wpm estimate.
+/// `content` is generated HTML, so we count visible text only (tags skipped),
+/// otherwise tag/attribute names would inflate the estimate.
 fn read_minutes(post: &BlogPost) -> u32 {
     post.read_time.unwrap_or_else(|| {
-        let words = post.content.split_whitespace().count();
+        let mut in_tag = false;
+        let mut in_word = false;
+        let mut words = 0usize;
+        for c in post.content.chars() {
+            match c {
+                '<' => {
+                    in_tag = true;
+                    in_word = false;
+                }
+                '>' => in_tag = false,
+                _ if in_tag => {}
+                _ if c.is_whitespace() => in_word = false,
+                _ => {
+                    if !in_word {
+                        words += 1;
+                        in_word = true;
+                    }
+                }
+            }
+        }
         std::cmp::max(1, (words + 199) / 200) as u32
     })
 }
