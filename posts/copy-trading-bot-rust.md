@@ -4,6 +4,7 @@ date: "2026-05-05"
 slug: "copy_trading_bot_rust"
 excerpt: "Notes from wiring up a Polymarket copy trader in Rust. Loops, dedup, sizing, and the boring glue that actually matters."
 tags: ["rust", "tokio", "polymarket", "trading"]
+read_time: 5
 ---
 
 I wanted a bot that watches sharp Polymarket traders and mirrors their entries. The idea was simple: if a top 10 trader buys, I buy a small piece of the same thing. Turns out most of the work is plumbing, not strategy.

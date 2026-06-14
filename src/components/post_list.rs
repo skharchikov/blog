@@ -2,22 +2,54 @@ use crate::models::BlogPost;
 use leptos::*;
 use leptos_router::*;
 
+/// Read time in minutes: the post's explicit override, or a ~200 wpm estimate.
+/// `content` is generated HTML, so we count visible text only (tags skipped),
+/// otherwise tag/attribute names would inflate the estimate.
+fn read_minutes(post: &BlogPost) -> u32 {
+    post.read_time.unwrap_or_else(|| {
+        let mut in_tag = false;
+        let mut in_word = false;
+        let mut words = 0usize;
+        for c in post.content.chars() {
+            match c {
+                '<' => {
+                    in_tag = true;
+                    in_word = false;
+                }
+                '>' => in_tag = false,
+                _ if in_tag => {}
+                _ if c.is_whitespace() => in_word = false,
+                _ => {
+                    if !in_word {
+                        words += 1;
+                        in_word = true;
+                    }
+                }
+            }
+        }
+        std::cmp::max(1, (words + 199) / 200) as u32
+    })
+}
+
 #[component]
 pub fn PostList() -> impl IntoView {
-    let (selected_tag, set_selected_tag) = create_signal(Option::<String>::None);
+    let query = use_query_map();
+    let navigate = use_navigate();
 
     let posts = BlogPost::all_posts();
 
+    // Selected tag is derived from the URL (?tag=...), not local state.
+    let selected_tag = move || query.with(|q| q.get("tag").cloned());
+
+    // Returns borrowed posts (all_posts is 'static) — no deep clone of bodies.
     let filtered_posts = move || {
-        if let Some(tag) = selected_tag.get() {
-            posts
-                .iter()
-                .filter(|post| post.tags.contains(&tag))
-                .cloned()
-                .collect::<Vec<_>>()
-        } else {
-            posts.to_vec()
-        }
+        let mut list: Vec<&'static BlogPost> = match selected_tag() {
+            Some(tag) => posts.iter().filter(|post| post.tags.contains(&tag)).collect(),
+            None => posts.iter().collect(),
+        };
+        // Newest first (dates are "YYYY-MM-DD", so a string compare sorts correctly).
+        list.sort_by(|a, b| b.date.cmp(&a.date));
+        list
     };
 
     let all_tags = move || {
@@ -32,61 +64,104 @@ pub fn PostList() -> impl IntoView {
         tag_vec
     };
 
+    // Count of posts carrying a given tag (for the "(n)" badge).
+    let count_for = move |tag: &str| posts.iter().filter(|p| p.tags.iter().any(|t| t == tag)).count();
+
+    // Navigate helpers: "All" clears the query, a tag sets ?tag=...
+    let nav_all = {
+        let navigate = navigate.clone();
+        move || navigate("/posts", Default::default())
+    };
+    let nav_tag = {
+        let navigate = navigate.clone();
+        move |tag: &str| navigate(&format!("/posts?tag={}", tag), Default::default())
+    };
+
+    // Pre-clone nav_tag for the tag-filter section (the post-grid section owns the original).
+    let nav_tag_filter = nav_tag.clone();
+
     view! {
         <div class="post-list-container">
-            <h1 class="page-title">"Posts"</h1>
+            <h1 class="page-title"><span class="prompt">"~/posts $ "</span>"ls"</h1>
 
             <div class="tag-filter">
                 <button
                     class="tag-filter-btn"
-                    class:active={move || selected_tag.get().is_none()}
-                    on:click=move |_| set_selected_tag.set(None)
-                >
-                    "All"
-                </button>
-                {all_tags().into_iter().map(|tag| {
-                    let tag_for_active = tag.clone();
-                    let tag_for_click = tag.clone();
-                    let tag_for_display = tag.clone();
-                    view! {
-                        <button
-                            class="tag-filter-btn"
-                            class:active={move || selected_tag.get().as_ref() == Some(&tag_for_active)}
-                            on:click=move |_| set_selected_tag.set(Some(tag_for_click.clone()))
-                        >
-                            {tag_for_display}
-                        </button>
+                    class:active={move || selected_tag().is_none()}
+                    attr:aria-pressed={move || if selected_tag().is_none() { "true" } else { "false" }}
+                    on:click={
+                        let nav_all = nav_all.clone();
+                        move |_| nav_all()
                     }
-                }).collect_view()}
+                >
+                    "all"
+                </button>
+                {move || {
+                    let nav_tag = nav_tag_filter.clone();
+                    all_tags().into_iter().map(move |tag| {
+                        let tag_active = tag.clone();
+                        let tag_click = tag.clone();
+                        let tag_label = tag.clone();
+                        let n = count_for(&tag);
+                        let nav_tag = nav_tag.clone();
+                        view! {
+                            <button
+                                class="tag-filter-btn"
+                                class:active={move || selected_tag().as_deref() == Some(&tag_active)}
+                                attr:aria-pressed={
+                                    let t = tag_active.clone();
+                                    move || if selected_tag().as_deref() == Some(&t) { "true" } else { "false" }
+                                }
+                                on:click=move |_| nav_tag(&tag_click)
+                            >
+                                {format!("{} ({})", tag_label, n)}
+                            </button>
+                        }
+                    }).collect_view()
+                }}
             </div>
 
             <div class="post-grid">
-                {move || filtered_posts().into_iter().map(|post| {
-                    view! {
-                        <article class="post-card">
-                            <div class="post-card-header">
-                                <A href={format!("/posts/{}", post.slug)} class="post-title-link">
-                                    <h2>{&post.title}</h2>
-                                </A>
-                                <time class="post-date">{&post.date}</time>
-                            </div>
-                            <p class="post-excerpt">{&post.excerpt}</p>
-                            <div class="post-tags">
-                                {post.tags.iter().map(|tag| {
-                                    let tag_clone = tag.clone();
-                                    view! {
-                                        <span
-                                            class="tag"
-                                            on:click=move |_| set_selected_tag.set(Some(tag_clone.clone()))
-                                        >
-                                            {tag}
-                                        </span>
-                                    }
-                                }).collect_view()}
-                            </div>
-                        </article>
+                {move || {
+                    let items = filtered_posts();
+                    if items.is_empty() {
+                        view! { <p class="post-empty">"No posts with this tag yet."</p> }.into_view()
+                    } else {
+                        items.into_iter().map(|post| {
+                            let nav_tag = nav_tag.clone();
+                            let minutes = read_minutes(post);
+                            view! {
+                                // Stretched-link card: the title is the real link and its
+                                // ::after covers the whole card (whole-card click), while the
+                                // tag buttons sit above it — no nested anchors, all keyboard
+                                // accessible.
+                                <article class="post-card">
+                                    <div class="post-card-header">
+                                        <h2 class="post-card-title">
+                                            <A href={format!("/posts/{}", post.slug)} class="post-card-link">{&post.title}</A>
+                                        </h2>
+                                        <time class="post-date">{format!("{} · {} min", post.date, minutes)}</time>
+                                    </div>
+                                    <p class="post-excerpt">{&post.excerpt}</p>
+                                    <div class="post-tags">
+                                        {post.tags.iter().map(|tag| {
+                                            let tag_click = tag.clone();
+                                            let nav_tag = nav_tag.clone();
+                                            view! {
+                                                <button
+                                                    class="tag"
+                                                    on:click=move |_| nav_tag(&tag_click)
+                                                >
+                                                    {tag}
+                                                </button>
+                                            }
+                                        }).collect_view()}
+                                    </div>
+                                </article>
+                            }
+                        }).collect_view().into_view()
                     }
-                }).collect_view()}
+                }}
             </div>
         </div>
     }

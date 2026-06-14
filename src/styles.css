@@ -16,6 +16,20 @@
     --border-color: #e5e5e5;
     --tag-bg: #f5f5f5;
     --tag-text: #666666;
+    /* modernization tokens */
+    --accent-grad: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --dur: 150ms;
+    --radius: 12px;
+    --radius-lg: 14px;
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2.5rem;
+    --shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.10);
+    --card-rail: rgba(59, 130, 246, 0.0);
 }
 
 body.dark-mode {
@@ -29,6 +43,8 @@ body.dark-mode {
     --border-color: #2a2a2a;
     --tag-bg: #2a2a2a;
     --tag-text: #a3a3a3;
+    --accent-grad: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 body {
@@ -356,25 +372,32 @@ body::before {
 .home-content {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+    align-items: flex-start;
+    gap: var(--space-4);
     position: relative;
 }
 
-.home-logo-container {
+/* Hero: gif + name on one row; the tagline sits underneath, both left-aligned
+   to the gif. Because the gif is the row's first child, it stays put as the
+   command swaps to the name. */
+.home-hero {
     display: flex;
-    align-items: baseline;
-    gap: 1rem;
+    align-items: flex-end;
+    gap: 1.5rem;
 }
 
 .home-logo {
-    font-size: 4rem;
+    /* Same size as the command line above it — authentic shell output */
+    font-size: clamp(2rem, 7vw, 3.25rem);
     font-weight: 600;
     letter-spacing: -0.02em;
     color: var(--text-primary);
     position: relative;
     display: inline-block;
-    line-height: 1;
+    line-height: 1.1;
+    min-height: 1.1em;
+    margin: 0;
+    white-space: nowrap;
 }
 
 .home-logo .cursor {
@@ -385,16 +408,7 @@ body::before {
     width: 0.6em;
     height: 1em;
     background-color: var(--text-primary);
-    animation: blink 1s step-end infinite;
-}
-
-.home-logo .cursor.slow-blink {
-    animation: blink 2s step-end infinite;
-}
-
-.home-logo .cursor.stopped {
-    animation: none;
-    opacity: 0;
+    animation: blink 1.6s step-end infinite;
 }
 
 @keyframes blink {
@@ -406,42 +420,11 @@ body::before {
     }
 }
 
-.home-github {
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
-
-.home-github.visible {
-    opacity: 1;
-}
-
-.home-github:hover {
-    transform: scale(1.1);
-    transition: opacity 1s ease-in-out, transform 0.2s ease;
-}
-
-.github-link {
-    color: var(--text-secondary);
-    transition: color 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.github-link:hover {
-    color: var(--text-primary);
-}
-
 /* Programmer Animation */
 .programmer-animation {
     opacity: 0;
     transition: opacity 2s ease-in-out;
     pointer-events: none;
-    transform: translateY(0.3rem);
 }
 
 .programmer-animation.visible {
@@ -535,10 +518,6 @@ body::before {
     transition: all 0.1s;
 }
 
-.project-card:hover {
-    border-color: var(--accent-color);
-}
-
 .project-header {
     display: flex;
     align-items: center;
@@ -570,7 +549,6 @@ body::before {
 .project-card-link {
     text-decoration: none;
     color: inherit;
-    display: block;
 }
 
 .project-tags {
@@ -815,11 +793,6 @@ body::before {
     color: var(--text-primary);
 }
 
-.tag-filter-btn.active {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
-    color: white;
-}
 
 .post-grid {
     display: flex;
@@ -834,7 +807,6 @@ body::before {
     border-radius: 1rem;
     padding: 1.25rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    transition: all 0.1s;
 }
 
 .post-card:hover {
@@ -845,18 +817,6 @@ body::before {
     margin-bottom: 0.75rem;
 }
 
-.post-title-link {
-    text-decoration: none;
-    color: var(--text-primary);
-    font-size: 1.375rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    transition: color 0.2s;
-}
-
-.post-title-link:hover {
-    color: var(--accent-color);
-}
 
 .post-date {
     display: block;
@@ -886,12 +846,19 @@ body::before {
     color: var(--tag-text);
     padding: 0.25rem 0.625rem;
     border-radius: 0.75rem;
+    font-family: inherit;
     font-size: 0.8125rem;
     font-weight: 500;
     border: 2px solid var(--bg-secondary);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: all 0.1s;
     cursor: pointer;
+}
+
+/* Interactive (button) tag chips inside post cards */
+button.tag:hover {
+    border-color: var(--accent-color);
+    color: var(--text-primary);
 }
 
 .tag:hover {
@@ -1240,9 +1207,9 @@ body.dark-mode .project-content pre.code {
         height: auto;
     }
 
-    /* Scale down home logo for mobile */
-    .home-logo-container {
-        gap: 0.5rem;
+    /* Scale down home hero for mobile */
+    .home-hero {
+        gap: 1rem;
     }
 
     .home-logo {
@@ -1252,11 +1219,6 @@ body.dark-mode .project-content pre.code {
     .programmer-gif {
         width: 80px;
         height: 80px;
-    }
-
-    .home-github svg {
-        width: 20px;
-        height: 20px;
     }
 
     .main-content {
@@ -1329,5 +1291,270 @@ body.dark-mode .project-content pre.code {
     .project-view .project-tags {
         grid-column: 1 / -1;
         grid-row: 2;
+    }
+}
+
+/* ===== Modernization: shared interaction primitives ===== */
+
+/* Unified card hover used by post, project, and contact cards */
+.post-card,
+.project-card,
+.contact-button {
+    transition: transform var(--dur) var(--ease),
+                border-color var(--dur) var(--ease),
+                box-shadow var(--dur) var(--ease);
+}
+
+.post-card:hover,
+.project-card:hover,
+.contact-button:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+}
+
+/* Visible keyboard focus on everything interactive */
+a:focus-visible,
+button:focus-visible,
+.post-card-link:focus-visible,
+.project-card-link:focus-visible,
+.tag-filter-btn:focus-visible,
+.tag:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 3px;
+    border-radius: var(--radius);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+    .post-card:hover,
+    .project-card:hover,
+    .contact-button:hover {
+        transform: none;
+    }
+}
+
+/* ===== Modernization: posts page ===== */
+
+.page-title .prompt {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.post-grid {
+    gap: var(--space-5); /* airier rhythm */
+}
+
+/* The title is the card's link; its ::after stretches over the whole card so
+   the entire card is clickable without nesting anchors. */
+.post-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.post-card-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+/* Accent gradient rail that fades in on hover */
+.post-card {
+    position: relative;
+    overflow: hidden;
+    padding-left: var(--space-5);
+}
+
+.post-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent-grad);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+    pointer-events: none;
+}
+
+.post-card:hover::before,
+.post-card:focus-within::before {
+    opacity: 1;
+}
+
+.post-card-title {
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+    transition: color var(--dur) var(--ease);
+}
+
+.post-card-title::before {
+    content: "$ ";
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.post-card:hover .post-card-title {
+    color: var(--accent-color);
+}
+
+/* Tag buttons sit above the stretched link so they stay clickable + focusable */
+.post-tags {
+    position: relative;
+    z-index: 2;
+}
+
+.post-empty {
+    color: var(--text-tertiary);
+    font-size: 0.9375rem;
+    padding: var(--space-4) 0;
+}
+
+/* Active filter pill uses the accent gradient */
+.tag-filter-btn.active {
+    background: var(--accent-grad);
+    border-color: transparent;
+    color: #fff;
+}
+
+/* ===== Modernization: home hero ===== */
+
+/* The `~ $ ` prompt shown inline on the hero line while `whoami` is typed */
+.home-logo .prompt {
+    color: var(--accent-color);
+}
+
+.home-logo .cursor.gradient-caret {
+    background: var(--accent-grad);
+    border-radius: 2px;
+}
+
+.home-tagline {
+    opacity: 0;
+    transition: opacity 0.6s var(--ease);
+}
+
+.home-tagline.visible {
+    opacity: 1;
+}
+
+.home-tagline {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    text-align: left;
+}
+
+.home-tagline b {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.home-tagline .tagline-cmd {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+/* ===== Modernization: nav ===== */
+
+.nav-home-glyph {
+    color: var(--accent-color);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.nav-link {
+    position: relative;
+}
+
+.nav-link.current {
+    color: var(--text-primary);
+}
+
+.nav-link.current::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.4rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent-grad);
+}
+
+/* ===== Modernization: project + contact polish ===== */
+
+.project-tags .tag,
+.post-tags .tag {
+    border-radius: var(--radius);
+    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+/* Match project cards to the Terminal++ post cards: gradient rail + $ prefix,
+   stretched-link overlay (same pattern as post cards). */
+.project-card {
+    position: relative;
+    overflow: hidden;
+    padding-left: var(--space-5);
+}
+
+.project-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent-grad);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+    pointer-events: none;
+}
+
+.project-card:hover::before,
+.project-card:focus-within::before {
+    opacity: 1;
+}
+
+/* The project name is the link; its ::after covers the whole card. */
+.project-card-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+/* The GitHub link sits above the stretched card link so it stays clickable. */
+.project-github-link {
+    position: relative;
+    z-index: 2;
+}
+
+.project-name::before {
+    content: "$ ";
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.project-card:hover .project-name {
+    color: var(--accent-color);
+    transition: color var(--dur) var(--ease);
+}
+
+/* Keep cards compact on mobile — overrides the rail's padding-left from the
+   base rules above (which would otherwise win by source order). */
+@media (max-width: 768px) {
+    .post-card,
+    .project-card {
+        padding-left: 0.75rem;
     }
 }
