@@ -1,13 +1,40 @@
 ---
 order: 3
-name: Blackjack (WIP)
+name: Blackjack
 slug: blackjack
-description: Blackjack engine, server and TUI cli
+description: Multiplayer Blackjack — event-driven engine, WebSocket server, TUI client
 github_url: https://github.com/skharchikov/blackjack
 tags:
   - rust
   - axum
   - ratatui
+---
+
+## Live Demo
+
+A live server is running at **[blackjack.skh.rs](https://blackjack.skh.rs)**.
+
+To play, clone the repo and run the TUI client:
+
+```bash
+git clone https://github.com/skharchikov/blackjack
+cd blackjack
+SERVER_URL=https://blackjack.skh.rs cargo run -p cli
+```
+
+Enter any username and password — the account is created automatically on first login.
+
+| Key | Action |
+|-----|--------|
+| `↑ ↓` | Navigate lobby |
+| `Enter` | Join table as observer |
+| `t` | Take a seat |
+| `← →` | Adjust bet |
+| `Enter` | Confirm bet |
+| `h` / `s` | Hit / Stand |
+| `l` | Leave table |
+| `q` | Quit |
+
 ---
 
 ## Event‑Driven CQRS Blackjack (Rust)
