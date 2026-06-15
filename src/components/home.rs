@@ -18,14 +18,12 @@ pub fn Home() -> impl IntoView {
     let (typed_name, set_typed_name) = create_signal(String::new());
     // "cmd" = typing the command, "name" = output printed (command swapped out)
     let (phase, set_phase) = create_signal("cmd");
-    let (show_extras, set_show_extras) = create_signal(false);
 
     create_effect(move |_| {
         // Honor reduced-motion: render the final state immediately, no typing.
         if prefers_reduced_motion() {
             set_typed_name.set(full_name.to_string());
             set_phase.set("name");
-            set_show_extras.set(true);
             return;
         }
 
@@ -46,10 +44,6 @@ pub fn Home() -> impl IntoView {
             gloo_timers::future::TimeoutFuture::new(800).await;
             set_typed_name.set(full_name.to_string());
             set_phase.set("name");
-
-            // Reveal the gif's friend tagline shortly after.
-            gloo_timers::future::TimeoutFuture::new(350).await;
-            set_show_extras.set(true);
         });
     });
 
@@ -66,9 +60,6 @@ pub fn Home() -> impl IntoView {
                         }}
                         <span class="cursor gradient-caret"></span>
                     </h1>
-                </div>
-                <div class="home-tagline" class:visible={move || show_extras.get()}>
-                    <span class="tagline-skills"><code class="tagline-cmd">"cargo build"</code>"-ing boring-reliable backends in "<b>"Rust"</b>" & "<b>"Scala"</b></span>
                 </div>
             </div>
         </div>
