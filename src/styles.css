@@ -386,6 +386,16 @@ body::before {
     gap: 1.5rem;
 }
 
+/* Reserve width for the longest line (monospace) so the hero — and the gif
+   beside it — stays put as the command swaps to the name. The h1 inside still
+   shrinks to its text, so the caret stays right after it.
+   The font-size makes `ch` resolve at the hero's scale (not the 16px default),
+   so 12ch actually covers the longest line. */
+.home-hero-text {
+    font-size: clamp(2rem, 7vw, 3.25rem);
+    min-width: 12ch;
+}
+
 .home-logo {
     /* Same size as the command line above it — authentic shell output */
     font-size: clamp(2rem, 7vw, 3.25rem);
