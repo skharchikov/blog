@@ -394,6 +394,7 @@ body::before {
 .home-hero-text {
     font-size: clamp(2rem, 7vw, 3.25rem);
     min-width: 12ch;
+    line-height: 0; /* kill the wrapper line-box strut so its bottom = the text's */
 }
 
 .home-logo {
@@ -404,8 +405,7 @@ body::before {
     color: var(--text-primary);
     position: relative;
     display: inline-block;
-    line-height: 1.1;
-    min-height: 1.1em;
+    line-height: 1;
     margin: 0;
     white-space: nowrap;
 }
