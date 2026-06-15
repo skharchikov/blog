@@ -1439,31 +1439,6 @@ button:focus-visible,
     border-radius: 2px;
 }
 
-.home-tagline {
-    opacity: 0;
-    transition: opacity 0.6s var(--ease);
-}
-
-.home-tagline.visible {
-    opacity: 1;
-}
-
-.home-tagline {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    text-align: left;
-}
-
-.home-tagline b {
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.home-tagline .tagline-cmd {
-    color: var(--accent-color);
-    font-weight: 600;
-}
-
 /* ===== Modernization: nav ===== */
 
 .nav-home-glyph {
