@@ -52,14 +52,21 @@ pub fn Home() -> impl IntoView {
             <div class="home-content">
                 <div class="home-hero">
                     <Programmer visible=Signal::derive(|| true) />
-                    <h1 class="home-logo">
-                        {move || if phase.get() == "cmd" {
-                            view! { <span class="prompt">"~ $ "</span>{move || typed_cmd.get()} }.into_view()
-                        } else {
-                            view! { {move || typed_name.get()} }.into_view()
-                        }}
-                        <span class="cursor gradient-caret"></span>
-                    </h1>
+                    <div class="home-hero-text">
+                        // Hidden sizers reserve the width of the longest possible line
+                        // in whatever font is actually rendering, so the gif beside the
+                        // text never shifts (even before the web font loads).
+                        <span class="home-line-sizer" aria-hidden="true">"~ $ whoami"</span>
+                        <span class="home-line-sizer" aria-hidden="true">"skharchikov"</span>
+                        <h1 class="home-logo">
+                            {move || if phase.get() == "cmd" {
+                                view! { <span class="prompt">"~ $ "</span>{move || typed_cmd.get()} }.into_view()
+                            } else {
+                                view! { {move || typed_name.get()} }.into_view()
+                            }}
+                            <span class="cursor gradient-caret"></span>
+                        </h1>
+                    </div>
                 </div>
             </div>
         </div>

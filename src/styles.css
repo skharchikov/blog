@@ -386,6 +386,32 @@ body::before {
     gap: 1.5rem;
 }
 
+/* Reserve the width of the longest line so the hero — and the gif beside it —
+   never shifts as the command swaps to the name. Hidden sizer spans and the
+   live line are stacked in one grid cell; the cell takes the widest, measured
+   in whatever font is actually rendering (no fragile `ch`/font-load reliance).
+   `justify-self: start` keeps each item content-sized and left-aligned, so the
+   caret stays right after the text. */
+.home-hero-text {
+    display: inline-grid;
+}
+
+.home-hero-text > * {
+    grid-area: 1 / 1;
+    justify-self: start;
+}
+
+.home-line-sizer {
+    visibility: hidden;
+    pointer-events: none;
+    white-space: nowrap;
+    /* metrics must match .home-logo so the reserved width is exact */
+    font-size: clamp(2rem, 7vw, 3.25rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
 .home-logo {
     /* Same size as the command line above it — authentic shell output */
     font-size: clamp(2rem, 7vw, 3.25rem);
@@ -394,8 +420,7 @@ body::before {
     color: var(--text-primary);
     position: relative;
     display: inline-block;
-    line-height: 1.1;
-    min-height: 1.1em;
+    line-height: 1;
     margin: 0;
     white-space: nowrap;
 }
