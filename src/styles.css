@@ -386,15 +386,30 @@ body::before {
     gap: 1.5rem;
 }
 
-/* Reserve width for the longest line (monospace) so the hero — and the gif
-   beside it — stays put as the command swaps to the name. The h1 inside still
-   shrinks to its text, so the caret stays right after it.
-   The font-size makes `ch` resolve at the hero's scale (not the 16px default),
-   so 12ch actually covers the longest line. */
+/* Reserve the width of the longest line so the hero — and the gif beside it —
+   never shifts as the command swaps to the name. Hidden sizer spans and the
+   live line are stacked in one grid cell; the cell takes the widest, measured
+   in whatever font is actually rendering (no fragile `ch`/font-load reliance).
+   `justify-self: start` keeps each item content-sized and left-aligned, so the
+   caret stays right after the text. */
 .home-hero-text {
+    display: inline-grid;
+}
+
+.home-hero-text > * {
+    grid-area: 1 / 1;
+    justify-self: start;
+}
+
+.home-line-sizer {
+    visibility: hidden;
+    pointer-events: none;
+    white-space: nowrap;
+    /* metrics must match .home-logo so the reserved width is exact */
     font-size: clamp(2rem, 7vw, 3.25rem);
-    min-width: 12ch;
-    line-height: 0; /* kill the wrapper line-box strut so its bottom = the text's */
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
 }
 
 .home-logo {
