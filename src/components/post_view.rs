@@ -1,4 +1,4 @@
-use crate::components::Giscus;
+use crate::components::{Giscus, ViewCounter};
 use crate::models::BlogPost;
 use leptos::*;
 use leptos_router::*;
@@ -23,7 +23,10 @@ pub fn PostView() -> impl IntoView {
                     <article class="post-full">
                         <header class="post-header">
                             <h1 class="post-title">{&p.title}</h1>
-                            <time class="post-date">{&p.date}</time>
+                            <div class="post-meta">
+                                <time class="post-date">{&p.date}</time>
+                                <ViewCounter path={format!("/posts/{}", p.slug)} />
+                            </div>
                             <div class="post-tags">
                                 {p.tags.iter().map(|tag| {
                                     view! {
