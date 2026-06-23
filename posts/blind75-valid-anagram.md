@@ -7,7 +7,7 @@ tags: ["rust", "leetcode", "blind75", "algorithms"]
 read_time: 3
 ---
 
-Second problem in the [Blind 75](https://www.techinterviewhandbook.org/best-practice-questions/) series: **[Valid Anagram](https://leetcode.com/problems/valid-anagram/)**. Previous post: **[Contains Duplicate](https://leetcode.com/problems/contains-duplicate/)**.
+Second problem in the [Blind 75](https://www.techinterviewhandbook.org/best-practice-questions/) series: **[Valid Anagram](https://leetcode.com/problems/valid-anagram/)**. Previous post: **[Contains Duplicate](/posts/blind75-contains-duplicate)**.
 
 ## The problem
 
@@ -109,4 +109,4 @@ mod tests {
 
 Source: [`src/array/valid_anagram.rs`](https://github.com/skharchikov/leetcode-rust/blob/master/src/array/valid_anagram.rs).
 
-Next: **[Two Sum](https://leetcode.com/problems/two-sum/)**.
+Next: **Two Sum**.
