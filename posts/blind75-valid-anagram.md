@@ -1,6 +1,6 @@
 ---
 title: "Blind 75 in Rust: Valid Anagram"
-date: "2026-06-23"
+date: "2026-06-24"
 slug: "blind75-valid-anagram"
 excerpt: "Second problem in the Blind 75 series: Valid Anagram. One HashMap, a single pass each way, and a few words on why iterating over UTF-8 isn't quite ASCII."
 tags: ["rust", "leetcode", "blind75", "algorithms"]
