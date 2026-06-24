@@ -19,6 +19,17 @@ serde_yaml = "0.9"
 wasm-bindgen-futures = "0.4"
 gloo-net = { version = "0.6", default-features = false, features = ["http", "json"] }
 
+# Default wasm app binary (Trunk builds this one; see data-bin in index.html).
+[[bin]]
+name = "blog"
+path = "src/main.rs"
+
+# Host-side static-HTML prerenderer, run by the Trunk post_build hook.
+# Never built for wasm; invoked explicitly via `cargo run --bin prerender`.
+[[bin]]
+name = "prerender"
+path = "src/bin/prerender.rs"
+
 [build-dependencies]
 pulldown-cmark = "0.13"
 serde = { version = "1.0", features = ["derive"] }

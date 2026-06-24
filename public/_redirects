@@ -1,0 +1,4 @@
+# Cloudflare Pages: serve any existing static asset first (including the
+# prerendered /posts/<slug>/index.html and /projects/<slug>/index.html files),
+# otherwise fall back to the SPA shell so client-side routing handles the URL.
+/*    /index.html    200

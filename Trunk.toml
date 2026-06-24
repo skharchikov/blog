@@ -1,0 +1,7 @@
+# After Trunk builds the SPA, prerender static per-post / per-project HTML files
+# with their own meta tags so social/link-preview crawlers (which don't run wasm)
+# see the right title and description. See src/bin/prerender.rs.
+[[hooks]]
+stage = "post_build"
+command = "cargo"
+command_arguments = ["run", "--quiet", "--release", "--bin", "prerender"]
