@@ -122,7 +122,8 @@ fn write_sitemap(dist: &Path, pages: &[Page]) {
          <urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n",
     );
 
-    // Static routes, highest priority first.
+    // Static routes, highest priority first. Empty route is the homepage, kept
+    // as exactly BASE_URL (no trailing slash) to match the canonical URL.
     let statics = [
         ("", "weekly", "1.0"),
         ("posts", "weekly", "0.8"),
@@ -130,7 +131,12 @@ fn write_sitemap(dist: &Path, pages: &[Page]) {
         ("contacts", "monthly", "0.6"),
     ];
     for (route, changefreq, priority) in statics {
-        xml.push_str(&url_entry(&format!("{BASE_URL}/{route}"), None, changefreq, priority));
+        let loc = if route.is_empty() {
+            BASE_URL.to_string()
+        } else {
+            format!("{BASE_URL}/{route}")
+        };
+        xml.push_str(&url_entry(&loc, None, changefreq, priority));
     }
 
     // One entry per prerendered post/project.
@@ -164,13 +170,17 @@ fn read_frontmatter<T: for<'de> Deserialize<'de>>(dir: &str) -> Vec<T> {
     if !path.exists() {
         return Vec::new();
     }
+    // Sort paths so generated pages and sitemap entries are deterministic;
+    // fs::read_dir order is unspecified.
+    let mut md_paths: Vec<_> = fs::read_dir(path)
+        .unwrap_or_else(|e| panic!("failed to read {dir}: {e}"))
+        .map(|e| e.expect("failed to read dir entry").path())
+        .filter(|p| p.extension().and_then(|s| s.to_str()) == Some("md"))
+        .collect();
+    md_paths.sort();
+
     let mut out = Vec::new();
-    for entry in fs::read_dir(path).unwrap_or_else(|e| panic!("failed to read {dir}: {e}")) {
-        let entry = entry.expect("failed to read dir entry");
-        let p = entry.path();
-        if p.extension().and_then(|s| s.to_str()) != Some("md") {
-            continue;
-        }
+    for p in md_paths {
         let content =
             fs::read_to_string(&p).unwrap_or_else(|e| panic!("failed to read {}: {e}", p.display()));
         // Frontmatter is delimited by `---` markers, same as build.rs.
