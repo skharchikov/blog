@@ -3,10 +3,15 @@ name = "blog"
 version = "0.1.0"
 edition = "2021"
 
-# Host-safe deps, shared by the wasm app and the host-side `prerender` bin.
+# Deps shared by the wasm app and the host-side `prerender` bin.
 [dependencies]
 log = "0.4"
 serde = { version = "1.0", features = ["derive"] }
+
+# Host-only dep, used solely by the `prerender` bin to parse frontmatter
+# (build.rs has its own copy under [build-dependencies]). Gated off the wasm
+# target so the SPA build doesn't compile it.
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 serde_yaml = "0.9"
 
 # Wasm-only deps for the SPA. Gated to the wasm target so the host-side
