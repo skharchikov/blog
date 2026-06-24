@@ -34,6 +34,7 @@ struct PostFrontMatter {
     title: String,
     slug: String,
     excerpt: String,
+    date: String,
 }
 
 #[derive(Deserialize)]
@@ -51,6 +52,8 @@ struct Page {
     description: String,
     /// Open Graph type: `article` for posts, `website` for projects.
     og_type: &'static str,
+    /// `<lastmod>` for the sitemap entry (post date); `None` for projects.
+    lastmod: Option<String>,
 }
 
 fn main() {
@@ -82,6 +85,7 @@ fn main() {
             title: fm.title,
             description: fm.excerpt,
             og_type: "article",
+            lastmod: Some(fm.date),
         });
     }
     for fm in read_frontmatter::<ProjectFrontMatter>("projects") {
@@ -90,6 +94,7 @@ fn main() {
             title: fm.name,
             description: fm.description,
             og_type: "website",
+            lastmod: None,
         });
     }
 
@@ -103,7 +108,54 @@ fn main() {
             .unwrap_or_else(|e| panic!("failed to write {}: {e}", out_file.display()));
     }
 
-    println!("prerender: wrote {} static page(s)", pages.len());
+    write_sitemap(dist, &pages);
+
+    println!("prerender: wrote {} static page(s) + sitemap.xml", pages.len());
+}
+
+/// Write `sitemap.xml` covering the static routes plus every post and project.
+/// Generated here (rather than hand-maintained) so it never drifts from the
+/// actual content in `posts/` and `projects/`.
+fn write_sitemap(dist: &Path, pages: &[Page]) {
+    let mut xml = String::from(
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
+         <urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n",
+    );
+
+    // Static routes, highest priority first.
+    let statics = [
+        ("", "weekly", "1.0"),
+        ("posts", "weekly", "0.8"),
+        ("projects", "weekly", "0.8"),
+        ("contacts", "monthly", "0.6"),
+    ];
+    for (route, changefreq, priority) in statics {
+        xml.push_str(&url_entry(&format!("{BASE_URL}/{route}"), None, changefreq, priority));
+    }
+
+    // One entry per prerendered post/project.
+    for page in pages {
+        let loc = format!("{BASE_URL}/{}", page.route);
+        xml.push_str(&url_entry(&loc, page.lastmod.as_deref(), "monthly", "0.7"));
+    }
+
+    xml.push_str("</urlset>\n");
+
+    let out = dist.join("sitemap.xml");
+    fs::write(&out, xml).unwrap_or_else(|e| panic!("failed to write {}: {e}", out.display()));
+}
+
+/// Render a single `<url>` element.
+fn url_entry(loc: &str, lastmod: Option<&str>, changefreq: &str, priority: &str) -> String {
+    let lastmod = match lastmod {
+        Some(d) => format!("    <lastmod>{d}</lastmod>\n"),
+        None => String::new(),
+    };
+    format!(
+        "  <url>\n    <loc>{loc}</loc>\n{lastmod}    \
+         <changefreq>{changefreq}</changefreq>\n    \
+         <priority>{priority}</priority>\n  </url>\n"
+    )
 }
 
 /// Read every `*.md` in `dir`, parse its YAML frontmatter into `T`.
