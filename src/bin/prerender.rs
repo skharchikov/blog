@@ -69,10 +69,12 @@ fn main() {
     let start = template
         .find(START)
         .unwrap_or_else(|| panic!("`{START}` marker not found in index.html"));
-    let end = template
+    // Search for END after START so an earlier stray marker can't slice the
+    // wrong range.
+    let end = template[start..]
         .find(END)
-        .unwrap_or_else(|| panic!("`{END}` marker not found in index.html"));
-    assert!(start < end, "META markers out of order in index.html");
+        .map(|i| start + i)
+        .unwrap_or_else(|| panic!("`{END}` marker not found after `{START}` in index.html"));
 
     let prefix = &template[..start];
     let suffix = &template[end + END.len()..];
@@ -80,8 +82,9 @@ fn main() {
     let mut pages: Vec<Page> = Vec::new();
 
     for fm in read_frontmatter::<PostFrontMatter>("posts") {
+        let slug = validate_slug(&fm.slug);
         pages.push(Page {
-            route: format!("posts/{}", fm.slug),
+            route: format!("posts/{slug}"),
             title: fm.title,
             description: fm.excerpt,
             og_type: "article",
@@ -89,8 +92,9 @@ fn main() {
         });
     }
     for fm in read_frontmatter::<ProjectFrontMatter>("projects") {
+        let slug = validate_slug(&fm.slug);
         pages.push(Page {
-            route: format!("projects/{}", fm.slug),
+            route: format!("projects/{slug}"),
             title: fm.name,
             description: fm.description,
             og_type: "website",
@@ -154,14 +158,38 @@ fn write_sitemap(dist: &Path, pages: &[Page]) {
 /// Render a single `<url>` element.
 fn url_entry(loc: &str, lastmod: Option<&str>, changefreq: &str, priority: &str) -> String {
     let lastmod = match lastmod {
-        Some(d) => format!("    <lastmod>{d}</lastmod>\n"),
+        Some(d) => format!("    <lastmod>{}</lastmod>\n", xml_escape(d)),
         None => String::new(),
     };
     format!(
         "  <url>\n    <loc>{loc}</loc>\n{lastmod}    \
          <changefreq>{changefreq}</changefreq>\n    \
-         <priority>{priority}</priority>\n  </url>\n"
+         <priority>{priority}</priority>\n  </url>\n",
+        loc = xml_escape(loc),
     )
+}
+
+/// Validate a slug used in filesystem paths and URLs, panicking on anything
+/// that could escape the output directory or produce malformed paths/URLs.
+/// Allowed: ASCII alphanumerics, `-`, `_`.
+fn validate_slug(slug: &str) -> &str {
+    let ok = !slug.is_empty()
+        && slug
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_');
+    if !ok {
+        panic!("invalid slug {slug:?}: only ASCII alphanumerics, '-' and '_' are allowed");
+    }
+    slug
+}
+
+/// Escape a string for use as XML text/attribute content.
+fn xml_escape(s: &str) -> String {
+    s.replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+        .replace('\'', "&apos;")
 }
 
 /// Read every `*.md` in `dir`, parse its YAML frontmatter into `T`.

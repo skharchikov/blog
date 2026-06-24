@@ -6,7 +6,6 @@ edition = "2021"
 # Host-safe deps, shared by the wasm app and the host-side `prerender` bin.
 [dependencies]
 log = "0.4"
-pulldown-cmark = "0.13"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9"
 
