@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.skharchikov.com/sitemap.xml
+Sitemap: https://skh.rs/sitemap.xml
