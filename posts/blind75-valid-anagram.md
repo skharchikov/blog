@@ -109,4 +109,4 @@ mod tests {
 
 Source: [`src/array/valid_anagram.rs`](https://github.com/skharchikov/leetcode-rust/blob/master/src/array/valid_anagram.rs).
 
-Next: **Two Sum**.
+Next: **[Two Sum](/posts/blind75-two-sum)**.

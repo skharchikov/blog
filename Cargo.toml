@@ -34,10 +34,19 @@ name = "blog"
 path = "src/main.rs"
 
 # Host-side static-HTML prerenderer, run by the Trunk post_build hook.
-# Never built for wasm; invoked explicitly via `cargo run --bin prerender`.
+# Never built for wasm. Gated behind the `prerender` feature so the default
+# `cargo build` (which targets wasm — see .cargo/config.toml) skips it. Invoked
+# on the host via `cargo run --bin prerender --features prerender --target <host>`
+# (the Trunk post_build hook passes both; see Trunk.toml).
 [[bin]]
 name = "prerender"
 path = "src/bin/prerender.rs"
+required-features = ["prerender"]
+
+[features]
+# Selects the host-side `prerender` bin. Empty: its host-only deps are already
+# target-gated (serde_yaml), so this only controls bin selection.
+prerender = []
 
 [build-dependencies]
 pulldown-cmark = "0.13"

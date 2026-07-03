@@ -87,4 +87,4 @@ mod tests {
 
 Source: [`src/array/contains_duplicate.rs`](https://github.com/skharchikov/leetcode-rust/blob/master/src/array/contains_duplicate.rs).
 
-Next: **Valid Anagram**.
+Next: **[Valid Anagram](/posts/blind75-valid-anagram)**.

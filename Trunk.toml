@@ -1,7 +1,12 @@
 # After Trunk builds the SPA, prerender static per-post / per-project HTML files
 # with their own meta tags so social/link-preview crawlers (which don't run wasm)
 # see the right title and description. See src/bin/prerender.rs.
+# Force the host target + `prerender` feature: the default target is wasm
+# (see .cargo/config.toml), but this bin must run on the host.
 [[hooks]]
 stage = "post_build"
-command = "cargo"
-command_arguments = ["run", "--quiet", "--release", "--bin", "prerender"]
+command = "sh"
+command_arguments = [
+    "-c",
+    "cargo run --quiet --release --bin prerender --features prerender --target \"$(rustc -vV | sed -n 's/^host: //p')\"",
+]
