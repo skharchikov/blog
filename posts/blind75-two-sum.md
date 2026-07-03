@@ -38,7 +38,7 @@ pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
 }
 ```
 
-Correct, no extra space, but O(n²) time. With `nums.length` up to 10^4 that's 100M pairs worst case. We can drop it to one pass.
+Correct, no extra space, but O(n²) time. With `nums.length` up to 10^4 that's ~50M pairs worst case (`n(n-1)/2`). We can drop it to one pass.
 
 ## The solution
 
