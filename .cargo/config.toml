@@ -1,0 +1,6 @@
+# The blog is a client-side-rendered Leptos SPA that only compiles for wasm, so
+# default `cargo build` / `cargo check` to the wasm target. The host-side
+# `prerender` bin is gated behind the `prerender` feature (see Cargo.toml) and
+# builds with an explicit `--target <host>`, so it is unaffected by this default.
+[build]
+target = "wasm32-unknown-unknown"
