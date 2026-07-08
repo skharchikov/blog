@@ -1,6 +1,6 @@
 use crate::components::{Contacts, Home, Nav, PostList, PostView, ProjectView, Projects};
 use leptos::*;
-use leptos_router::*;
+use leptos_router::{TrailingSlash, *};
 use web_sys::window;
 
 const HIGHLIGHT_CSS: &str = include_str!(concat!(env!("OUT_DIR"), "/highlight.css"));
@@ -49,9 +49,9 @@ pub fn App() -> impl IntoView {
                     <Routes>
                         <Route path="/" view=Home />
                         <Route path="/projects" view=Projects />
-                        <Route path="/projects/:slug" view=ProjectView />
+                        <Route path="/projects/:slug" view=ProjectView trailing_slash=TrailingSlash::Redirect />
                         <Route path="/posts" view=PostList />
-                        <Route path="/posts/:slug" view=PostView />
+                        <Route path="/posts/:slug" view=PostView trailing_slash=TrailingSlash::Redirect />
                         <Route path="/contacts" view=Contacts />
                     </Routes>
                 </main>
