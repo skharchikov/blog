@@ -31,13 +31,106 @@ struct ProjectFrontMatter {
 fn main() {
     println!("cargo:rerun-if-changed=posts");
     println!("cargo:rerun-if-changed=projects");
+    println!("cargo:rerun-if-changed=books/library.json");
 
     let out_dir = std::env::var("OUT_DIR").unwrap();
     let syntax_set = SyntaxSet::load_defaults_newlines();
 
     generate_posts(&out_dir, &syntax_set);
     generate_projects(&out_dir, &syntax_set);
+    generate_books(&out_dir);
     generate_highlight_css(&out_dir);
+}
+
+/// Reader side of the library.json format; the writer is the identical
+/// `BookRecord` in fetch_books.rs. Keep fields in sync — a build script can't
+/// share the definition, and a mismatch deserializes to None, not an error.
+#[derive(Debug, Deserialize)]
+struct BookRecord {
+    title: String,
+    authors: Vec<String>,
+    #[serde(default)]
+    cover_url: Option<String>,
+    #[serde(default)]
+    rating: Option<f32>,
+    status_id: u32,
+    #[serde(default)]
+    year: Option<u32>,
+    #[serde(default)]
+    read_date: Option<String>,
+    slug: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct Library {
+    books: Vec<BookRecord>,
+}
+
+/// Read `books/library.json` and emit a `Vec<Book>` literal. A missing file
+/// yields an empty shelf so the build still succeeds before the first fetch.
+fn generate_books(out_dir: &str) {
+    let dest_path = Path::new(out_dir).join("generated_books.rs");
+    let src = Path::new("books/library.json");
+
+    let library = if src.exists() {
+        let raw = fs::read_to_string(src).expect("Failed to read books/library.json");
+        serde_json::from_str::<Library>(&raw).expect("Failed to parse books/library.json")
+    } else {
+        Library { books: Vec::new() }
+    };
+
+    let mut code = String::from("vec![\n");
+    for b in &library.books {
+        let authors = b
+            .authors
+            .iter()
+            .map(|a| format!("\"{}\".to_string()", escape_quotes(a)))
+            .collect::<Vec<_>>()
+            .join(", ");
+
+        code.push_str(&format!(
+            "    Book {{\n        \
+             title: \"{title}\".to_string(),\n        \
+             authors: vec![{authors}],\n        \
+             cover_url: {cover},\n        \
+             rating: {rating},\n        \
+             status: BookStatus::from_id({status}),\n        \
+             year: {year},\n        \
+             read_date: {read_date},\n        \
+             slug: \"{slug}\".to_string(),\n    }},\n",
+            title = escape_quotes(&b.title),
+            cover = opt_string(&b.cover_url),
+            rating = opt_f32(b.rating),
+            status = b.status_id,
+            year = opt_u32(b.year),
+            read_date = opt_string(&b.read_date),
+            slug = escape_quotes(&b.slug),
+        ));
+    }
+    code.push_str("]\n");
+
+    fs::write(&dest_path, code).expect("Failed to write generated books");
+}
+
+fn opt_string(s: &Option<String>) -> String {
+    match s {
+        Some(v) => format!("Some(\"{}\".to_string())", escape_quotes(v)),
+        None => "None".to_string(),
+    }
+}
+
+fn opt_f32(v: Option<f32>) -> String {
+    match v {
+        Some(n) => format!("Some({n}f32)"),
+        None => "None".to_string(),
+    }
+}
+
+fn opt_u32(v: Option<u32>) -> String {
+    match v {
+        Some(n) => format!("Some({n})"),
+        None => "None".to_string(),
+    }
 }
 
 fn generate_posts(out_dir: &str, syntax_set: &SyntaxSet) {

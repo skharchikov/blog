@@ -47,6 +47,7 @@ pub fn Nav() -> impl IntoView {
                 <div class="nav-center">
                     <A href="/projects" class=move || if active("/projects") { "nav-link current" } else { "nav-link" }>"projects"</A>
                     <A href="/posts" class=move || if active("/posts") { "nav-link current" } else { "nav-link" }>"posts"</A>
+                    <A href="/books" class=move || if active("/books") { "nav-link current" } else { "nav-link" }>"books"</A>
                     <A href="/contacts" class=move || if active("/contacts") { "nav-link current" } else { "nav-link" }>"contacts"</A>
                 </div>
                 <div class="nav-right">
