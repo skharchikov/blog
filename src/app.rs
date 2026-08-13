@@ -1,4 +1,6 @@
-use crate::components::{Contacts, Home, Nav, PostList, PostView, ProjectView, Projects};
+use crate::components::{
+    Bookshelf, Contacts, Home, Nav, PostList, PostView, ProjectView, Projects,
+};
 use leptos::*;
 use leptos_router::{TrailingSlash, *};
 use web_sys::window;
@@ -52,6 +54,7 @@ pub fn App() -> impl IntoView {
                         <Route path="/projects/:slug" view=ProjectView trailing_slash=TrailingSlash::Redirect />
                         <Route path="/posts" view=PostList />
                         <Route path="/posts/:slug" view=PostView trailing_slash=TrailingSlash::Redirect />
+                        <Route path="/books" view=Bookshelf trailing_slash=TrailingSlash::Redirect />
                         <Route path="/contacts" view=Contacts />
                     </Routes>
                 </main>

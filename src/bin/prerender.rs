@@ -102,6 +102,16 @@ fn main() {
         });
     }
 
+    // Static bookshelf listing. No per-book pages: books link out to Hardcover,
+    // so only the `/books` route itself gets prerendered meta for link previews.
+    pages.push(Page {
+        route: "books".to_string(),
+        title: "Books".to_string(),
+        description: "Books I've read over the years, pulled from Hardcover.".to_string(),
+        og_type: "website",
+        lastmod: None,
+    });
+
     for page in &pages {
         let html = format!("{prefix}{}{suffix}", meta_block(page));
         let out_dir = dist.join(&page.route);

@@ -1,0 +1,319 @@
+{
+  "books": [
+    {
+      "title": "Project Hail Mary",
+      "authors": [
+        "Andy Weir"
+      ],
+      "cover_url": "https://assets.hardcover.app/editions/3274049/8741341047797682-91mYu67RfUL._SL1500_.jpg",
+      "rating": null,
+      "status_id": 2,
+      "year": 2021,
+      "read_date": null,
+      "slug": "project-hail-mary"
+    },
+    {
+      "title": "Rust for Rustaceans",
+      "authors": [
+        "Jon Gjengset"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/32026482/6df279a7-2904-42b6-9145-adfbaa5cada7.jpg",
+      "rating": null,
+      "status_id": 2,
+      "year": 2021,
+      "read_date": null,
+      "slug": "rust-for-rustaceans"
+    },
+    {
+      "title": "The Master and Margarita",
+      "authors": [
+        "Mikhail Bulgakov"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/30461159/3f334c2b-9b69-4f92-bf0d-1f4e3b083318.jpg",
+      "rating": 5.0,
+      "status_id": 3,
+      "year": 1967,
+      "read_date": "2025-03-09",
+      "slug": "the-master-and-margarita"
+    },
+    {
+      "title": "Day of the Oprichnik",
+      "authors": [
+        "Vladimir Sorokin",
+        "Владимир Сорокин"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/6329273/1c580c84a79078e82646ab20384ffd3dd025ad63.jpeg",
+      "rating": 4.0,
+      "status_id": 3,
+      "year": 2006,
+      "read_date": "2024-02-17",
+      "slug": "day-of-the-oprichnik"
+    },
+    {
+      "title": "Тайные виды на гору Фудзи",
+      "authors": [
+        "Victor Pelevin"
+      ],
+      "cover_url": "https://assets.hardcover.app/editions/30937840/9465024639171740.jpg",
+      "rating": 4.0,
+      "status_id": 3,
+      "year": 2018,
+      "read_date": "2024-02-08",
+      "slug": "2018-f05ad3ae-80ac-409b-a44c-cc374534885b"
+    },
+    {
+      "title": "Learning Rust With Entirely Too Many Linked Lists",
+      "authors": [
+        "Alexis Beingessner"
+      ],
+      "cover_url": null,
+      "rating": null,
+      "status_id": 3,
+      "year": null,
+      "read_date": "2023-12-05",
+      "slug": "learning-rust-with-entirely-too-many-linked-lists"
+    },
+    {
+      "title": "The Rust Programming Language",
+      "authors": [
+        "Steve Klabnik",
+        "Carol Nichols"
+      ],
+      "cover_url": "https://assets.hardcover.app/external_data/346433/8b880f0bc4124369e1adb77fd351c5976b00bcf9.jpeg",
+      "rating": 5.0,
+      "status_id": 3,
+      "year": 2018,
+      "read_date": "2023-10-25",
+      "slug": "the-rust-programming-language"
+    },
+    {
+      "title": "Talent is Overrated: What Really Separates World-Class Performers from Everybody Else",
+      "authors": [
+        "Geoff Colvin"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/14574225/1e3f889b1363d28f424e643de97442a88c4b3619.jpeg",
+      "rating": 4.0,
+      "status_id": 3,
+      "year": 2008,
+      "read_date": "2023-03-06",
+      "slug": "talent-is-overrated"
+    },
+    {
+      "title": "Practical FP in Scala: A hands-on approach",
+      "authors": [
+        "Gabriel Volpe"
+      ],
+      "cover_url": "https://assets.hardcover.app/external_data/61213115/bafc7b1d053e210160e2d5c2be4e535798389fcd.jpeg",
+      "rating": 5.0,
+      "status_id": 3,
+      "year": null,
+      "read_date": "2022-12-31",
+      "slug": "practical-fp-in-scala"
+    },
+    {
+      "title": "Atomic habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+      "authors": [
+        "James Clear"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/12605395/629717fe-df46-40b8-8529-dca0323bf699.jpg",
+      "rating": 5.0,
+      "status_id": 3,
+      "year": 2018,
+      "read_date": "2022-08-01",
+      "slug": "atomic-habits"
+    },
+    {
+      "title": "Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems",
+      "authors": [
+        "Martin Kleppmann"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/30680667/76334519f991752abcc819a7fc68b335aec0876a.jpeg",
+      "rating": 5.0,
+      "status_id": 3,
+      "year": 2015,
+      "read_date": "2022-07-22",
+      "slug": "designing-data-intensive-applications"
+    },
+    {
+      "title": "Пост 2. Спастись и сохранить",
+      "authors": [],
+      "cover_url": null,
+      "rating": 5.0,
+      "status_id": 3,
+      "year": null,
+      "read_date": "2022-01-01",
+      "slug": "2-3f7908a4-7890-45a2-9a28-73696af02fb0"
+    },
+    {
+      "title": "Пост",
+      "authors": [
+        "Dmitry Glukhovsky"
+      ],
+      "cover_url": null,
+      "rating": 4.0,
+      "status_id": 3,
+      "year": 2019,
+      "read_date": "2022-01-01",
+      "slug": "2019-1e01cb8c-f926-468e-a718-013efbb3bc13"
+    },
+    {
+      "title": "Вся кремлевская рать: Краткая история современной России",
+      "authors": [
+        "Mikhail Zygar",
+        "Михаил Зыгарь"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/30608824/52d7c0ee84218aaa261dea0695cafa4500d93e49.jpeg",
+      "rating": 5.0,
+      "status_id": 3,
+      "year": 2015,
+      "read_date": "2022-01-01",
+      "slug": "2015-878cbaf1-4d8a-474c-92d5-46d12062a9ad"
+    },
+    {
+      "title": "Наука в поисках Бога",
+      "authors": [
+        "Carl Sagan"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/31581932/179c0cdd81d2deb5f4049a4835533bd62f216191.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 2006,
+      "read_date": "2021-06-12",
+      "slug": "2006-69c941d1-cbc5-4202-901b-3270968ed32a"
+    },
+    {
+      "title": "Power of Now",
+      "authors": [
+        "Eckhart Tolle"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/31594446/d94fb5d1-b5f2-4ddf-b70b-8c29ff55a3f8.jpg",
+      "rating": 4.0,
+      "status_id": 3,
+      "year": 1997,
+      "read_date": null,
+      "slug": "power-of-now"
+    },
+    {
+      "title": "The Hobbit, or There and Back Again",
+      "authors": [
+        "J.R.R. Tolkien"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/17456445/d34448a9-bf3f-441d-93f2-1cd32dd3867c.jpg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1937,
+      "read_date": null,
+      "slug": "the-hobbit"
+    },
+    {
+      "title": "Programming in Scala: A Comprehensive Step-by-step Guide",
+      "authors": [
+        "Martin Odersky",
+        "Lex Spoon",
+        "Bill Venners"
+      ],
+      "cover_url": "https://assets.hardcover.app/external_data/2618102/cca40951944702643e8d93d4404d970b4a42531f.jpeg",
+      "rating": 5.0,
+      "status_id": 3,
+      "year": 2008,
+      "read_date": null,
+      "slug": "programming-in-scala"
+    },
+    {
+      "title": "The Hitchhiker's Guide to the Galaxy",
+      "authors": [
+        "Douglas Adams"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/21490281/d9b48333ac7a69ebe0aa5573fe0ff032e6f97508.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1996,
+      "read_date": null,
+      "slug": "the-hitchhikers-guide-to-the-galaxy"
+    },
+    {
+      "title": "Functional Programming, Simplified:",
+      "authors": [
+        "Alvin Alexander"
+      ],
+      "cover_url": null,
+      "rating": 5.0,
+      "status_id": 3,
+      "year": null,
+      "read_date": null,
+      "slug": "functional-programming-simplified"
+    },
+    {
+      "title": "The Lord of the Rings",
+      "authors": [
+        "J.R.R. Tolkien"
+      ],
+      "cover_url": "https://assets.hardcover.app/external_data/41547254/141872f0e71efe38f937b72879a5dea52e502db5.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1959,
+      "read_date": null,
+      "slug": "the-lord-of-the-rings"
+    },
+    {
+      "title": "The Sacred Book of the Werewolf",
+      "authors": [
+        "Victor Pelevin"
+      ],
+      "cover_url": "https://assets.hardcover.app/editions/16112681/2635401963588864.jpeg",
+      "rating": 4.0,
+      "status_id": 3,
+      "year": 2004,
+      "read_date": null,
+      "slug": "the-sacred-book-of-the-werewolf"
+    },
+    {
+      "title": "The Hitchhiker's Guide to the Galaxy, The Restaurant at the End of the Universe",
+      "authors": [
+        "Douglas Adams"
+      ],
+      "cover_url": "https://assets.hardcover.app/external_data/31780318/9fa25c1bf66b9628832d2aebaee90191903cf41f.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1980,
+      "read_date": null,
+      "slug": "the-hitchhikers-guide-to-the-galaxy-the-restaurant-at-the-end-of-the-universe"
+    },
+    {
+      "title": "Grokking Algorithms",
+      "authors": [
+        "Aditya Y. Bhargava"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/31459601/50d5d1416ab0e2f428835bb3e8c256c75201566a.jpeg",
+      "rating": 5.0,
+      "status_id": 3,
+      "year": 2015,
+      "read_date": null,
+      "slug": "grokking-algorithms"
+    },
+    {
+      "title": "Buddha in Blue Jeans: An Extremely Short Simple Zen Guide to Sitting Quietly and Being Buddha",
+      "authors": [
+        "Tai Sheridan"
+      ],
+      "cover_url": "https://assets.hardcover.app/external_data/60355665/1243e25e14d6d978ae61838c1ff5a705e6a4ac05.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 2011,
+      "read_date": null,
+      "slug": "buddha-in-blue-jeans-an-extremely-short-simple-zen-guide-to-sitting-quietly-and-being-buddha"
+    },
+    {
+      "title": "Fahrenheit 451",
+      "authors": [
+        "Ray Bradbury"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/6336191/3d353406f14fd36043a8bdfb8c3288f90ee4f96c.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1963,
+      "read_date": null,
+      "slug": "fahrenheit-451"
+    }
+  ]
+}

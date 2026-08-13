@@ -4,3 +4,4 @@ Cargo.lock
 .superpowers/
 .playwright-mcp/
 docs/superpowers/
+.env

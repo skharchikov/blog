@@ -1,3 +1,4 @@
+mod bookshelf;
 mod contacts;
 mod giscus;
 mod home;
@@ -10,6 +11,7 @@ mod projects;
 mod views;
 mod xmas_tree;
 
+pub use bookshelf::Bookshelf;
 pub use contacts::Contacts;
 pub use giscus::Giscus;
 pub use home::Home;

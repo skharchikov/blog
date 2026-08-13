@@ -1581,3 +1581,293 @@ button:focus-visible,
         padding-left: 0.75rem;
     }
 }
+
+/* Bookshelf. Spines stand on wooden shelves; the plank is a repeating
+   background on .shelf whose period must match the row height (--spine-h +
+   row gap). Spine color comes from --spine-hue (set inline per book). */
+.bookshelf-container {
+    width: 100%;
+    /* Warm oak in light mode. */
+    --wood: #c39a68;
+    --wood-mid: #a9784a;
+    --wood-dark: #8a5f34;
+    --wood-edge: #6f4a24;
+    --spine-text: #f7f2ea;
+    /* Geometry shared by .shelf and its plank background. */
+    --spine-h: 210px;
+    --row-gap: 30px;
+    --plank-h: 16px;
+}
+
+body.dark-mode .bookshelf-container {
+    /* Deeper walnut for dark mode. */
+    --wood: #6a4a30;
+    --wood-mid: #4e3421;
+    --wood-dark: #3a2617;
+    --wood-edge: #241610;
+    --spine-text: #f0e9df;
+}
+
+.shelf-section {
+    margin-bottom: 2.5rem;
+}
+
+.shelf-label {
+    font-family: 'JetBrains Mono', 'Monaco', 'Menlo', monospace;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    margin-bottom: 1rem;
+    letter-spacing: 0.02em;
+}
+
+.shelf-year {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.shelf {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    column-gap: 10px;
+    row-gap: var(--row-gap);
+    padding: 0 6px;
+    /* Wooden plank painted under every row. Period = spine height + row gap;
+       the plank band sits in the gap directly beneath the spines. */
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent var(--spine-h),
+        var(--wood-dark) var(--spine-h),
+        var(--wood) calc(var(--spine-h) + 4px),
+        var(--wood-mid) calc(var(--spine-h) + var(--plank-h) - 3px),
+        var(--wood-edge) calc(var(--spine-h) + var(--plank-h)),
+        transparent calc(var(--spine-h) + var(--plank-h)),
+        transparent calc(var(--spine-h) + var(--row-gap))
+    );
+    background-position: 0 0;
+}
+
+.book-spine {
+    position: relative;
+    height: var(--spine-h);
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 0;
+    border: none;
+    border-radius: 2px 2px 1px 1px;
+    cursor: pointer;
+    color: var(--spine-text);
+    /* 3D: hue fill + left highlight and right shade. */
+    background:
+        linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.22) 0%,
+            rgba(255, 255, 255, 0.05) 12%,
+            rgba(0, 0, 0, 0.12) 88%,
+            rgba(0, 0, 0, 0.28) 100%
+        ),
+        hsl(var(--spine-hue) 42% 46%);
+    box-shadow:
+        0 6px 8px -4px rgba(0, 0, 0, 0.45),
+        inset 0 2px 0 rgba(255, 255, 255, 0.25);
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+body.dark-mode .book-spine {
+    background:
+        linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.16) 0%,
+            rgba(255, 255, 255, 0.03) 12%,
+            rgba(0, 0, 0, 0.18) 88%,
+            rgba(0, 0, 0, 0.40) 100%
+        ),
+        hsl(var(--spine-hue) 36% 38%);
+}
+
+/* Head-band detail at the top of the spine. */
+.book-spine::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 4px;
+    right: 4px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 2px;
+}
+
+.book-spine:hover,
+.book-spine:focus,
+.book-spine:focus-within {
+    transform: translateY(-12px);
+    box-shadow:
+        0 16px 18px -8px rgba(0, 0, 0, 0.5),
+        inset 0 2px 0 rgba(255, 255, 255, 0.25);
+    outline: none;
+    z-index: 20;
+}
+
+/* Currently-reading spines stand pulled forward. */
+.book-spine.pulled {
+    transform: translateY(-16px) rotate(-2deg);
+    box-shadow: 0 18px 20px -10px rgba(0, 0, 0, 0.5),
+        inset 0 2px 0 rgba(255, 255, 255, 0.25);
+}
+.book-spine.pulled:hover,
+.book-spine.pulled:focus,
+.book-spine.pulled:focus-within {
+    transform: translateY(-24px) rotate(-2deg);
+}
+
+.spine-title {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    max-height: 178px;
+    overflow: hidden;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+    white-space: nowrap;
+}
+
+/* ---- Hover / focus popover: the book "pulls out" to show its cover ---- */
+.book-pop {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    z-index: 30;
+    width: 210px;
+    max-width: calc(100vw - 1.5rem); /* no horizontal scroll on narrow screens */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.9rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-hover);
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+/* Little pointer up toward the spine. */
+.book-pop::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-bottom-color: var(--border-color);
+}
+
+.book-spine:hover .book-pop,
+.book-spine:focus .book-pop,
+.book-spine:focus-within .book-pop {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.book-pop-cover img {
+    width: 120px;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    display: block;
+}
+.cover-fallback {
+    width: 120px;
+    height: 180px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--spine-text);
+    background: hsl(var(--spine-hue) 42% 46%);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.book-pop-meta {
+    width: 100%;
+    min-width: 0;
+}
+.book-pop-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-bottom: 0.15rem;
+}
+.book-pop-author {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+.book-pop-stars {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+.star.full { color: #f5a623; }
+.star.empty { color: var(--border-color); }
+.star.half {
+    background: linear-gradient(90deg, #f5a623 50%, var(--border-color) 50%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.rating-num {
+    margin-left: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+}
+.book-pop-facts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
+}
+.book-pop-facts .fact {
+    font-family: 'JetBrains Mono', 'Monaco', 'Menlo', monospace;
+    font-size: 0.68rem;
+    color: var(--tag-text);
+    background: var(--tag-bg);
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.75rem;
+}
+.book-pop-link {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent-color);
+    text-decoration: none;
+}
+.book-pop-link:hover { color: var(--accent-hover); }
+
+@media (max-width: 600px) {
+    .bookshelf-container { --spine-h: 168px; }
+    .spine-title { max-height: 118px; font-size: 0.72rem; }
+    .book-pop { width: 180px; }
+}
