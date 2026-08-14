@@ -62,6 +62,18 @@
       "slug": "2018-f05ad3ae-80ac-409b-a44c-cc374534885b"
     },
     {
+      "title": "The Sacred Book of the Werewolf",
+      "authors": [
+        "Victor Pelevin"
+      ],
+      "cover_url": "https://assets.hardcover.app/editions/16112681/2635401963588864.jpeg",
+      "rating": 4.0,
+      "status_id": 3,
+      "year": 2004,
+      "read_date": "2024-01-01",
+      "slug": "the-sacred-book-of-the-werewolf"
+    },
+    {
       "title": "Learning Rust With Entirely Too Many Linked Lists",
       "authors": [
         "Alexis Beingessner"
@@ -182,6 +194,20 @@
       "slug": "2006-69c941d1-cbc5-4202-901b-3270968ed32a"
     },
     {
+      "title": "Programming in Scala: A Comprehensive Step-by-step Guide",
+      "authors": [
+        "Martin Odersky",
+        "Lex Spoon",
+        "Bill Venners"
+      ],
+      "cover_url": "https://assets.hardcover.app/external_data/2618102/cca40951944702643e8d93d4404d970b4a42531f.jpeg",
+      "rating": 5.0,
+      "status_id": 3,
+      "year": 2008,
+      "read_date": "2020-01-01",
+      "slug": "programming-in-scala"
+    },
+    {
       "title": "Power of Now",
       "authors": [
         "Eckhart Tolle"
@@ -204,20 +230,6 @@
       "year": 1937,
       "read_date": null,
       "slug": "the-hobbit"
-    },
-    {
-      "title": "Programming in Scala: A Comprehensive Step-by-step Guide",
-      "authors": [
-        "Martin Odersky",
-        "Lex Spoon",
-        "Bill Venners"
-      ],
-      "cover_url": "https://assets.hardcover.app/external_data/2618102/cca40951944702643e8d93d4404d970b4a42531f.jpeg",
-      "rating": 5.0,
-      "status_id": 3,
-      "year": 2008,
-      "read_date": null,
-      "slug": "programming-in-scala"
     },
     {
       "title": "The Hitchhiker's Guide to the Galaxy",
@@ -254,18 +266,6 @@
       "year": 1959,
       "read_date": null,
       "slug": "the-lord-of-the-rings"
-    },
-    {
-      "title": "The Sacred Book of the Werewolf",
-      "authors": [
-        "Victor Pelevin"
-      ],
-      "cover_url": "https://assets.hardcover.app/editions/16112681/2635401963588864.jpeg",
-      "rating": 4.0,
-      "status_id": 3,
-      "year": 2004,
-      "read_date": null,
-      "slug": "the-sacred-book-of-the-werewolf"
     },
     {
       "title": "The Hitchhiker's Guide to the Galaxy, The Restaurant at the End of the Universe",
