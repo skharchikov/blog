@@ -208,6 +208,30 @@
       "slug": "programming-in-scala"
     },
     {
+      "title": "Чапаев и Пустота",
+      "authors": [
+        "Victor Pelevin"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/31469293/782ec78758a27169083db5da66fc379000c70c42.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1999,
+      "read_date": null,
+      "slug": "3-1-1999"
+    },
+    {
+      "title": "Омон Ра. Желтая стрела",
+      "authors": [
+        "Victor Pelevin"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/30745231/eb935b646bd88568cdf6ffd762a120219a4b5a0f.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 2003,
+      "read_date": null,
+      "slug": "2003-434a8432-fdfb-4f00-a46d-de3cf1a50fe1"
+    },
+    {
       "title": "Power of Now",
       "authors": [
         "Eckhart Tolle"
