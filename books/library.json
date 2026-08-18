@@ -208,6 +208,103 @@
       "slug": "programming-in-scala"
     },
     {
+      "title": "Harry Potter and the Goblet of Fire",
+      "authors": [
+        "J.K. Rowling"
+      ],
+      "cover_url": "https://assets.hardcover.app/editions/28458058/1771665257940243-49130.jpg",
+      "rating": null,
+      "status_id": 3,
+      "year": 2000,
+      "read_date": null,
+      "slug": "harry-potter-and-the-goblet-of-fire"
+    },
+    {
+      "title": "Harry Potter and the Prisoner of Azkaban",
+      "authors": [
+        "J.K. Rowling"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/28780168/0012cc5a-9e3a-48d4-95b6-d91f484de17a.jpg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1999,
+      "read_date": null,
+      "slug": "harry-potter-and-the-prisoner-of-azkaban"
+    },
+    {
+      "title": "Harry Potter and the Chamber of Secrets",
+      "authors": [
+        "J.K. Rowling"
+      ],
+      "cover_url": "https://assets.hardcover.app/editions/25614271/4833571895209920-lf.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1998,
+      "read_date": null,
+      "slug": "harry-potter-and-the-chamber-of-secrets"
+    },
+    {
+      "title": "Harry Potter and the Philosopher's Stone",
+      "authors": [
+        "J.K. Rowling"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/2667580/06168492-bf52-4333-9ac6-66ed21907865.jpg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1997,
+      "read_date": null,
+      "slug": "harry-potter-and-the-philosophers-stone"
+    },
+    {
+      "title": "The Fellowship of the Ring",
+      "authors": [
+        "J.R.R. Tolkien"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/29029601/6d64b05efec0ccb215640b38d8c6bc4c712da0f5.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1954,
+      "read_date": null,
+      "slug": "the-fellowship-of-the-ring"
+    },
+    {
+      "title": "The Hobbit",
+      "authors": [
+        "J.R.R. Tolkien",
+        "Rob Inglis"
+      ],
+      "cover_url": "https://assets.hardcover.app/external_data/4013686/940a268122360d435c46175ae5331e03e1a483d7.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 2012,
+      "read_date": null,
+      "slug": "the-hobbit-an-unexpected-journey-the-movie-storybook-2012"
+    },
+    {
+      "title": "The Return of the King",
+      "authors": [
+        "J.R.R. Tolkien"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/10474552/44475d80-8c89-492e-bf73-6d1a17254249.jpg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1950,
+      "read_date": null,
+      "slug": "the-return-of-the-king"
+    },
+    {
+      "title": "The Two Towers",
+      "authors": [
+        "J.R.R. Tolkien"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/25616931/cd5d5770785ed7174f4649b06ff4feb6cbdb800e.jpeg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1954,
+      "read_date": null,
+      "slug": "the-two-towers"
+    },
+    {
       "title": "Чапаев и Пустота",
       "authors": [
         "Victor Pelevin"
