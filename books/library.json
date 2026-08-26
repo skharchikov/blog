@@ -268,17 +268,16 @@
       "slug": "the-fellowship-of-the-ring"
     },
     {
-      "title": "The Hobbit",
+      "title": "The Hobbit: An Unexpected Journey - The Movie Storybook",
       "authors": [
-        "J.R.R. Tolkien",
-        "Rob Inglis"
+        "J.R.R. Tolkien"
       ],
-      "cover_url": "https://assets.hardcover.app/external_data/4013686/940a268122360d435c46175ae5331e03e1a483d7.jpeg",
+      "cover_url": "https://assets.hardcover.app/edition/19126855/264dcfa8136da940b252cc4bf7c3d025bb02fee8.jpeg",
       "rating": null,
       "status_id": 3,
       "year": 2012,
       "read_date": null,
-      "slug": "the-hobbit-an-unexpected-journey-the-movie-storybook-2012"
+      "slug": "the-hobbit-an-unexpected-journey-the-movie-storybook"
     },
     {
       "title": "The Return of the King",
