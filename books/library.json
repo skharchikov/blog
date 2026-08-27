@@ -27,7 +27,10 @@
     {
       "title": "The Master and Margarita",
       "authors": [
-        "Mikhail Bulgakov"
+        "Mikhail Bulgakov",
+        "Katherine Tiernan O'Connor",
+        "Diana Lewis Burgin",
+        "Ellendea Proffer"
       ],
       "cover_url": "https://assets.hardcover.app/edition/30461159/3f334c2b-9b69-4f92-bf0d-1f4e3b083318.jpg",
       "rating": 5.0,
@@ -39,8 +42,9 @@
     {
       "title": "Day of the Oprichnik",
       "authors": [
-        "Vladimir Sorokin",
-        "Владимир Сорокин"
+        "Jamey Gambrell",
+        "Владимир Сорокин",
+        "Vladimir Sorokin"
       ],
       "cover_url": "https://assets.hardcover.app/edition/6329273/1c580c84a79078e82646ab20384ffd3dd025ad63.jpeg",
       "rating": 4.0,
@@ -64,6 +68,7 @@
     {
       "title": "The Sacred Book of the Werewolf",
       "authors": [
+        "Andrew Bromfield",
         "Victor Pelevin"
       ],
       "cover_url": "https://assets.hardcover.app/editions/16112681/2635401963588864.jpeg",
@@ -210,6 +215,7 @@
     {
       "title": "Harry Potter and the Goblet of Fire",
       "authors": [
+        "Mary GrandPré",
         "J.K. Rowling"
       ],
       "cover_url": "https://assets.hardcover.app/editions/28458058/1771665257940243-49130.jpg",
