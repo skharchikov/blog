@@ -1,16 +1,17 @@
 {
   "books": [
     {
-      "title": "Project Hail Mary",
+      "title": "Dune",
       "authors": [
-        "Andy Weir"
+        "Frank Herbert",
+        "Brian Herbert"
       ],
-      "cover_url": "https://assets.hardcover.app/editions/3274049/8741341047797682-91mYu67RfUL._SL1500_.jpg",
+      "cover_url": "https://assets.hardcover.app/editions/30426415/8362709973192601-9780441013593-us.jpg",
       "rating": null,
       "status_id": 2,
-      "year": 2021,
+      "year": 1965,
       "read_date": null,
-      "slug": "project-hail-mary"
+      "slug": "dune"
     },
     {
       "title": "Rust for Rustaceans",
@@ -23,6 +24,18 @@
       "year": 2021,
       "read_date": null,
       "slug": "rust-for-rustaceans"
+    },
+    {
+      "title": "Project Hail Mary",
+      "authors": [
+        "Andy Weir"
+      ],
+      "cover_url": "https://assets.hardcover.app/editions/3274049/8741341047797682-91mYu67RfUL._SL1500_.jpg",
+      "rating": 5.0,
+      "status_id": 3,
+      "year": 2021,
+      "read_date": "2026-09-03",
+      "slug": "project-hail-mary"
     },
     {
       "title": "The Master and Margarita",
@@ -365,7 +378,7 @@
       "cover_url": "https://assets.hardcover.app/edition/21490281/d9b48333ac7a69ebe0aa5573fe0ff032e6f97508.jpeg",
       "rating": null,
       "status_id": 3,
-      "year": 1996,
+      "year": 1979,
       "read_date": null,
       "slug": "the-hitchhikers-guide-to-the-galaxy"
     },
