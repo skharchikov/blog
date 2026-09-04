@@ -1,6 +1,18 @@
 {
   "books": [
     {
+      "title": "The Stand",
+      "authors": [
+        "Stephen King"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/21840079/da029af124d14c28d6ade5a3b69bfcf8d4a17472.jpeg",
+      "rating": null,
+      "status_id": 2,
+      "year": 1978,
+      "read_date": null,
+      "slug": "the-stand"
+    },
+    {
       "title": "Dune",
       "authors": [
         "Frank Herbert",
@@ -224,6 +236,18 @@
       "year": 2008,
       "read_date": "2020-01-01",
       "slug": "programming-in-scala"
+    },
+    {
+      "title": "Sapiens: A Brief History of Humankind",
+      "authors": [
+        "Yuval Noah Harari"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/1014761/175a425a-fb6c-4cb6-afdc-6e1818246f9d.jpg",
+      "rating": null,
+      "status_id": 3,
+      "year": 2011,
+      "read_date": null,
+      "slug": "sapiens"
     },
     {
       "title": "Harry Potter and the Goblet of Fire",
