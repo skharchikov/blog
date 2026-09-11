@@ -288,9 +288,10 @@
     {
       "title": "Harry Potter and the Philosopher's Stone",
       "authors": [
-        "J.K. Rowling"
+        "J.K. Rowling",
+        "Mary GrandPré"
       ],
-      "cover_url": "https://assets.hardcover.app/external_data/787878/ab7e7ca7ab91018485b19899e2625b24878f07dc.jpeg",
+      "cover_url": "https://assets.hardcover.app/external_data/4257970/a3a1bbb3dae498a7a8316be0cc9bc5e91f6c34c9.jpeg",
       "rating": null,
       "status_id": 3,
       "year": 1997,
