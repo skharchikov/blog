@@ -276,9 +276,10 @@
     {
       "title": "Harry Potter and the Chamber of Secrets",
       "authors": [
-        "J.K. Rowling"
+        "J.K. Rowling",
+        "Olly Moss"
       ],
-      "cover_url": "https://assets.hardcover.app/editions/25614271/4833571895209920-lf.jpeg",
+      "cover_url": "https://assets.hardcover.app/edition/25614271/7d605261-4940-471c-81cd-350ca4dc19bc.jpg",
       "rating": null,
       "status_id": 3,
       "year": 1998,
