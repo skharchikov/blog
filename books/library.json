@@ -1,6 +1,18 @@
 {
   "books": [
     {
+      "title": "Extreme Privacy: What It Takes to Disappear",
+      "authors": [
+        "Michael Bazzell"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/32066874/594e6c2bc0d7906ad874e4a7f91b532a2b40cd8a.jpeg",
+      "rating": null,
+      "status_id": 2,
+      "year": 2024,
+      "read_date": null,
+      "slug": "extreme-privacy-what-it-takes-to-disappear"
+    },
+    {
       "title": "The Stand",
       "authors": [
         "Stephen King"
@@ -11,18 +23,6 @@
       "year": 1978,
       "read_date": null,
       "slug": "the-stand"
-    },
-    {
-      "title": "Dune",
-      "authors": [
-        "Frank Herbert"
-      ],
-      "cover_url": "https://assets.hardcover.app/edition/6216483/16b2e7f2-d173-46d4-932c-8c5158ea5eff.jpg",
-      "rating": null,
-      "status_id": 2,
-      "year": 1965,
-      "read_date": null,
-      "slug": "dune"
     },
     {
       "title": "Rust for Rustaceans",
@@ -426,7 +426,7 @@
       "cover_url": "https://assets.hardcover.app/external_data/41547254/141872f0e71efe38f937b72879a5dea52e502db5.jpeg",
       "rating": null,
       "status_id": 3,
-      "year": 1959,
+      "year": 1955,
       "read_date": null,
       "slug": "the-lord-of-the-rings"
     },
