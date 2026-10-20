@@ -236,6 +236,18 @@
       "slug": "programming-in-scala"
     },
     {
+      "title": "Harry Potter and the Prisoner of Azkaban",
+      "authors": [
+        "J.K. Rowling"
+      ],
+      "cover_url": "https://assets.hardcover.app/edition/28780168/0012cc5a-9e3a-48d4-95b6-d91f484de17a.jpg",
+      "rating": null,
+      "status_id": 3,
+      "year": 1999,
+      "read_date": null,
+      "slug": "harry-potter-and-the-prisoner-of-azkaban"
+    },
+    {
       "title": "Sapiens: A Brief History of Humankind",
       "authors": [
         "Yuval Noah Harari"
@@ -259,18 +271,6 @@
       "year": 2000,
       "read_date": null,
       "slug": "harry-potter-and-the-goblet-of-fire"
-    },
-    {
-      "title": "Harry Potter and the Prisoner of Azkaban",
-      "authors": [
-        "J.K. Rowling"
-      ],
-      "cover_url": "https://assets.hardcover.app/edition/28780168/0012cc5a-9e3a-48d4-95b6-d91f484de17a.jpg",
-      "rating": null,
-      "status_id": 3,
-      "year": 1999,
-      "read_date": null,
-      "slug": "harry-potter-and-the-prisoner-of-azkaban"
     },
     {
       "title": "Harry Potter and the Chamber of Secrets",
