@@ -261,7 +261,9 @@ fn generate_projects(out_dir: &str, syntax_set: &SyntaxSet) {
         })
         .collect();
 
-    projects_with_order.sort_by_key(|(_, frontmatter, _)| frontmatter.order);
+    // `order` ranks projects (the first is featured on home); ties fall back to
+    // the slug so every machine builds the same order.
+    projects_with_order.sort_by(|(_, a, _), (_, b, _)| a.order.cmp(&b.order).then_with(|| a.slug.cmp(&b.slug)));
 
     for (_entry, frontmatter, markdown) in projects_with_order {
         let html = markdown_to_html(&markdown, syntax_set);

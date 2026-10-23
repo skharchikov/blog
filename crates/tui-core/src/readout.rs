@@ -23,11 +23,12 @@ pub fn writing(posts: &[(&str, &[&str])]) -> [String; 3] {
     [format!("{} posts · {} tags", posts.len(), counts.len()), format!("last: {last}"), format!("most used: {top}")]
 }
 
-/// `N repos`, the languages found among the tags, and the first project.
+/// `N repos`, the languages found among the tags, and the top project (first
+/// by frontmatter `order`).
 pub fn projects(names: &[&str], tags: &[&[&str]]) -> [String; 3] {
     let langs: Vec<&str> = LANGS.into_iter().filter(|l| tags.iter().any(|ts| ts.contains(l))).collect();
     let langs = if langs.is_empty() { "-".to_string() } else { langs.join(", ") };
-    [format!("{} repos", names.len()), format!("langs: {langs}"), format!("latest: {}", names.first().unwrap_or(&"-"))]
+    [format!("{} repos", names.len()), format!("langs: {langs}"), format!("top: {}", names.first().unwrap_or(&"-"))]
 }
 
 #[cfg(test)]
@@ -43,7 +44,7 @@ mod tests {
     #[test]
     fn projects_readout() {
         let r = projects(&["rig-openapi-tools", "blackjack"], &[&["rust", "llm"], &["rust", "axum"]]);
-        assert_eq!(r, ["2 repos".to_string(), "langs: rust".into(), "latest: rig-openapi-tools".into()]);
+        assert_eq!(r, ["2 repos".to_string(), "langs: rust".into(), "top: rig-openapi-tools".into()]);
     }
 
     #[test]
