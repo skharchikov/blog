@@ -53,6 +53,8 @@ p.ev("document.querySelector('.input-row input').focus()")
 p.type("th")
 p.tab()
 check("Tab completes 'th' -> 'theme'", p.ev("document.querySelector('.input-row input').value") == "theme")
+shadow = p.ev("getComputedStyle(document.querySelector('.input-row')).boxShadow")
+check("focused prompt draws no second caret-like bar", shadow == "none", shadow)
 
 # Enter on a focused control does its native thing
 p.goto(B + "/posts")

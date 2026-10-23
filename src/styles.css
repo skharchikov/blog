@@ -107,7 +107,6 @@ html:not([data-theme="paper"]) .sprite { filter: drop-shadow(0 0 1px var(--mut))
 .input-row .prompt { white-space: pre; }
 .input-row input { flex: 1; min-width: 0; padding: 0; border: 0; background: none; color: var(--fg); caret-color: var(--focus); outline: none; }
 .input-row input::placeholder { color: var(--mut); }
-.input-row:focus-within { box-shadow: inset 2px 0 0 var(--focus); }
 .now { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; }
 .now dt { color: var(--mut); }
 .now dd { margin: 0; display: flex; flex-direction: column; }
