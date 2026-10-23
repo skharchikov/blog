@@ -3,6 +3,7 @@ use leptos::*;
 mod app;
 mod components;
 mod models;
+mod tui;
 
 use app::App;
 
