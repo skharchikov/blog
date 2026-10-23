@@ -129,13 +129,19 @@ html:not([data-theme="paper"]) .sprite { filter: drop-shadow(0 0 1px var(--mut))
 .prev-title { margin: 6px 0 10px; font: 600 22px/1.25 "Instrument Sans", system-ui, sans-serif; }
 .prev-text { max-width: 70ch; font: 16px/1.65 "Instrument Sans", system-ui, sans-serif; color: var(--prose); }
 
+.projects .list .row { grid-template-columns: 1fr auto; }
+.projects .list .date { display: none; }
+.prev-links { margin-top: 12px; }
+
 /* ---------- reader (posts, projects) ---------- */
 .reader-pane { grid-column: 1 / -1; }
 .reader { max-width: 70ch; margin: 0 auto; padding: 8px 0 24px; font: 17px/1.75 "Instrument Sans", system-ui, sans-serif; color: var(--prose); }
 .reader .meta { font-family: "JetBrains Mono", ui-monospace, monospace; }
 .reader h1 { margin: 8px 0 12px; color: var(--fg); font-size: 32px; line-height: 1.15; letter-spacing: -0.02em; font-weight: 600; }
 .reader .tags { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 28px; font: 12.5px "JetBrains Mono", ui-monospace, monospace; }
-.reader .tags a { color: var(--magenta); }
+.reader .tags a, .reader .tags span { color: var(--magenta); }
+.reader .tags .gh { margin-left: auto; color: var(--blue); }
+.reader .summary { margin: -4px 0 14px; color: var(--mut); font-size: 19px; line-height: 1.5; }
 .reader .back { margin-top: 32px; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 14px; }
 .post-content h1, .post-content h2, .post-content h3, .post-content h4 { margin: 2em 0 0.6em; color: var(--fg); font-weight: 600; line-height: 1.3; }
 .post-content h1 { font-size: 26px; } .post-content h2 { font-size: 22px; } .post-content h3 { font-size: 19px; } .post-content h4 { font-size: 17px; }

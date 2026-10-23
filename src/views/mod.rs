@@ -2,10 +2,14 @@
 
 mod home;
 mod post;
+mod project;
+mod projects;
 mod writing;
 
 pub use home::HomeView;
 pub use post::PostView;
+pub use project::ProjectView;
+pub use projects::ProjectsView;
 pub use writing::WritingView;
 
 use crate::models::{BlogPost, Book, BookStatus, Project};

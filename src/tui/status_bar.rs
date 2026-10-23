@@ -1,5 +1,6 @@
 use super::shell::{save_theme, ViewKind};
 use leptos::*;
+use leptos_router::*;
 use tui_core::keys::View;
 use tui_core::theme::Theme;
 
@@ -8,10 +9,14 @@ use tui_core::theme::Theme;
 #[component]
 pub fn StatusBar() -> impl IntoView {
     let view_kind = expect_context::<ViewKind>().0;
+    let path = use_location().pathname;
     let hints = move || {
         let keys: &[(&str, &str)] = match view_kind.get() {
             View::Home => &[("help", "commands"), ("esc", "leave shell"), ("1-5", "tabs")],
-            View::List => &[("1-5", "tabs"), ("j/k", "move"), ("enter", "open"), ("/", "filter")],
+            View::List if path.get().starts_with("/posts") => {
+                &[("1-5", "tabs"), ("j/k", "move"), ("enter", "open"), ("/", "filter")]
+            }
+            View::List => &[("1-5", "tabs"), ("j/k", "move"), ("enter", "open"), ("g", "github")],
             View::Grid => &[("1-5", "tabs"), ("h j k l", "move"), ("enter", "open")],
             View::Reader => &[("1-5", "tabs"), ("q", "back")],
             View::Plain => &[("1-5", "tabs")],

@@ -1,5 +1,5 @@
 use crate::tui::{Pane, TuiShell, ViewKind};
-use crate::views::{HomeView, PostView, WritingView};
+use crate::views::{HomeView, PostView, ProjectView, ProjectsView, WritingView};
 use leptos::*;
 use leptos_router::{TrailingSlash, *};
 use tui_core::keys::View;
@@ -18,6 +18,8 @@ pub fn App() -> impl IntoView {
                     <Route path="/" view=HomeView />
                     <Route path="/posts" view=WritingView />
                     <Route path="/posts/:slug" view=PostView trailing_slash=TrailingSlash::Redirect />
+                    <Route path="/projects" view=ProjectsView />
+                    <Route path="/projects/:slug" view=ProjectView trailing_slash=TrailingSlash::Redirect />
                     <Route path="/*any" view=Placeholder />
                 </Routes>
             </TuiShell>
