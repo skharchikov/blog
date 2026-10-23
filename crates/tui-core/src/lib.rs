@@ -3,5 +3,7 @@
 
 pub mod commands;
 pub mod keys;
+pub mod readout;
+pub mod shelf;
 pub mod tabs;
 pub mod theme;
