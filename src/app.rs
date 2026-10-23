@@ -1,8 +1,7 @@
-use crate::tui::{Pane, TuiShell, ViewKind};
-use crate::views::{HomeView, PostView, ProjectView, ProjectsView, WritingView};
+use crate::tui::TuiShell;
+use crate::views::{BooksView, ContactView, HomeView, NotFoundView, PostView, ProjectView, ProjectsView, WritingView};
 use leptos::*;
 use leptos_router::{TrailingSlash, *};
-use tui_core::keys::View;
 
 const HIGHLIGHT_CSS: &str = include_str!(concat!(env!("OUT_DIR"), "/highlight.css"));
 const THEMES_CSS: &str = include_str!(concat!(env!("OUT_DIR"), "/themes.css"));
@@ -20,21 +19,11 @@ pub fn App() -> impl IntoView {
                     <Route path="/posts/:slug" view=PostView trailing_slash=TrailingSlash::Redirect />
                     <Route path="/projects" view=ProjectsView />
                     <Route path="/projects/:slug" view=ProjectView trailing_slash=TrailingSlash::Redirect />
-                    <Route path="/*any" view=Placeholder />
+                    <Route path="/books" view=BooksView trailing_slash=TrailingSlash::Redirect />
+                    <Route path="/contacts" view=ContactView />
+                    <Route path="/*any" view=NotFoundView />
                 </Routes>
             </TuiShell>
         </Router>
-    }
-}
-
-/// Temporary stand-in while the views are being built (removed in Task 12).
-#[component]
-fn Placeholder() -> impl IntoView {
-    expect_context::<ViewKind>().0.set(View::Plain);
-    let path = use_location().pathname;
-    view! {
-        <Pane title="placeholder" focused=true>
-            <p>{move || path.get()}</p>
-        </Pane>
     }
 }

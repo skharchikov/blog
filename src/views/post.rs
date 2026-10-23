@@ -1,5 +1,6 @@
 use super::writing::read_minutes;
 use crate::components::{Giscus, ViewCounter};
+use super::NotFoundView;
 use crate::models::BlogPost;
 use crate::tui::{Pane, Targets, ViewKind};
 use leptos::*;
@@ -36,11 +37,6 @@ pub fn PostView() -> impl IntoView {
             </Pane>
         }
         .into_view(),
-        None => view! {
-            <Pane title="writing" focused=true>
-                <p>"No post here. "<A href="/posts">"← all posts"</A></p>
-            </Pane>
-        }
-        .into_view(),
+        None => view! { <NotFoundView /> }.into_view(),
     }
 }

@@ -1,12 +1,18 @@
 //! One view per tab, plus the shared pieces they use.
 
+mod books;
+mod contact;
 mod home;
+mod not_found;
 mod post;
 mod project;
 mod projects;
 mod writing;
 
+pub use books::BooksView;
+pub use contact::ContactView;
 pub use home::HomeView;
+pub use not_found::NotFoundView;
 pub use post::PostView;
 pub use project::ProjectView;
 pub use projects::ProjectsView;

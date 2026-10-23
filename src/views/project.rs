@@ -1,3 +1,4 @@
+use super::NotFoundView;
 use crate::models::Project;
 use crate::tui::{Pane, Targets, ViewKind};
 use leptos::*;
@@ -29,11 +30,6 @@ pub fn ProjectView() -> impl IntoView {
             </Pane>
         }
         .into_view(),
-        None => view! {
-            <Pane title="projects" focused=true>
-                <p>"No project here. "<A href="/projects">"← all projects"</A></p>
-            </Pane>
-        }
-        .into_view(),
+        None => view! { <NotFoundView /> }.into_view(),
     }
 }
