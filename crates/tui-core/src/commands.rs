@@ -49,8 +49,8 @@ pub enum Action {
 /// The `whoami` intro, also prefilled at the top of the transcript.
 pub const WHOAMI: [&str; 3] = [
     "skh",
-    "Backend engineer building distributed systems in Rust and Scala.",
-    "I write about the things I build: trading bots, home-lab hardware, developer tools, and algorithms in Rust.",
+    "Software engineer working with Rust and Scala.",
+    "I write about what I build.",
 ];
 
 const COMMANDS: [&str; 8] = ["help", "whoami", "ls", "cd", "open", "theme", "email", "clear"];
@@ -234,6 +234,9 @@ mod tests {
         assert_eq!(printed(&run("theme neon", &fixture())), "theme: unknown \"neon\"");
     }
     #[test] fn email_lists_the_one_address() { assert_eq!(printed(&run("email", &fixture())), "me@skh.rs"); }
+    #[test] fn whoami_is_the_short_intro() {
+        assert_eq!(printed(&run("whoami", &fixture())), "skh\nSoftware engineer working with Rust and Scala.\nI write about what I build.");
+    }
     #[test] fn clear_and_help() { assert_eq!(run("clear", &fixture()), vec![Action::Clear]); assert!(printed(&run("help", &fixture())).contains("open <n>")); }
     #[test] fn completion() { assert_eq!(complete("th"), Some("theme".into())); assert_eq!(complete("cd bo"), Some("cd books".into())); assert_eq!(complete("zz"), None); }
 }
