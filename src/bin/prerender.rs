@@ -25,7 +25,7 @@ use std::path::Path;
 
 const BASE_URL: &str = "https://skh.rs";
 const IMAGE_URL: &str = "https://skh.rs/computer_7268855.png";
-const SITE_NAME: &str = "Sergei Kharchikov";
+const SITE_NAME: &str = "skh";
 const START: &str = "<!-- META:START -->";
 const END: &str = "<!-- META:END -->";
 

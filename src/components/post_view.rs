@@ -36,7 +36,7 @@ pub fn PostView() -> impl IntoView {
                             </div>
                         </header>
                         <div class="post-content" inner_html={p.content.clone()}></div>
-                        <Giscus dark_mode=dark_mode />
+                        <Giscus light=Signal::derive(move || !dark_mode.get()) />
                         <nav class="post-navigation">
                             <A href="/posts" class="back-link">"← Back to all posts"</A>
                         </nav>
