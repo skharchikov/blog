@@ -13,7 +13,11 @@ pub fn ProjectView() -> impl IntoView {
 
     Targets::bind(|| None, Some("/projects"), || None);
 
+    // `/projects/` matches this route with an empty slug: that is the list.
+    let empty = move || params.with(|p| p.get("slug").map_or(true, |s| s.is_empty()));
+
     move || match project() {
+        _ if empty() => view! { <Redirect path="/projects" /> }.into_view(),
         Some(p) => view! {
             <Pane title=format!("projects/{}  q: back", p.slug) focused=true class="reader-pane">
                 <article class="reader">

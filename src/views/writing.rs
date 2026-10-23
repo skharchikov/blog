@@ -1,6 +1,6 @@
 use super::posts_newest_first;
 use crate::models::BlogPost;
-use crate::tui::{on_intent, ListRow, Pane, Scene, SelectList, Targets, ViewKind};
+use crate::tui::{on_intent, ListRow, Pane, Scene, SelectList, Selections, Targets, ViewKind};
 use leptos::*;
 use leptos_router::*;
 use tui_core::keys::{Intent, View};
@@ -73,11 +73,17 @@ pub fn WritingView() -> impl IntoView {
             })
             .collect::<Vec<_>>()
     });
-    let selected = create_rw_signal(0usize);
-    // A new filter starts at the top of the shorter list.
-    create_effect(move |_| {
-        tag();
-        selected.set(0);
+    // Shared with the shell, so the place in the list survives opening a post.
+    let selected = expect_context::<Selections>().writing;
+    // A changed filter starts at the top of the new list; a remembered
+    // position is clamped to the current length.
+    create_effect(move |prev: Option<Option<String>>| {
+        let t = tag();
+        let len = rows.with(Vec::len);
+        if prev.is_some_and(|p| p != t) || selected.get_untracked() >= len {
+            selected.set(0);
+        }
+        t
     });
 
     Targets::bind(move || rows.with(|r| r.get(selected.get()).map(|row| row.href.clone())), None, || None);
@@ -112,7 +118,7 @@ pub fn WritingView() -> impl IntoView {
     view! {
         <div class="body-grid cols writing">
             <Scene name="writing" readout=stats />
-            <Pane title="preview">{preview}</Pane>
+            <Pane title="preview" class="preview">{preview}</Pane>
             <Pane title="ls -l writing/" focused=true class="wide">
                 <div class="chips" node_ref=chips aria-label="Filter by tag">
                     <A href="/posts" class="chip" exact=true>"all"</A>

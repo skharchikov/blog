@@ -20,7 +20,7 @@ pub fn App() -> impl IntoView {
                     <Route path="/projects" view=ProjectsView />
                     <Route path="/projects/:slug" view=ProjectView trailing_slash=TrailingSlash::Redirect />
                     <Route path="/books" view=BooksView trailing_slash=TrailingSlash::Redirect />
-                    <Route path="/contacts" view=ContactView />
+                    <Route path="/contacts" view=ContactView trailing_slash=TrailingSlash::Redirect />
                     <Route path="/*any" view=NotFoundView />
                 </Routes>
             </TuiShell>

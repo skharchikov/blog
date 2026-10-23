@@ -1,5 +1,5 @@
 use crate::models::{Book, BookStatus};
-use crate::tui::{on_intent, Pane, Scene, Targets, ViewKind};
+use crate::tui::{on_intent, reveal, Pane, Scene, Selections, Targets, ViewKind};
 use leptos::*;
 use tui_core::keys::{Intent, View};
 use tui_core::shelf::{group, GroupLabel};
@@ -58,12 +58,25 @@ pub fn BooksView() -> impl IntoView {
     let order: Vec<&'static Book> = groups.iter().flat_map(|g| g.indices.iter().map(|&i| shelf[i])).collect();
     let total = order.len();
     let order = store_value(order);
-    let selected = create_rw_signal(0usize);
+    let selected = expect_context::<Selections>().books;
+    if selected.get_untracked() >= total {
+        selected.set(0);
+    }
     let current = move || order.with_value(|o| o.get(selected.get()).copied());
 
     Targets::bind(move || current().map(Book::hardcover_url), None, || None);
 
     let wall = create_node_ref::<html::Div>();
+    // Keep the selected cover visible when it moves (not on first render).
+    create_effect(move |first: Option<()>| {
+        let i = selected.get();
+        if first.is_some() {
+            let cover = wall.get_untracked().and_then(|w| w.query_selector_all(".cv").ok()).and_then(|c| c.item(i as u32));
+            if let Some(el) = cover.and_then(|n| n.dyn_into::<web_sys::Element>().ok()) {
+                reveal(&el);
+            }
+        }
+    });
     on_intent(move |i| match i {
         Intent::MoveGrid { dx, dy: 0 } => {
             let next = selected.get_untracked() as i32 + dx;
@@ -119,9 +132,11 @@ pub fn BooksView() -> impl IntoView {
                             .map(|(k, &i)| {
                                 let pos = first + k;
                                 let book = shelf[i];
-                                // first click selects, a click on the selected cover opens Hardcover
+                                // A plain click shows the book in the detail pane; a click on the
+                                // selected cover (or any modifier click) opens Hardcover.
                                 let on_click = move |e: ev::MouseEvent| {
-                                    if selected.get_untracked() != pos {
+                                    let modified = e.meta_key() || e.ctrl_key() || e.shift_key() || e.alt_key();
+                                    if !modified && selected.get_untracked() != pos {
                                         e.prevent_default();
                                         selected.set(pos);
                                     }
@@ -136,7 +151,9 @@ pub fn BooksView() -> impl IntoView {
                                         rel="noopener noreferrer"
                                         title=book.title.clone()
                                         aria-label=format!("{} by {}", book.title, book.authors_display())
+                                        aria-current=move || (selected.get() == pos).then_some("true")
                                         on:click=on_click
+                                        on:focus=move |_| selected.set(pos)
                                     >
                                         {cover(book, "img")}
                                     </a>

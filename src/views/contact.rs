@@ -44,8 +44,8 @@ pub fn ContactView() -> impl IntoView {
         <div class="body-grid cols contact">
             <Scene name="contact" readout=readout::CONTACT.map(String::from) />
             <Pane title="contact" focused=true>
-                <p class="mut">"Email is the only way in. Either address reaches me."</p>
-                <ul class="emails">{EMAILS.map(|a| view! { <EmailRow address=a /> }).collect_view()}</ul>
+                <p class="mut">"Email is the only way in."</p>
+                <ul class="emails">{EMAILS.iter().map(|a| view! { <EmailRow address=a /> }).collect_view()}</ul>
                 <p class="mut">
                     "Code lives on "
                     <a href="https://github.com/skharchikov" target="_blank" rel="noopener noreferrer">"github.com/skharchikov"</a>

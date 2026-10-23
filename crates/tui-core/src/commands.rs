@@ -9,7 +9,7 @@ pub struct ShellData {
     pub posts: Vec<PostRef>,
     pub projects: Vec<String>,
     pub reading: Vec<String>,
-    pub emails: [&'static str; 2],
+    pub emails: &'static [&'static str],
 }
 
 pub struct PostRef {
@@ -192,7 +192,7 @@ mod tests {
             ],
             projects: ["rig-openapi-tools", "rust-blog", "polymarket-bot", "github-stats-rs", "blackjack"].map(String::from).to_vec(),
             reading: ["Extreme Privacy", "The Stand", "Rust for Rustaceans"].map(String::from).to_vec(),
-            emails: ["me@skh.rs", "contact@skharchikov.com"],
+            emails: &["me@skh.rs"],
         }
     }
 
@@ -233,7 +233,7 @@ mod tests {
         assert_eq!(printed(&run("theme", &fixture())), "themes: skh, tokyo-night, gruvbox, paper");
         assert_eq!(printed(&run("theme neon", &fixture())), "theme: unknown \"neon\"");
     }
-    #[test] fn email_lists_both() { let p = printed(&run("email", &fixture())); assert!(p.contains("me@skh.rs") && p.contains("contact@skharchikov.com")); }
+    #[test] fn email_lists_the_one_address() { assert_eq!(printed(&run("email", &fixture())), "me@skh.rs"); }
     #[test] fn clear_and_help() { assert_eq!(run("clear", &fixture()), vec![Action::Clear]); assert!(printed(&run("help", &fixture())).contains("open <n>")); }
     #[test] fn completion() { assert_eq!(complete("th"), Some("theme".into())); assert_eq!(complete("cd bo"), Some("cd books".into())); assert_eq!(complete("zz"), None); }
 }

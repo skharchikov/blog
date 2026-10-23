@@ -17,7 +17,12 @@ pub fn PostView() -> impl IntoView {
 
     Targets::bind(|| None, Some("/posts"), || None);
 
+    // `/posts/` (trunk serve and some hosts add the slash) matches this route
+    // with an empty slug: that is the list, not a missing post.
+    let empty = move || params.with(|p| p.get("slug").map_or(true, |s| s.is_empty()));
+
     move || match post() {
+        _ if empty() => view! { <Redirect path="/posts" /> }.into_view(),
         Some(p) => view! {
             <Pane title=format!("writing/{}.md  q: back", p.slug) focused=true class="reader-pane">
                 <article class="reader">

@@ -1,5 +1,4 @@
 use leptos::*;
-use wasm_bindgen::JsCast;
 
 /// One row: a left column (date / name), the title, a right column (tags),
 /// and where the row leads.
@@ -11,28 +10,31 @@ pub struct ListRow {
     pub href: String,
 }
 
-/// Keyboard/mouse selectable list. With a mouse, the first click selects and a
-/// click on the selected row opens it; a tap on a touch screen opens directly.
-/// Plain anchors: the router intercepts same-origin clicks (and honours
-/// `preventDefault`). Keyboard "open" is handled by the view via `KeyBus`.
+/// Scroll `el` just enough to be visible (no jump when it already is).
+pub fn reveal(el: &web_sys::Element) {
+    let opts = web_sys::ScrollIntoViewOptions::new();
+    opts.set_block(web_sys::ScrollLogicalPosition::Nearest);
+    el.scroll_into_view_with_scroll_into_view_options(&opts);
+}
+
+/// Keyboard/mouse selectable list. A click opens the row (plain anchors: the
+/// router intercepts same-origin clicks; modifier clicks open new tabs as
+/// usual). Hovering or focusing a row selects it, so the preview follows the
+/// pointer and Tab focus; j/k move the selection; Enter is handled by the
+/// shell through the view's open target.
 #[component]
 pub fn SelectList(#[prop(into)] items: Signal<Vec<ListRow>>, selected: RwSignal<usize>) -> impl IntoView {
     let list = create_node_ref::<html::Ul>();
 
-    // Keep the selected row in view when it moves (not on first render, so
-    // the page doesn't jump on load).
+    // Keep the selected row visible when it moves (not on first render).
     create_effect(move |first: Option<()>| {
         let i = selected.get();
         if first.is_some() {
             if let Some(row) = list.get_untracked().and_then(|ul| ul.children().item(i as u32)) {
-                if let Ok(row) = row.dyn_into::<web_sys::HtmlElement>() {
-                    row.scroll_into_view_with_bool(false);
-                }
+                reveal(&row);
             }
         }
     });
-
-    let coarse = window().match_media("(pointer: coarse)").ok().flatten().map(|m| m.matches()).unwrap_or(false);
 
     view! {
         <ul class="list" node_ref=list>
@@ -42,15 +44,15 @@ pub fn SelectList(#[prop(into)] items: Signal<Vec<ListRow>>, selected: RwSignal<
                     .into_iter()
                     .enumerate()
                     .map(|(i, row)| {
-                        let on_click = move |e: ev::MouseEvent| {
-                            if !coarse && selected.get_untracked() != i {
-                                e.prevent_default();
-                                selected.set(i);
-                            }
-                        };
                         view! {
                             <li class:sel=move || selected.get() == i>
-                                <a href=row.href.clone() class="row" on:click=on_click>
+                                <a
+                                    href=row.href.clone()
+                                    class="row"
+                                    aria-current=move || (selected.get() == i).then_some("true")
+                                    on:mouseenter=move |_| selected.set(i)
+                                    on:focus=move |_| selected.set(i)
+                                >
                                     <span class="date">{row.left.clone()}</span>
                                     <span class="t">{row.title.clone()}</span>
                                     <span class="tg">{row.right.clone()}</span>

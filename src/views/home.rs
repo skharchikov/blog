@@ -5,6 +5,7 @@ use leptos::*;
 use leptos_router::*;
 use tui_core::commands::{complete, run, Action, Line, Seg, WHOAMI};
 use tui_core::keys::View;
+use tui_core::tabs::Tab;
 use tui_core::theme::Theme;
 
 /// One command in the transcript and what it printed.
@@ -102,9 +103,18 @@ fn ShellPane() -> impl IntoView {
 
     let on_key = move |e: ev::KeyboardEvent| match e.key().as_str() {
         "Enter" => submit(),
-        "Tab" => {
-            e.prevent_default();
+        // No command starts with a digit, so on an empty prompt 1-5 switch tabs.
+        k @ ("1" | "2" | "3" | "4" | "5") if input.with_untracked(String::is_empty) => {
+            if let Some(tab) = k.parse().ok().and_then(Tab::from_number) {
+                e.prevent_default();
+                follow(tab.path());
+            }
+        }
+        // Complete when there is something to complete; otherwise Tab moves
+        // focus on as usual (the prompt must never trap the keyboard).
+        "Tab" if !e.shift_key() => {
             if let Some(done) = complete(&input.get_untracked()) {
+                e.prevent_default();
                 input.set(done);
             }
         }
@@ -146,15 +156,18 @@ fn ShellPane() -> impl IntoView {
             </div>
             <div class="ln">{prompt()}"ls -t writing | head -3"</div>
             <div class="out">{recent.into_iter().map(line_view).collect_view()}</div>
-            <For each=move || log.get().into_iter().enumerate() key=|(i, _)| *i let:entry>
-                <div class="ln">{prompt()}{entry.1.cmd.clone()}</div>
-                <div class="out">{entry.1.lines.clone().into_iter().map(line_view).collect_view()}</div>
-            </For>
+            <div role="log" aria-live="polite" aria-label="Shell output">
+                <For each=move || log.get().into_iter().enumerate() key=|(i, _)| *i let:entry>
+                    <div class="ln">{prompt()}{entry.1.cmd.clone()}</div>
+                    <div class="out">{entry.1.lines.clone().into_iter().map(line_view).collect_view()}</div>
+                </For>
+            </div>
             <label class="ln input-row">
                 <span class="prompt">{prompt()}</span>
                 <input
                     node_ref=input_ref
                     aria-label="Shell command (type help)"
+                    aria-describedby="shell-hint"
                     placeholder="type help"
                     autocomplete="off"
                     spellcheck="false"
@@ -163,6 +176,9 @@ fn ShellPane() -> impl IntoView {
                     on:keydown=on_key
                 />
             </label>
+            <p id="shell-hint" class="sr-only">
+                "Type help for commands. Escape leaves the prompt; 1 to 5 switch tabs while the prompt is empty."
+            </p>
         </Pane>
     }
 }

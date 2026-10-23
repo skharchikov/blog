@@ -1,5 +1,5 @@
 use crate::models::Project;
-use crate::tui::{on_intent, ListRow, Pane, Scene, SelectList, Targets, ViewKind};
+use crate::tui::{on_intent, ListRow, Pane, Scene, SelectList, Selections, Targets, ViewKind};
 use leptos::*;
 use tui_core::keys::{Intent, View};
 use tui_core::readout;
@@ -26,7 +26,10 @@ pub fn ProjectsView() -> impl IntoView {
         })
         .collect();
     let rows = Signal::derive(move || rows.clone());
-    let selected = create_rw_signal(0usize);
+    let selected = expect_context::<Selections>().projects;
+    if selected.get_untracked() >= projects.len() {
+        selected.set(0);
+    }
     let current = move || projects.get(selected.get());
 
     Targets::bind(
@@ -57,7 +60,7 @@ pub fn ProjectsView() -> impl IntoView {
     view! {
         <div class="body-grid cols projects">
             <Scene name="projects" readout=stats />
-            <Pane title="preview">{preview}</Pane>
+            <Pane title="preview" class="preview">{preview}</Pane>
             <Pane title="ls projects/" focused=true class="wide">
                 <SelectList items=rows selected=selected />
             </Pane>

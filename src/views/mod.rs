@@ -23,7 +23,7 @@ use leptos::*;
 use leptos_router::*;
 use tui_core::commands::{PostRef, Seg, ShellData};
 
-pub const EMAILS: [&str; 2] = ["me@skh.rs", "contact@skharchikov.com"];
+pub const EMAILS: &[&str] = &["me@skh.rs"];
 
 /// Posts newest first (dates are `YYYY-MM-DD`, so a string compare sorts).
 pub fn posts_newest_first() -> Vec<&'static BlogPost> {

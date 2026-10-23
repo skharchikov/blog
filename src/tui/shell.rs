@@ -69,15 +69,27 @@ pub fn on_intent(f: impl Fn(Intent) + 'static) {
 }
 
 /// `Typing` while focus is in a text field, editable element or iframe
-/// (giscus), so shortcuts never steal keystrokes.
+/// (giscus), so shortcuts never steal keystrokes; `OnControl` while a link or
+/// button has focus, so Enter/Escape keep their native meaning.
 pub fn current_mode() -> Mode {
     let Some(el) = document().active_element() else { return Mode::Normal };
     let tag = el.tag_name().to_ascii_lowercase();
     if matches!(tag.as_str(), "input" | "textarea" | "select" | "iframe") || el.has_attribute("contenteditable") {
         Mode::Typing
+    } else if matches!(tag.as_str(), "a" | "button" | "summary") || (el.has_attribute("tabindex") && tag != "main") {
+        Mode::OnControl
     } else {
         Mode::Normal
     }
+}
+
+/// Selected row/cover per list. Lives in the shell so it survives tab
+/// switches (open a post, `q` back, and you are where you were).
+#[derive(Clone, Copy)]
+pub struct Selections {
+    pub writing: RwSignal<usize>,
+    pub projects: RwSignal<usize>,
+    pub books: RwSignal<usize>,
 }
 
 /// Persist an explicit theme choice. Storage can be blocked (private mode);
@@ -109,6 +121,11 @@ pub fn TuiShell(children: Children) -> impl IntoView {
     provide_context(view_kind);
     let targets = Targets { open: create_rw_signal(None), back: create_rw_signal(None), github: create_rw_signal(None) };
     provide_context(targets);
+    provide_context(Selections {
+        writing: create_rw_signal(0),
+        projects: create_rw_signal(0),
+        books: create_rw_signal(0),
+    });
 
     create_effect(move |_| {
         if let Some(el) = document().document_element() {

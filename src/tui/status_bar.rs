@@ -12,7 +12,7 @@ pub fn StatusBar() -> impl IntoView {
     let path = use_location().pathname;
     let hints = move || {
         let keys: &[(&str, &str)] = match view_kind.get() {
-            View::Home => &[("help", "commands"), ("esc", "leave shell"), ("1-5", "tabs")],
+            View::Home => &[("help", "commands"), ("1-5", "tabs (empty prompt)"), ("esc", "leave shell")],
             View::List if path.get().starts_with("/posts") => {
                 &[("1-5", "tabs"), ("j/k", "move"), ("enter", "open"), ("/", "filter")]
             }

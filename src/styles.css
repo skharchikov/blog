@@ -20,6 +20,7 @@ button, input { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
 ::selection { background: var(--sel); }
 .mut { color: var(--mut); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 .skip { position: absolute; left: -999px; top: 8px; z-index: 10; padding: 4px 10px; background: var(--bar); color: var(--fg); }
 .skip:focus { left: 8px; }
@@ -113,6 +114,8 @@ html:not([data-theme="paper"]) .sprite { filter: drop-shadow(0 0 1px var(--mut))
 
 /* ---------- lists (writing, projects) ---------- */
 .writing .wide, .projects .wide { grid-column: 1 / -1; align-self: start; }
+/* fixed height so the list below doesn't move as the preview text changes */
+.preview { height: 190px; }
 .list .row {
     display: grid; grid-template-columns: 11ch 1fr auto; gap: 14px; align-items: baseline;
     margin: 0 -8px; padding: 3px 8px; border-radius: 3px; color: var(--fg); text-decoration: none;
@@ -149,6 +152,7 @@ html:not([data-theme="paper"]) .sprite { filter: drop-shadow(0 0 1px var(--mut))
     color: var(--fg); font: 600 10px/1.25 "Instrument Sans", system-ui, sans-serif; overflow-wrap: anywhere;
 }
 .cv.sel { outline-color: var(--focus); transform: translateY(-3px); }
+.cv:focus-visible { outline-color: var(--focus); }
 .cv.reading::after { content: ""; position: absolute; top: 4px; right: 4px; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 2px var(--bg); }
 .book-detail .big { display: block; width: 120px; aspect-ratio: 2 / 3; margin-bottom: 12px; border-radius: 4px; object-fit: cover; background: var(--sel); }
 .book-detail h2 { margin-bottom: 2px; color: var(--fg); font: 600 19px/1.25 "Instrument Sans", system-ui, sans-serif; }
@@ -202,10 +206,13 @@ html[data-theme] .post-content pre.code { background: var(--bar); }
 /* ---------- responsive ---------- */
 @media (max-width: 899px) {
     .cols { grid-template-columns: 1fr; }
+    .preview { height: auto; }
     .list .row { grid-template-columns: 11ch 1fr; }
     .list .tg { display: none; }
 }
 @media (max-width: 599px) {
+    /* taps open rows directly, so a preview of the selection is noise here */
+    .preview { display: none; }
     .list .row { grid-template-columns: 1fr; gap: 0; }
     .reader { font-size: 16px; }
     .reader h1 { font-size: 26px; }
@@ -222,4 +229,8 @@ html[data-theme] .post-content pre.code { background: var(--bar); }
     .list .row { min-height: 44px; align-content: center; }
     .chip { padding: 10px 4px; }
     .copy { min-height: 44px; padding: 0 14px; }
+    .tabs { height: 48px; }
+    .tab { line-height: 44px; }
+    .theme-btn { min-height: 44px; padding: 0 10px; }
+    .reader .tags a { display: inline-block; padding: 10px 2px; }
 }
