@@ -54,7 +54,7 @@ button, input { font: inherit; color: inherit; }
 .hints { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; }
 .mode { padding: 0 8px; border-radius: 3px; background: var(--focus); color: var(--bg); font-weight: 700; }
 .hint .k { margin-right: 4px; padding: 0 6px; border-radius: 3px; background: var(--sel); color: var(--fg); }
-.theme-btn { margin-left: auto; padding: 2px 4px; border: 0; background: none; color: var(--mut); cursor: pointer; }
+.theme-btn { margin-left: auto; padding: 2px 4px; border: 0; background: none; color: var(--mut); cursor: pointer; white-space: nowrap; }
 .theme-btn:hover { color: var(--fg); }
 
 /* ---------- panes ---------- */
@@ -72,6 +72,8 @@ button, input { font: inherit; color: inherit; }
 .stack { display: grid; gap: 18px; align-content: start; min-height: 0; }
 
 .body-grid { display: grid; gap: 18px 8px; align-content: start; min-height: 0; }
+/* grid items may shrink below their content (long code lines scroll inside their block) */
+.body > *, .body-grid > *, .stack > *, .pane { min-width: 0; }
 .date { color: var(--yellow); font-variant-numeric: tabular-nums; }
 .acc { color: var(--fg); font-weight: 700; }
 
@@ -109,9 +111,68 @@ html:not([data-theme="paper"]) .sprite { filter: drop-shadow(0 0 1px var(--mut))
 .now dt { color: var(--mut); }
 .now dd { margin: 0; display: flex; flex-direction: column; }
 
+/* ---------- lists (writing, projects) ---------- */
+.writing .wide, .projects .wide { grid-column: 1 / -1; align-self: start; }
+.list .row {
+    display: grid; grid-template-columns: 11ch 1fr auto; gap: 14px; align-items: baseline;
+    margin: 0 -8px; padding: 3px 8px; border-radius: 3px; color: var(--fg); text-decoration: none;
+}
+.list .row:hover { background: var(--sel); text-decoration: none; }
+.list li.sel .row { background: var(--sel); }
+.list li.sel .t { color: var(--focus); }
+.list .tg { color: var(--magenta); font-size: 12.5px; text-align: right; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 12px; font-size: 12.5px; }
+.chip { color: var(--mut); }
+.chip:hover { color: var(--fg); }
+.chip.on, .chip[aria-current="page"] { color: var(--bg); background: var(--fg); padding: 0 6px; border-radius: 2px; text-decoration: none; }
+.meta { color: var(--mut); font-size: 12.5px; }
+.prev-title { margin: 6px 0 10px; font: 600 22px/1.25 "Instrument Sans", system-ui, sans-serif; }
+.prev-text { max-width: 70ch; font: 16px/1.65 "Instrument Sans", system-ui, sans-serif; color: var(--prose); }
+
+/* ---------- reader (posts, projects) ---------- */
+.reader-pane { grid-column: 1 / -1; }
+.reader { max-width: 70ch; margin: 0 auto; padding: 8px 0 24px; font: 17px/1.75 "Instrument Sans", system-ui, sans-serif; color: var(--prose); }
+.reader .meta { font-family: "JetBrains Mono", ui-monospace, monospace; }
+.reader h1 { margin: 8px 0 12px; color: var(--fg); font-size: 32px; line-height: 1.15; letter-spacing: -0.02em; font-weight: 600; }
+.reader .tags { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 28px; font: 12.5px "JetBrains Mono", ui-monospace, monospace; }
+.reader .tags a { color: var(--magenta); }
+.reader .back { margin-top: 32px; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 14px; }
+.post-content h1, .post-content h2, .post-content h3, .post-content h4 { margin: 2em 0 0.6em; color: var(--fg); font-weight: 600; line-height: 1.3; }
+.post-content h1 { font-size: 26px; } .post-content h2 { font-size: 22px; } .post-content h3 { font-size: 19px; } .post-content h4 { font-size: 17px; }
+.post-content p, .post-content ul, .post-content ol, .post-content table, .post-content blockquote, .post-content pre { margin: 0 0 1.1em; }
+.post-content ul, .post-content ol { padding-left: 1.4em; }
+.post-content ul { list-style: disc; }
+.post-content li { margin-bottom: 0.35em; }
+.post-content a { text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 3px; }
+.post-content strong { color: var(--fg); }
+.post-content code { padding: 0.1em 0.35em; border-radius: 3px; background: var(--sel); color: var(--fg); font: 0.86em "JetBrains Mono", ui-monospace, monospace; }
+.post-content pre { padding: 14px 16px; overflow-x: auto; border: 1px solid var(--bd); border-radius: 4px; background: var(--bar); font: 13.5px/1.65 "JetBrains Mono", ui-monospace, monospace; }
+.post-content pre code { padding: 0; background: none; font: inherit; }
+.post-content code, .post-content pre { font-variant-ligatures: none; }
+/* beats the generated highlight theme's own block background */
+html[data-theme] .post-content pre.code { background: var(--bar); }
+.post-content blockquote { padding-left: 1em; border-left: 3px solid var(--bd); color: var(--mut); }
+.post-content table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font-size: 15px; }
+.post-content th, .post-content td { padding: 0.45em 1em 0.45em 0; border-bottom: 1px solid var(--bd); text-align: left; vertical-align: top; }
+.post-content th { color: var(--fg); }
+.post-content img { max-width: 100%; height: auto; border-radius: 4px; }
+.post-content hr { margin: 2em 0; border: 0; border-top: 1px solid var(--bd); }
+.giscus-wrapper { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--bd); }
+.giscus-heading { color: var(--fg); font-size: 20px; }
+.giscus-subheading { margin-bottom: 20px; color: var(--mut); font-size: 14px; }
+.giscus, .giscus-frame { width: 100%; color-scheme: normal; }
+.giscus-frame { border: none; min-height: 150px; }
+
 /* ---------- responsive ---------- */
 @media (max-width: 899px) {
     .cols { grid-template-columns: 1fr; }
+    .list .row { grid-template-columns: 11ch 1fr; }
+    .list .tg { display: none; }
+}
+@media (max-width: 599px) {
+    .list .row { grid-template-columns: 1fr; gap: 0; }
+    .reader { font-size: 16px; }
+    .reader h1 { font-size: 26px; }
 }
 @media (max-width: 599px) {
     /* phones: normal page scroll instead of a fixed frame */
@@ -122,4 +183,6 @@ html:not([data-theme="paper"]) .sprite { filter: drop-shadow(0 0 1px var(--mut))
 }
 @media (pointer: coarse) {
     .hints .hint { display: none; }
+    .list .row { min-height: 44px; align-content: center; }
+    .chip { padding: 10px 4px; }
 }

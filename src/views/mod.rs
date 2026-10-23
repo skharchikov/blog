@@ -1,8 +1,12 @@
 //! One view per tab, plus the shared pieces they use.
 
 mod home;
+mod post;
+mod writing;
 
 pub use home::HomeView;
+pub use post::PostView;
+pub use writing::WritingView;
 
 use crate::models::{BlogPost, Book, BookStatus, Project};
 use leptos::*;

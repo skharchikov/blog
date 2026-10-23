@@ -1,7 +1,7 @@
 use crate::tui::{Pane, TuiShell, ViewKind};
-use crate::views::HomeView;
+use crate::views::{HomeView, PostView, WritingView};
 use leptos::*;
-use leptos_router::*;
+use leptos_router::{TrailingSlash, *};
 use tui_core::keys::View;
 
 const HIGHLIGHT_CSS: &str = include_str!(concat!(env!("OUT_DIR"), "/highlight.css"));
@@ -16,6 +16,8 @@ pub fn App() -> impl IntoView {
             <TuiShell>
                 <Routes>
                     <Route path="/" view=HomeView />
+                    <Route path="/posts" view=WritingView />
+                    <Route path="/posts/:slug" view=PostView trailing_slash=TrailingSlash::Redirect />
                     <Route path="/*any" view=Placeholder />
                 </Routes>
             </TuiShell>

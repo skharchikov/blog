@@ -1,6 +1,6 @@
 use super::{posts_newest_first, reading_now, seg_view, shell_data};
 use crate::models::Project;
-use crate::tui::{save_theme, Pane, Scene, ViewKind};
+use crate::tui::{follow, save_theme, Pane, Scene, ViewKind};
 use leptos::*;
 use leptos_router::*;
 use tui_core::commands::{complete, run, Action, Line, Seg, WHOAMI};
@@ -60,7 +60,6 @@ fn NowPane() -> impl IntoView {
 fn ShellPane() -> impl IntoView {
     let data = store_value(shell_data());
     let theme = expect_context::<RwSignal<Theme>>();
-    let navigate = use_navigate();
     let log = create_rw_signal(Vec::<Entry>::new());
     let input = create_rw_signal(String::new());
     let history = store_value(Vec::<String>::new());
@@ -87,7 +86,7 @@ fn ShellPane() -> impl IntoView {
         for action in data.with_value(|d| run(&cmd, d)) {
             match action {
                 Action::Print(out) => lines.extend(out),
-                Action::Navigate(path) => navigate(&path, Default::default()),
+                Action::Navigate(path) => follow(&path),
                 Action::SetTheme(t) => {
                     theme.set(t);
                     save_theme(t);
