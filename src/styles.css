@@ -71,6 +71,44 @@ button, input { font: inherit; color: inherit; }
 .cols { grid-template-columns: minmax(260px, 32%) 1fr; }
 .stack { display: grid; gap: 18px; align-content: start; min-height: 0; }
 
+.body-grid { display: grid; gap: 18px 8px; align-content: start; min-height: 0; }
+.date { color: var(--yellow); font-variant-numeric: tabular-nums; }
+.acc { color: var(--fg); font-weight: 700; }
+
+/* ---------- scene pane ---------- */
+.scene > .in { display: flex; align-items: flex-end; justify-content: center; min-height: 135px; padding-bottom: 0; }
+.sprite {
+    width: var(--w); height: var(--h); flex: none;
+    background: var(--sheet) 0 0 / calc(var(--w) * 10) calc(var(--h) * 8) no-repeat;
+    image-rendering: pixelated; pointer-events: none;
+    animation: sprite-x 1.25s steps(10) infinite, sprite-y 10s steps(8) infinite;
+}
+@keyframes sprite-x { to { background-position-x: calc(var(--w) * -10); } }
+@keyframes sprite-y { to { background-position-y: calc(var(--h) * -8); } }
+/* page styling only: keeps the dark hoodie's edge visible on dark themes */
+html:not([data-theme="paper"]) .sprite { filter: drop-shadow(0 0 1px var(--mut)); }
+.readout { align-self: center; width: 100%; color: var(--mut); line-height: 1.9; }
+.readout li::before { content: "› "; color: var(--green); }
+@media (prefers-reduced-motion: reduce) {
+    .sprite { animation: none; background: var(--still) 0 0 / 100% 100% no-repeat; }
+}
+
+/* ---------- home ---------- */
+.shell .ln { white-space: pre-wrap; overflow-wrap: anywhere; }
+.shell .out { margin: 2px 0 14px; }
+.ps { color: var(--green); }
+.pth { color: var(--blue); }
+.who { margin: 4px 0 14px; }
+.who p { max-width: 72ch; }
+.input-row { display: flex; align-items: baseline; }
+.input-row .prompt { white-space: pre; }
+.input-row input { flex: 1; min-width: 0; padding: 0; border: 0; background: none; color: var(--fg); caret-color: var(--focus); outline: none; }
+.input-row input::placeholder { color: var(--mut); }
+.input-row:focus-within { box-shadow: inset 2px 0 0 var(--focus); }
+.now { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; }
+.now dt { color: var(--mut); }
+.now dd { margin: 0; display: flex; flex-direction: column; }
+
 /* ---------- responsive ---------- */
 @media (max-width: 899px) {
     .cols { grid-template-columns: 1fr; }
