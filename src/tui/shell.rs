@@ -1,7 +1,7 @@
 use super::{StatusBar, TabBar};
 use leptos::*;
 use wasm_bindgen::JsCast;
-use tui_core::keys::{intent, Intent, Mode, View};
+use tui_core::keys::{intent, shortcut_key, Intent, Mode, View};
 use tui_core::theme::Theme;
 
 /// Key intents for the current view, as `(sequence number, intent)`. The
@@ -136,7 +136,8 @@ pub fn TuiShell(children: Children) -> impl IntoView {
     let go = |target: Option<String>| target.map(|href| follow(&href)).is_some();
     window_event_listener(ev::keydown, move |e| {
         let modifiers = e.ctrl_key() || e.alt_key() || e.meta_key();
-        match intent(&e.key(), modifiers, current_mode(), view_kind.0.get_untracked()) {
+        let key = shortcut_key(&e.key(), &e.code());
+        match intent(&key, modifiers, current_mode(), view_kind.0.get_untracked()) {
             Intent::None => {}
             Intent::Tab(tab) => {
                 e.prevent_default();

@@ -36,6 +36,19 @@ pub enum Intent {
     None,
 }
 
+/// The key to match shortcuts against. `key` is the typed character, which
+/// depends on the keyboard layout (the J key types "о" on a Russian layout);
+/// for a non-Latin single character, fall back to the physical key from
+/// `code` ("KeyJ" -> "j") so letter shortcuts work in any layout.
+pub fn shortcut_key(key: &str, code: &str) -> String {
+    let mut chars = key.chars();
+    let single_non_ascii = matches!((chars.next(), chars.next()), (Some(c), None) if !c.is_ascii());
+    match code.strip_prefix("Key") {
+        Some(letter) if single_non_ascii && letter.len() == 1 => letter.to_ascii_lowercase(),
+        _ => key.to_string(),
+    }
+}
+
 /// Map a `KeyboardEvent.key` to an intent. Shortcuts never take modifiers, so
 /// browser shortcuts like Ctrl+1 keep working.
 pub fn intent(key: &str, ctrl_alt_meta: bool, mode: Mode, view: View) -> Intent {
@@ -116,6 +129,21 @@ mod tests {
         assert_eq!(intent("2", false, Mode::OnControl, View::List), Intent::Tab(Tab::Writing));
         assert_eq!(intent("j", false, Mode::OnControl, View::List), Intent::Move(1));
         assert_eq!(intent("q", false, Mode::OnControl, View::Reader), Intent::Back);
+    }
+
+    #[test]
+    fn letters_work_in_any_keyboard_layout() {
+        // Russian layout: the J key types "о", but its physical code is KeyJ
+        assert_eq!(shortcut_key("о", "KeyJ"), "j");
+        assert_eq!(shortcut_key("р", "KeyH"), "h");
+        assert_eq!(shortcut_key("е", "KeyT"), "t");
+        // Latin layouts and named keys are left alone
+        assert_eq!(shortcut_key("j", "KeyJ"), "j");
+        assert_eq!(shortcut_key("Enter", "Enter"), "Enter");
+        assert_eq!(shortcut_key("ArrowUp", "ArrowUp"), "ArrowUp");
+        assert_eq!(shortcut_key("2", "Digit2"), "2");
+        // a non-Latin character without a letter code stays as typed
+        assert_eq!(shortcut_key("ё", "Backquote"), "ё");
     }
 
     #[test]

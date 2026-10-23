@@ -96,10 +96,24 @@ p.ev("document.querySelector('.cv').focus()")
 ring = p.ev("getComputedStyle(document.querySelector('.cv')).outlineColor")
 check("focused cover has a visible ring", ring not in ("rgba(0, 0, 0, 0)", "transparent"), ring)
 
-# contact: one address
+# book grid keys move the selection, also on a non-Latin keyboard layout
+p.goto(B + "/books")
+T = "document.querySelector('.book-detail h2').textContent"
+t0 = p.ev(T)
+p.key("l", "KeyL", "l", 76)
+t1 = p.ev(T)
+check("books: l moves right", t1 != t0, f"{t0} -> {t1}")
+p.key("о", "KeyJ", "о", 74)  # the J key on a Russian layout types "о"
+t2 = p.ev(T)
+check("books: j moves down on a Russian layout", t2 != t1, f"{t1} -> {t2}")
+
+# contact: one address, a mailto link, no copy button
 p.goto(B + "/contacts")
 emails = p.ev("[...document.querySelectorAll('.email a')].map(a => a.textContent)")
 check("contact shows only me@skh.rs", emails == ["me@skh.rs"], str(emails))
+href = p.ev("document.querySelector('.email a').getAttribute('href')")
+check("email links to mailto:me@skh.rs", href == "mailto:me@skh.rs", href)
+check("no copy button", p.ev("document.querySelectorAll('.copy').length") == 0)
 
 print(f"\n{len(failures)} failure(s)")
 sys.exit(1 if failures else 0)

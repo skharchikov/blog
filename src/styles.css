@@ -129,8 +129,8 @@ html:not([data-theme="paper"]) .sprite { filter: drop-shadow(0 0 1px var(--mut))
 .chip:hover { color: var(--fg); }
 .chip.on, .chip[aria-current="page"] { color: var(--bg); background: var(--fg); padding: 0 6px; border-radius: 2px; text-decoration: none; }
 .meta { color: var(--mut); font-size: 12.5px; }
-.prev-title { margin: 6px 0 10px; font: 600 22px/1.25 "Instrument Sans", system-ui, sans-serif; }
-.prev-text { max-width: 70ch; font: 16px/1.65 "Instrument Sans", system-ui, sans-serif; color: var(--prose); }
+.prev-title { margin: 6px 0 10px; font-size: 19px; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; }
+.prev-text { max-width: 72ch; line-height: 1.7; color: var(--prose); }
 
 .projects .list .row { grid-template-columns: 1fr auto; }
 .projects .list .date { display: none; }
@@ -149,13 +149,13 @@ html:not([data-theme="paper"]) .sprite { filter: drop-shadow(0 0 1px var(--mut))
 .cv .img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .cv .fallback, .book-detail .fallback {
     display: flex; align-items: flex-end; height: 100%; padding: 6px;
-    color: var(--fg); font: 600 10px/1.25 "Instrument Sans", system-ui, sans-serif; overflow-wrap: anywhere;
+    color: var(--fg); font-size: 9px; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere;
 }
 .cv.sel { outline-color: var(--focus); transform: translateY(-3px); }
 .cv:focus-visible { outline-color: var(--focus); }
 .cv.reading::after { content: ""; position: absolute; top: 4px; right: 4px; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 2px var(--bg); }
 .book-detail .big { display: block; width: 120px; aspect-ratio: 2 / 3; margin-bottom: 12px; border-radius: 4px; object-fit: cover; background: var(--sel); }
-.book-detail h2 { margin-bottom: 2px; color: var(--fg); font: 600 19px/1.25 "Instrument Sans", system-ui, sans-serif; }
+.book-detail h2 { margin-bottom: 2px; color: var(--fg); font-size: 16px; font-weight: 700; line-height: 1.35; }
 .book-detail .stars { margin: 8px 0; color: var(--yellow); letter-spacing: 1px; }
 @media (prefers-reduced-motion: reduce) { .cv { transition: none; } }
 
@@ -163,30 +163,28 @@ html:not([data-theme="paper"]) .sprite { filter: drop-shadow(0 0 1px var(--mut))
 .emails { margin: 14px 0; }
 .email { display: flex; align-items: baseline; gap: 12px; margin-bottom: 10px; font-size: 17px; }
 .email a { text-decoration: underline; text-underline-offset: 4px; }
-.copy { padding: 0 8px; border: 1px solid var(--bd); border-radius: 3px; background: none; color: var(--mut); font-size: 12.5px; cursor: pointer; }
-.copy:hover { color: var(--fg); border-color: var(--mut); }
 .ls-tabs { display: flex; flex-wrap: wrap; gap: 4px 18px; }
 
 /* ---------- reader (posts, projects) ---------- */
 .reader-pane { grid-column: 1 / -1; }
-.reader { max-width: 70ch; margin: 0 auto; padding: 8px 0 24px; font: 17px/1.75 "Instrument Sans", system-ui, sans-serif; color: var(--prose); }
-.reader .meta { font-family: "JetBrains Mono", ui-monospace, monospace; }
-.reader h1 { margin: 8px 0 12px; color: var(--fg); font-size: 32px; line-height: 1.15; letter-spacing: -0.02em; font-weight: 600; }
-.reader .tags { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 28px; font: 12.5px "JetBrains Mono", ui-monospace, monospace; }
+/* one typeface everywhere; mono prose stays readable at 15px with a 72ch measure and airy leading */
+.reader { max-width: 72ch; margin: 0 auto; padding: 8px 0 24px; font-size: 15px; line-height: 1.8; color: var(--prose); }
+.reader h1 { margin: 8px 0 12px; color: var(--fg); font-size: 26px; line-height: 1.25; letter-spacing: -0.02em; font-weight: 700; }
+.reader .tags { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 28px; font-size: 12.5px; }
 .reader .tags a, .reader .tags span { color: var(--magenta); }
 .reader .tags .gh { margin-left: auto; color: var(--blue); }
-.reader .summary { margin: -4px 0 14px; color: var(--mut); font-size: 19px; line-height: 1.5; }
-.reader .back { margin-top: 32px; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 14px; }
+.reader .summary { margin: -4px 0 14px; color: var(--mut); font-size: 16px; line-height: 1.6; }
+.reader .back { margin-top: 32px; font-size: 14px; }
 .post-content h1, .post-content h2, .post-content h3, .post-content h4 { margin: 2em 0 0.6em; color: var(--fg); font-weight: 600; line-height: 1.3; }
-.post-content h1 { font-size: 26px; } .post-content h2 { font-size: 22px; } .post-content h3 { font-size: 19px; } .post-content h4 { font-size: 17px; }
+.post-content h1 { font-size: 22px; } .post-content h2 { font-size: 19px; } .post-content h3 { font-size: 16px; } .post-content h4 { font-size: 15px; }
 .post-content p, .post-content ul, .post-content ol, .post-content table, .post-content blockquote, .post-content pre { margin: 0 0 1.1em; }
 .post-content ul, .post-content ol { padding-left: 1.4em; }
 .post-content ul { list-style: disc; }
 .post-content li { margin-bottom: 0.35em; }
 .post-content a { text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); text-underline-offset: 3px; }
 .post-content strong { color: var(--fg); }
-.post-content code { padding: 0.1em 0.35em; border-radius: 3px; background: var(--sel); color: var(--fg); font: 0.86em "JetBrains Mono", ui-monospace, monospace; }
-.post-content pre { padding: 14px 16px; overflow-x: auto; border: 1px solid var(--bd); border-radius: 4px; background: var(--bar); font: 13.5px/1.65 "JetBrains Mono", ui-monospace, monospace; }
+.post-content code { padding: 0.1em 0.35em; border-radius: 3px; background: var(--sel); color: var(--fg); font-size: 0.93em; }
+.post-content pre { padding: 14px 16px; overflow-x: auto; border: 1px solid var(--bd); border-radius: 4px; background: var(--bar); font-size: 13.5px; line-height: 1.65; }
 .post-content pre code { padding: 0; background: none; font: inherit; }
 .post-content code, .post-content pre { font-variant-ligatures: none; }
 /* beats the generated highlight theme's own block background */
@@ -214,8 +212,8 @@ html[data-theme] .post-content pre.code { background: var(--bar); }
     /* taps open rows directly, so a preview of the selection is noise here */
     .preview { display: none; }
     .list .row { grid-template-columns: 1fr; gap: 0; }
-    .reader { font-size: 16px; }
-    .reader h1 { font-size: 26px; }
+    .reader { font-size: 14px; }
+    .reader h1 { font-size: 22px; }
 }
 @media (max-width: 599px) {
     /* phones: normal page scroll instead of a fixed frame */
@@ -228,7 +226,7 @@ html[data-theme] .post-content pre.code { background: var(--bar); }
     .hints .hint { display: none; }
     .list .row { min-height: 44px; align-content: center; }
     .chip { padding: 10px 4px; }
-    .copy { min-height: 44px; padding: 0 14px; }
+    .email a { display: inline-block; padding: 10px 0; }
     .tabs { height: 48px; }
     .tab { line-height: 44px; }
     .theme-btn { min-height: 44px; padding: 0 10px; }
