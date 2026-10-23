@@ -1,5 +1,5 @@
 ---
-order: 3
+order: 2
 name: Blackjack
 slug: blackjack
 description: Multiplayer Blackjack — event-driven engine, WebSocket server, TUI client

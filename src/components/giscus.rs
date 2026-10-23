@@ -9,8 +9,8 @@ const REPO_ID: &str = "R_kgDOQs7QAQ";
 const CATEGORY: &str = "General";
 const CATEGORY_ID: &str = "DIC_kwDOQs7QAc4C8ZMb";
 
-fn theme_name(is_dark: bool) -> &'static str {
-    if is_dark { "dark" } else { "light" }
+fn theme_name(light: bool) -> &'static str {
+    if light { "light" } else { "dark" }
 }
 
 fn post_theme_to_giscus(theme: &str) {
@@ -38,15 +38,15 @@ fn post_theme_to_giscus(theme: &str) {
 }
 
 #[component]
-pub fn Giscus(#[prop(into)] dark_mode: Signal<bool>) -> impl IntoView {
+pub fn Giscus(#[prop(into)] light: Signal<bool>) -> impl IntoView {
     let container_ref = create_node_ref::<html::Div>();
     let mounted = Rc::new(Cell::new(false));
 
     create_effect(move |_| {
-        let is_dark = dark_mode.get();
+        let light = light.get();
 
         if mounted.get() {
-            post_theme_to_giscus(theme_name(is_dark));
+            post_theme_to_giscus(theme_name(light));
             return;
         }
 
@@ -78,7 +78,7 @@ pub fn Giscus(#[prop(into)] dark_mode: Signal<bool>) -> impl IntoView {
         let _ = script.set_attribute("data-reactions-enabled", "1");
         let _ = script.set_attribute("data-emit-metadata", "0");
         let _ = script.set_attribute("data-input-position", "bottom");
-        let _ = script.set_attribute("data-theme", theme_name(is_dark));
+        let _ = script.set_attribute("data-theme", theme_name(light));
         let _ = script.set_attribute("data-lang", "en");
 
         let _ = container.append_child(&script);

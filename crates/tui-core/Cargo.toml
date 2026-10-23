@@ -1,0 +1,9 @@
+[package]
+name = "tui-core"
+version = "0.1.0"
+edition = "2021"
+
+# Pure, dependency-free logic for the TUI site (themes, tabs, keys, shell
+# commands, book grouping). Used by the wasm app and by build.rs, and unit
+# tested on the host: cargo test -p tui-core --target <host>.
+[dependencies]

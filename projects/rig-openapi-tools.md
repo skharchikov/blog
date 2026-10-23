@@ -1,5 +1,5 @@
 ---
-order: 1
+order: 4
 name: rig-openapi-tools
 slug: rig-openapi-tools
 description: Turn any OpenAPI spec into LLM-callable tools for rig

@@ -40,6 +40,7 @@ fn main() {
     generate_projects(&out_dir, &syntax_set);
     generate_books(&out_dir);
     generate_highlight_css(&out_dir);
+    generate_theme_css(&out_dir);
 }
 
 /// Reader side of the library.json format; the writer is the identical
@@ -260,7 +261,9 @@ fn generate_projects(out_dir: &str, syntax_set: &SyntaxSet) {
         })
         .collect();
 
-    projects_with_order.sort_by_key(|(_, frontmatter, _)| frontmatter.order);
+    // `order` ranks projects (the first is featured on home); ties fall back to
+    // the slug so every machine builds the same order.
+    projects_with_order.sort_by(|(_, a, _), (_, b, _)| a.order.cmp(&b.order).then_with(|| a.slug.cmp(&b.slug)));
 
     for (_entry, frontmatter, markdown) in projects_with_order {
         let html = markdown_to_html(&markdown, syntax_set);
@@ -351,6 +354,13 @@ fn highlight_code(code: &str, lang: &str, syntax_set: &SyntaxSet) -> String {
     format!("<pre class=\"code\"><code>{}</code></pre>", highlighted)
 }
 
+/// CSS custom properties for every theme, from the same tokens the contrast
+/// tests check (crates/tui-core).
+fn generate_theme_css(out_dir: &str) {
+    fs::write(Path::new(out_dir).join("themes.css"), tui_core::theme::css())
+        .expect("failed to write themes.css");
+}
+
 fn generate_highlight_css(out_dir: &str) {
     let theme_set = extra();
     let light = theme_set.get(EmbeddedThemeName::Github);
@@ -363,8 +373,8 @@ fn generate_highlight_css(out_dir: &str) {
 
     let combined = format!(
         "{}\n{}",
-        scope_css(&light_css, "body:not(.dark-mode)"),
-        scope_css(&dark_css, "body.dark-mode"),
+        scope_css(&light_css, "html[data-theme=\"paper\"]"),
+        scope_css(&dark_css, "html:not([data-theme=\"paper\"])"),
     );
 
     fs::write(Path::new(out_dir).join("highlight.css"), combined)

@@ -5,3 +5,10 @@ Cargo.lock
 .playwright-mcp/
 docs/superpowers/
 .env
+
+# compiled sprite-pipeline tools
+/tools/sprite-pipeline/frames
+/tools/sprite-pipeline/grid
+/tools/sprite-pipeline/motion
+/tools/sprite-pipeline/process
+/tools/sprite-pipeline/tint
