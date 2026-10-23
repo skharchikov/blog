@@ -13,6 +13,7 @@ fn sprite(name: &str) -> Option<Sprite> {
     match name {
         "home" => Some(Sprite { width: 131, height: 119, label: "skh typing at a desk with a monitor, laptop and rubber duck" }),
         "books" => Some(Sprite { width: 149, height: 115, label: "skh reading on a green sofa with two cats" }),
+        "contact" => Some(Sprite { width: 85, height: 114, label: "skh with a carrier pigeon carrying a rolled message" }),
         _ => None,
     }
 }

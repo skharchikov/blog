@@ -3,7 +3,6 @@ use crate::tui::{Pane, Scene, ViewKind};
 use leptos::*;
 use std::time::Duration;
 use tui_core::keys::View;
-use tui_core::readout;
 use wasm_bindgen::{JsCast, JsValue};
 
 /// `navigator.clipboard.writeText(text)`, via reflection so no extra web-sys
@@ -42,7 +41,7 @@ pub fn ContactView() -> impl IntoView {
     expect_context::<ViewKind>().0.set(View::Plain);
     view! {
         <div class="body-grid cols contact">
-            <Scene name="contact" readout=readout::CONTACT.map(String::from) />
+            <Scene name="contact" />
             <Pane title="contact" focused=true>
                 <p class="mut">"Email is the only way in."</p>
                 <ul class="emails">{EMAILS.iter().map(|a| view! { <EmailRow address=a /> }).collect_view()}</ul>
