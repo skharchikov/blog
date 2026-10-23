@@ -5,8 +5,29 @@ use tui_core::keys::{Intent, View};
 use tui_core::shelf::{group, GroupLabel};
 use wasm_bindgen::JsCast;
 
-/// Cover width plus grid gap (px), used to count columns for up/down moves.
-const COVER_STEP: i32 = 72;
+/// The cover visually above (`dy < 0`) or below the cover at `from`: the
+/// nearest row in that direction, then the closest cover by horizontal centre.
+/// The wall is several grids (one per year), so this works on layout, not on
+/// a column count.
+fn vertical_neighbour(wall: &web_sys::HtmlElement, from: usize, dy: i32) -> Option<usize> {
+    let covers = wall.query_selector_all(".cv").ok()?;
+    let boxes: Vec<(i32, i32)> = (0..covers.length())
+        .filter_map(|i| covers.item(i)?.dyn_into::<web_sys::HtmlElement>().ok())
+        .map(|el| (el.offset_top(), el.offset_left() + el.offset_width() / 2))
+        .collect();
+    let (top, centre) = *boxes.get(from)?;
+    let row = boxes
+        .iter()
+        .map(|(t, _)| *t)
+        .filter(|t| if dy > 0 { *t > top + 4 } else { *t < top - 4 })
+        .reduce(|a, b| if dy > 0 { a.min(b) } else { a.max(b) })?;
+    boxes
+        .iter()
+        .enumerate()
+        .filter(|(_, (t, _))| (t - row).abs() <= 4)
+        .min_by_key(|(_, (_, c))| (c - centre).abs())
+        .map(|(i, _)| i)
+}
 
 fn stars(rating: Option<f32>) -> String {
     match rating {
@@ -43,16 +64,17 @@ pub fn BooksView() -> impl IntoView {
     Targets::bind(move || current().map(Book::hardcover_url), None, || None);
 
     let wall = create_node_ref::<html::Div>();
-    on_intent(move |i| {
-        if let Intent::MoveGrid { dx, dy } = i {
-            let cols = wall
-                .get_untracked()
-                .and_then(|w| w.query_selector(".covers").ok().flatten())
-                .and_then(|g| g.dyn_into::<web_sys::HtmlElement>().ok())
-                .map_or(1, |g| (g.client_width() / COVER_STEP).max(1));
-            let next = selected.get_untracked() as i32 + dx + dy * cols;
+    on_intent(move |i| match i {
+        Intent::MoveGrid { dx, dy: 0 } => {
+            let next = selected.get_untracked() as i32 + dx;
             selected.set(next.clamp(0, total.saturating_sub(1) as i32) as usize);
         }
+        Intent::MoveGrid { dy, .. } => {
+            if let Some(next) = wall.get_untracked().and_then(|w| vertical_neighbour(&w, selected.get_untracked(), dy)) {
+                selected.set(next);
+            }
+        }
+        _ => {}
     });
 
     let detail = move || {

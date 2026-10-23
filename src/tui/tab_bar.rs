@@ -32,7 +32,7 @@ pub fn TabBar() -> impl IntoView {
                     .into_iter()
                     .map(|tab| {
                         view! {
-                            <A href=tab.path() class="tab" exact=(tab == Tab::Home)>
+                            <A href=tab.path() class="tab" exact={tab == Tab::Home}>
                                 <span class="n">{tab.number()}</span>
                                 {tab.label()}
                             </A>
