@@ -1,5 +1,5 @@
 use crate::models::Project;
-use crate::tui::{on_intent, ListRow, Pane, Scene, SelectList, Selections, Targets, ViewKind};
+use crate::tui::{focus_follows, on_intent, ListRow, Pane, Scene, SelectList, Selections, Targets, ViewKind};
 use leptos::*;
 use tui_core::keys::{Intent, View};
 use tui_core::readout;
@@ -25,22 +25,25 @@ pub fn ProjectsView() -> impl IntoView {
             href: format!("/projects/{}", p.slug),
         })
         .collect();
-    let rows = Signal::derive(move || rows.clone());
-    let selected = expect_context::<Selections>().projects;
+    let selections = expect_context::<Selections>();
+    let selected = selections.projects;
     if selected.get_untracked() >= projects.len() {
         selected.set(0);
     }
+    selections.select_opened(selected, &rows.iter().map(|r| r.href.clone()).collect::<Vec<_>>());
+    let rows = Signal::derive(move || rows.clone());
     let current = move || projects.get(selected.get());
 
     Targets::bind(
         move || current().map(|p| format!("/projects/{}", p.slug)),
-        None,
+        || None,
         move || current().map(|p| p.github_url.clone()),
     );
     on_intent(move |i| {
         if let Intent::Move(d) = i {
             let last = projects.len().saturating_sub(1) as i32;
             selected.update(|s| *s = (*s as i32 + d).clamp(0, last) as usize);
+            focus_follows(".list a.row", selected.get_untracked());
         }
     });
 

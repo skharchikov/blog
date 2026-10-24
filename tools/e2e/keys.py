@@ -29,7 +29,7 @@ def path():
 
 
 def click(sel):
-    r = p.ev(f"(()=>{{const e=document.querySelector({sel!r}); if(!e) return null; const b=e.getBoundingClientRect(); return [b.x+b.width/2,b.y+b.height/2]}})()")
+    r = p.ev(f"(()=>{{const e=document.querySelector({sel!r}); if(!e) return null; e.scrollIntoView({{block:'center'}}); const b=e.getBoundingClientRect(); return [b.x+b.width/2,b.y+b.height/2]}})()")
     for t in ("mousePressed", "mouseReleased"):
         p.ws.call("Input.dispatchMouseEvent", type=t, x=r[0], y=r[1], button="left", clickCount=1)
     time.sleep(0.8)
@@ -116,6 +116,97 @@ check("contact shows only me@skh.rs", emails == ["me@skh.rs"], str(emails))
 href = p.ev("document.querySelector('.email a').getAttribute('href')")
 check("email links to mailto:me@skh.rs", href == "mailto:me@skh.rs", href)
 check("no copy button", p.ev("document.querySelectorAll('.copy').length") == 0)
+
+SEL_HREF = "(document.querySelector('.list li.sel a') || {}).getAttribute?.('href')"
+
+# Enter opens the highlighted row, also after focus landed on a row or a chip
+p.goto(B + "/posts")
+third = p.ev("document.querySelectorAll('.list a.row')[2].getAttribute('href')")
+p.ev("document.querySelector('.list a.row').focus()")
+p.key("j", "KeyJ", "j", 74)
+p.key("j", "KeyJ", "j", 74)
+p.enter()
+check("focused row, j j Enter -> the highlighted third post", path() == third, f"{path()} != {third}")
+p.goto(B + "/posts")
+p.key("/", "Slash", "/", 191)
+p.key("j", "KeyJ", "j", 74)
+p.enter()
+check("/ then j Enter -> a post, not the chip's filter", path().startswith("/posts/"), path())
+p.goto(B + "/projects")
+second = p.ev("document.querySelectorAll('.list a.row')[1].getAttribute('href')")
+p.ev("document.querySelector('.list a.row').focus()")
+p.key("j", "KeyJ", "j", 74)
+p.enter()
+check("projects: focused row, j Enter -> the highlighted project", path() == second, f"{path()} != {second}")
+
+# q from a post keeps the tag filter and the list selects the post just read
+p.goto(B + "/posts?tag=rust")
+p.key("j", "KeyJ", "j", 74)
+p.enter()
+read = path()
+p.key("q", "KeyQ", "q", 81)
+check("q from a filtered post -> back on the filtered list", path() == "/posts?tag=rust", path())
+check("... with that post selected", p.ev(SEL_HREF) == read, f"{p.ev(SEL_HREF)} != {read}")
+p.goto(B + read)
+click(".reader .back a")
+check("'all posts' link -> the unfiltered list with that post selected", path() == "/posts" and p.ev(SEL_HREF) == read, f"{path()} {p.ev(SEL_HREF)}")
+
+# the "all" chip is only current when no tag is selected
+p.goto(B + "/posts?tag=rust")
+cur = p.ev("[...document.querySelectorAll('.chips [aria-current=page]')].map(a => a.textContent)")
+check("filtered: only the tag chip is current", cur == ["#rust"], str(cur))
+p.goto(B + "/posts")
+cur = p.ev("[...document.querySelectorAll('.chips [aria-current=page]')].map(a => a.textContent)")
+check("unfiltered: 'all' is current", cur == ["all"], str(cur))
+
+# books: a first plain click selects a cover, it doesn't open Hardcover
+p.goto(B + "/books")
+before = len(p.popups())
+click(".cv:nth-of-type(3)")
+title = p.ev("document.querySelector('.book-detail h2').textContent")
+want = p.ev("document.querySelector('.cv:nth-of-type(3)').getAttribute('title')")
+check("books: first click selects the cover", title == want, f"{title} != {want}")
+check("books: first click opens nothing", len(p.popups()) == before, f"{before} -> {len(p.popups())}")
+# hjkl move focus along with the selection once a cover has keyboard focus
+p.goto(B + "/books")
+p.ev("document.querySelector('.cv').focus()")
+p.key("l", "KeyL", "l", 76)
+check("books: l moves focus with the selection", p.ev("document.activeElement.classList.contains('sel')") is True)
+
+# shell: theme names in any case; navigating from the shell logs no warnings
+p.goto(B + "/")
+p.ev("document.querySelector('.input-row input').focus()")
+p.type("theme Paper")
+p.enter()
+check("'theme Paper' sets paper", p.ev("document.documentElement.dataset.theme") == "paper")
+p.ev("localStorage.removeItem('theme')")
+p.ws.events.clear()
+p.ev("document.querySelector('.input-row input').focus()")
+p.type("cd books")
+p.enter()
+logs = [a.get("value", "") for e in p.ws.events if e.get("method") == "Runtime.consoleAPICalled"
+        and e["params"]["type"] in ("warning", "error") for a in e["params"]["args"]]
+check("cd books -> /books", path() == "/books", path())
+check("cd from the shell logs no warnings", not logs, str(logs)[:200])
+
+# the old site's dark-mode choice carries over to the new themes
+p.ws.call("Emulation.setEmulatedMedia", features=[{"name": "prefers-color-scheme", "value": "light"}])
+p.ev("localStorage.removeItem('theme'); localStorage.setItem('darkMode', 'true')")
+p.goto(B + "/")
+check("old darkMode=true on a light OS -> skh", p.ev("document.documentElement.dataset.theme") == "skh")
+check("... saved as theme, old key removed", p.ev("[localStorage.getItem('theme'), localStorage.getItem('darkMode')]") == ["skh", None])
+p.ev("localStorage.removeItem('theme'); localStorage.setItem('darkMode', 'false')")
+p.goto(B + "/")
+check("old darkMode=false on a light OS -> paper", p.ev("document.documentElement.dataset.theme") == "paper")
+p.ws.call("Emulation.setEmulatedMedia", features=[])
+p.ev("localStorage.clear()")
+
+# narrow screen: the active tab is scrolled into the tab bar
+p.ws.call("Emulation.setDeviceMetricsOverride", width=390, height=800, deviceScaleFactor=1, mobile=True)
+p.goto(B + "/contacts")
+inside = p.ev("(()=>{const t=document.querySelector('.tab[aria-current=page]').getBoundingClientRect(), b=document.querySelector('.tabs').getBoundingClientRect(); return t.left>=b.left-1 && t.right<=b.right+1})()")
+check("390px: active tab is visible in the bar", inside is True)
+p.ws.call("Emulation.clearDeviceMetricsOverride")
 
 print(f"\n{len(failures)} failure(s)")
 sys.exit(1 if failures else 0)

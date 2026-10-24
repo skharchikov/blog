@@ -1,6 +1,6 @@
 use super::posts_newest_first;
 use crate::models::BlogPost;
-use crate::tui::{on_intent, ListRow, Pane, Scene, SelectList, Selections, Targets, ViewKind};
+use crate::tui::{focus_follows, on_intent, ListRow, Pane, Scene, SelectList, Selections, Targets, ViewKind};
 use leptos::*;
 use leptos_router::*;
 use tui_core::keys::{Intent, View};
@@ -74,7 +74,12 @@ pub fn WritingView() -> impl IntoView {
             .collect::<Vec<_>>()
     });
     // Shared with the shell, so the place in the list survives opening a post.
-    let selected = expect_context::<Selections>().writing;
+    let selections = expect_context::<Selections>();
+    let selected = selections.writing;
+    selections.select_opened(selected, &rows.with_untracked(|r| r.iter().map(|row| row.href.clone()).collect::<Vec<_>>()));
+    create_effect(move |_| {
+        selections.writing_url.set(tag().map_or_else(|| "/posts".to_string(), |t| format!("/posts?tag={t}")));
+    });
     // A changed filter starts at the top of the new list; a remembered
     // position is clamped to the current length.
     create_effect(move |prev: Option<Option<String>>| {
@@ -86,14 +91,15 @@ pub fn WritingView() -> impl IntoView {
         t
     });
 
-    Targets::bind(move || rows.with(|r| r.get(selected.get()).map(|row| row.href.clone())), None, || None);
+    Targets::bind(move || rows.with(|r| r.get(selected.get()).map(|row| row.href.clone())), || None, || None);
 
     let chips = create_node_ref::<html::Div>();
     on_intent(move |i| {
         let len = rows.with_untracked(Vec::len);
         match i {
             Intent::Move(d) if len > 0 => {
-                selected.update(|s| *s = (*s as i32 + d).clamp(0, len as i32 - 1) as usize)
+                selected.update(|s| *s = (*s as i32 + d).clamp(0, len as i32 - 1) as usize);
+                focus_follows(".list a.row", selected.get_untracked());
             }
             Intent::FocusFilter => {
                 let first = chips.get_untracked().and_then(|c| c.query_selector("a").ok().flatten());
@@ -121,16 +127,29 @@ pub fn WritingView() -> impl IntoView {
             <Pane title="preview" class="preview">{preview}</Pane>
             <Pane title="ls -l writing/" focused=true class="wide">
                 <div class="chips" node_ref=chips aria-label="Filter by tag">
-                    <A href="/posts" class="chip" exact=true>"all"</A>
+                    // Plain anchors: the router's active-link check ignores the
+                    // query, so `<A>` would mark "all" current on every filter.
+                    <a
+                        href="/posts"
+                        class="chip"
+                        class:on=move || tag().is_none()
+                        aria-current=move || tag().is_none().then_some("page")
+                    >
+                        "all"
+                    </a>
                     {tags
                         .into_iter()
                         .map(|t| {
                             let href = format!("/posts?tag={t}");
                             let on = {
                                 let t = t.clone();
-                                move || tag().as_deref() == Some(t.as_str())
+                                Signal::derive(move || tag().as_deref() == Some(t.as_str()))
                             };
-                            view! { <a href=href class="chip" class:on=on>{format!("#{t}")}</a> }
+                            view! {
+                                <a href=href class="chip" class:on=on aria-current=move || on.get().then_some("page")>
+                                    {format!("#{t}")}
+                                </a>
+                            }
                         })
                         .collect_view()}
                 </div>

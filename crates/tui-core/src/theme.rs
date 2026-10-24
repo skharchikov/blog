@@ -80,9 +80,41 @@ impl Theme {
     }
 }
 
-/// Theme to use: a saved name if it is valid, otherwise follow the OS setting.
-pub fn resolve(saved: Option<&str>, prefers_light: bool) -> Theme {
-    saved.and_then(Theme::from_name).unwrap_or(if prefers_light { Theme::Paper } else { Theme::Skh })
+/// Theme to use: a saved name if it is valid, else the old site's dark-mode
+/// choice (`darkMode == "true"`; it wrote "false" on every visit, so that is
+/// no choice), else follow the OS setting. `boot_script` applies this rule.
+pub fn resolve(saved: Option<&str>, old_dark_mode: Option<&str>, prefers_light: bool) -> Theme {
+    saved.and_then(Theme::from_name).unwrap_or(if old_dark_mode == Some("true") || !prefers_light {
+        Theme::Skh
+    } else {
+        Theme::Paper
+    })
+}
+
+/// The `<head>` script that applies `resolve` before first paint and moves an
+/// old `darkMode` choice over to `theme`. index.html carries a copy, which a
+/// test keeps in step with this.
+pub fn boot_script() -> String {
+    let names: Vec<String> = Theme::ALL.iter().map(|t| format!("\"{}\"", t.name())).collect();
+    let (dark, light) = (resolve(None, None, false).name(), resolve(None, None, true).name());
+    format!(
+        r#"(function () {{
+        var themes = [{names}], t = null, old = null;
+        try {{ t = localStorage.getItem("theme"); old = localStorage.getItem("darkMode"); }} catch (e) {{}}
+        if (themes.indexOf(t) < 0 && old === "true") {{
+          t = "{dark}";
+          try {{ localStorage.setItem("theme", t); }} catch (e) {{}}
+        }}
+        if (old !== null) {{ try {{ localStorage.removeItem("darkMode"); }} catch (e) {{}} }}
+        if (themes.indexOf(t) < 0) {{
+          var light = false;
+          try {{ light = matchMedia("(prefers-color-scheme: light)").matches; }} catch (e) {{}}
+          t = light ? "{light}" : "{dark}";
+        }}
+        document.documentElement.setAttribute("data-theme", t);
+      }})();"#,
+        names = names.join(", ")
+    )
 }
 
 fn luminance(hex: &str) -> f64 {
@@ -123,11 +155,25 @@ mod tests {
     #[test] fn names_round_trip() { for t in Theme::ALL { assert_eq!(Theme::from_name(t.name()), Some(t)); } }
     #[test] fn next_cycles_all_four() { assert_eq!(Theme::Paper.next(), Theme::Skh); assert_eq!(Theme::Skh.next(), Theme::TokyoNight); }
     #[test] fn resolve_rules() {
-        assert_eq!(resolve(Some("gruvbox"), true), Theme::Gruvbox);
-        assert_eq!(resolve(None, true), Theme::Paper);
-        assert_eq!(resolve(None, false), Theme::Skh);
-        assert_eq!(resolve(Some("dark"), false), Theme::Skh); // stale value from the old site
-        assert_eq!(resolve(Some(""), true), Theme::Paper);
+        assert_eq!(resolve(Some("gruvbox"), None, true), Theme::Gruvbox);
+        assert_eq!(resolve(None, None, true), Theme::Paper);
+        assert_eq!(resolve(None, None, false), Theme::Skh);
+        assert_eq!(resolve(Some("dark"), None, false), Theme::Skh); // stale value from the old site
+        assert_eq!(resolve(Some(""), None, true), Theme::Paper);
+    }
+    #[test] fn resolve_old_dark_mode() {
+        // The old site's dark-mode toggle: only "true" was a choice ("false" was
+        // written on every visit), so "false" still follows the OS.
+        assert_eq!(resolve(None, Some("true"), true), Theme::Skh);
+        assert_eq!(resolve(None, Some("false"), false), Theme::Skh);
+        assert_eq!(resolve(None, Some("false"), true), Theme::Paper);
+        assert_eq!(resolve(Some("gruvbox"), Some("true"), true), Theme::Gruvbox);
+    }
+    #[test] fn index_html_carries_the_boot_script() {
+        let squash = |s: &str| s.split_whitespace().collect::<Vec<_>>().join(" ");
+        let html = squash(include_str!("../../../index.html"));
+        assert!(html.contains(&squash(&boot_script())), "index.html's theme <script> is out of date; paste theme::boot_script()");
+        for t in Theme::ALL { assert!(boot_script().contains(&format!("\"{}\"", t.name()))); }
     }
     #[test] fn every_text_pair_meets_aa() {
         for t in Theme::ALL { let k = t.tokens();

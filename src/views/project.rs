@@ -1,6 +1,6 @@
 use super::NotFoundView;
 use crate::models::Project;
-use crate::tui::{Pane, Targets, ViewKind};
+use crate::tui::{Pane, Selections, Targets, ViewKind};
 use leptos::*;
 use leptos_router::*;
 use tui_core::keys::View;
@@ -11,7 +11,13 @@ pub fn ProjectView() -> impl IntoView {
     let params = use_params_map();
     let project = move || params.with(|p| p.get("slug").and_then(|s| Project::find_by_slug(s)));
 
-    Targets::bind(|| None, Some("/projects"), || None);
+    let selections = expect_context::<Selections>();
+    Targets::bind(|| None, || Some("/projects".to_string()), || None);
+    create_effect(move |_| {
+        if let Some(p) = project() {
+            selections.opened.set(Some(format!("/projects/{}", p.slug)));
+        }
+    });
 
     // `/projects/` matches this route with an empty slug: that is the list.
     let empty = move || params.with(|p| p.get("slug").map_or(true, |s| s.is_empty()));

@@ -84,10 +84,11 @@ fn ShellPane() -> impl IntoView {
         history.update_value(|h| h.push(cmd.clone()));
         cursor.set_value(history.with_value(|h| h.len()));
         let mut lines = Vec::new();
+        let mut go = None;
         for action in data.with_value(|d| run(&cmd, d)) {
             match action {
                 Action::Print(out) => lines.extend(out),
-                Action::Navigate(path) => follow(&path),
+                Action::Navigate(path) => go = Some(path),
                 Action::SetTheme(t) => {
                     theme.set(t);
                     save_theme(t);
@@ -99,6 +100,10 @@ fn ShellPane() -> impl IntoView {
             }
         }
         log.update(|l| l.push(Entry { cmd, lines }));
+        // Last: navigating unmounts this view, and its signals with it.
+        if let Some(path) = go {
+            follow(&path);
+        }
     };
 
     let on_key = move |e: ev::KeyboardEvent| match e.key().as_str() {

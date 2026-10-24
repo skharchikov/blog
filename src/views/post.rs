@@ -2,7 +2,7 @@ use super::writing::read_minutes;
 use crate::components::{Giscus, ViewCounter};
 use super::NotFoundView;
 use crate::models::BlogPost;
-use crate::tui::{Pane, Targets, ViewKind};
+use crate::tui::{Pane, Selections, Targets, ViewKind};
 use leptos::*;
 use leptos_router::*;
 use tui_core::keys::View;
@@ -15,7 +15,15 @@ pub fn PostView() -> impl IntoView {
     let params = use_params_map();
     let post = move || params.with(|p| p.get("slug").and_then(|s| BlogPost::find_by_slug(s)));
 
-    Targets::bind(|| None, Some("/posts"), || None);
+    // q goes back to the list as it was shown (with its tag filter), and the
+    // list then selects this post.
+    let selections = expect_context::<Selections>();
+    Targets::bind(|| None, move || Some(selections.writing_url.get()), || None);
+    create_effect(move |_| {
+        if let Some(p) = post() {
+            selections.opened.set(Some(format!("/posts/{}", p.slug)));
+        }
+    });
 
     // `/posts/` (trunk serve and some hosts add the slash) matches this route
     // with an empty slug: that is the list, not a missing post.

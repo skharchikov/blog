@@ -1,5 +1,5 @@
 use crate::models::{Book, BookStatus};
-use crate::tui::{on_intent, reveal, Pane, Scene, Selections, Targets, ViewKind};
+use crate::tui::{focus_follows, on_intent, reveal, Pane, Scene, Selections, Targets, ViewKind};
 use leptos::*;
 use tui_core::keys::{Intent, View};
 use tui_core::shelf::{group, GroupLabel};
@@ -64,7 +64,7 @@ pub fn BooksView() -> impl IntoView {
     }
     let current = move || order.with_value(|o| o.get(selected.get()).copied());
 
-    Targets::bind(move || current().map(Book::hardcover_url), None, || None);
+    Targets::bind(move || current().map(Book::hardcover_url), || None, || None);
 
     let wall = create_node_ref::<html::Div>();
     // Keep the selected cover visible when it moves (not on first render).
@@ -77,17 +77,20 @@ pub fn BooksView() -> impl IntoView {
             }
         }
     });
-    on_intent(move |i| match i {
-        Intent::MoveGrid { dx, dy: 0 } => {
-            let next = selected.get_untracked() as i32 + dx;
-            selected.set(next.clamp(0, total.saturating_sub(1) as i32) as usize);
-        }
-        Intent::MoveGrid { dy, .. } => {
-            if let Some(next) = wall.get_untracked().and_then(|w| vertical_neighbour(&w, selected.get_untracked(), dy)) {
-                selected.set(next);
+    on_intent(move |i| {
+        match i {
+            Intent::MoveGrid { dx, dy: 0 } => {
+                let next = selected.get_untracked() as i32 + dx;
+                selected.set(next.clamp(0, total.saturating_sub(1) as i32) as usize);
             }
+            Intent::MoveGrid { dy, .. } => {
+                if let Some(next) = wall.get_untracked().and_then(|w| vertical_neighbour(&w, selected.get_untracked(), dy)) {
+                    selected.set(next);
+                }
+            }
+            _ => return,
         }
-        _ => {}
+        focus_follows(".wall .cv", selected.get_untracked());
     });
 
     let detail = move || {
@@ -153,7 +156,15 @@ pub fn BooksView() -> impl IntoView {
                                         aria-label=format!("{} by {}", book.title, book.authors_display())
                                         aria-current=move || (selected.get() == pos).then_some("true")
                                         on:click=on_click
-                                        on:focus=move |_| selected.set(pos)
+                                        // Keyboard focus selects. A mouse click also focuses the
+                                        // link (before on:click), but that must not count as
+                                        // already selected, so only :focus-visible does.
+                                        on:focus=move |e: ev::FocusEvent| {
+                                            let keyboard = event_target::<web_sys::Element>(&e).matches(":focus-visible").unwrap_or(true);
+                                            if keyboard {
+                                                selected.set(pos);
+                                            }
+                                        }
                                     >
                                         {cover(book, "img")}
                                     </a>

@@ -113,7 +113,7 @@ pub fn run(input: &str, data: &ShellData) -> Vec<Action> {
                 let names: Vec<_> = Theme::ALL.iter().map(|t| t.name()).collect();
                 say([format!("themes: {}", names.join(", "))])
             } else {
-                match Theme::from_name(&arg) {
+                match Theme::from_name(&arg.to_lowercase()) {
                     Some(t) => vec![Action::SetTheme(t)],
                     None => say([format!("theme: unknown \"{arg}\"")]),
                 }
@@ -164,8 +164,9 @@ pub fn complete(prefix: &str) -> Option<String> {
         let hits: Vec<_> = candidates.iter().filter(|c| c.starts_with(p)).collect();
         (hits.len() == 1).then(|| hits[0].to_string())
     };
+    let prefix = prefix.to_lowercase();
     match prefix.split_once(' ') {
-        None => unique(&COMMANDS, &prefix.to_lowercase()),
+        None => unique(&COMMANDS, &prefix),
         Some((cmd, arg)) => {
             let tabs: Vec<&str> = Tab::ALL.iter().map(|t| t.label()).collect();
             let themes: Vec<&str> = Theme::ALL.iter().map(|t| t.name()).collect();
@@ -238,5 +239,11 @@ mod tests {
         assert_eq!(printed(&run("whoami", &fixture())), "skh\nSoftware engineer working with Rust and Scala.\nI write about what I build.");
     }
     #[test] fn clear_and_help() { assert_eq!(run("clear", &fixture()), vec![Action::Clear]); assert!(printed(&run("help", &fixture())).contains("open <n>")); }
+    #[test] fn theme_name_any_case() { assert_eq!(run("theme Paper", &fixture()), vec![Action::SetTheme(Theme::Paper)]); }
+    #[test] fn completion_any_case() {
+        assert_eq!(complete("CD bo"), Some("cd books".into()));
+        assert_eq!(complete("THEME gr"), Some("theme gruvbox".into()));
+        assert_eq!(complete("cd BO"), Some("cd books".into()));
+    }
     #[test] fn completion() { assert_eq!(complete("th"), Some("theme".into())); assert_eq!(complete("cd bo"), Some("cd books".into())); assert_eq!(complete("zz"), None); }
 }

@@ -19,7 +19,10 @@ pub fn TabBar() -> impl IntoView {
         request_animation_frame(move || {
             let active = bar.query_selector(".tab[aria-current=\"page\"]").ok().flatten();
             if let Some(tab) = active.and_then(|el| el.dyn_into::<web_sys::HtmlElement>().ok()) {
-                bar.set_scroll_left((tab.offset_left() - 80).max(0));
+                // Measured against the bar itself (offset_left would be relative
+                // to the tab's offsetParent, which is not the scrolling bar).
+                let x = tab.get_bounding_client_rect().left() - bar.get_bounding_client_rect().left() + bar.scroll_left() as f64;
+                bar.set_scroll_left((x as i32 - 80).max(0));
             }
         });
     });

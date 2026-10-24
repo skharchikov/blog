@@ -1,4 +1,5 @@
 use leptos::*;
+use wasm_bindgen::JsCast;
 
 /// One row: a left column (date / name), the title, a right column (tags),
 /// and where the row leads.
@@ -15,6 +16,22 @@ pub fn reveal(el: &web_sys::Element) {
     let opts = web_sys::ScrollIntoViewOptions::new();
     opts.set_block(web_sys::ScrollLogicalPosition::Nearest);
     el.scroll_into_view_with_scroll_into_view_options(&opts);
+}
+
+/// After a key moved the selection: if a link or button in the view has
+/// focus (a row, a cover, a tag chip), move focus to the selected item among
+/// `items` (a selector inside `main`). A focused link keeps Enter, so without
+/// this Enter would open the focused item, not the highlighted one.
+pub fn focus_follows(items: &str, i: usize) {
+    let Some(active) = document().active_element() else { return };
+    let in_view = active.closest("main").ok().flatten().is_some();
+    if !in_view || super::current_mode() != tui_core::keys::Mode::OnControl {
+        return;
+    }
+    let item = document().query_selector_all(&format!("main {items}")).ok().and_then(|l| l.item(i as u32));
+    if let Some(el) = item.and_then(|n| n.dyn_into::<web_sys::HtmlElement>().ok()) {
+        let _ = el.focus();
+    }
 }
 
 /// Keyboard/mouse selectable list. A click opens the row (plain anchors: the

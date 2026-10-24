@@ -2,12 +2,18 @@
 <html lang="en" data-theme="skh">
   <head>
     <meta charset="UTF-8">
-    <!-- Theme before first paint: a saved choice wins, else follow the OS
-         (paper for light, skh for dark). Same rule as tui_core::theme::resolve. -->
+    <!-- Theme before first paint: a saved choice wins, then the old site's
+         dark mode, else follow the OS (paper for light, skh for dark).
+         A copy of tui_core::theme::boot_script(); a test keeps them in step. -->
     <script>
       (function () {
-        var themes = ["skh", "tokyo-night", "gruvbox", "paper"], t = null;
-        try { t = localStorage.getItem("theme"); } catch (e) {}
+        var themes = ["skh", "tokyo-night", "gruvbox", "paper"], t = null, old = null;
+        try { t = localStorage.getItem("theme"); old = localStorage.getItem("darkMode"); } catch (e) {}
+        if (themes.indexOf(t) < 0 && old === "true") {
+          t = "skh";
+          try { localStorage.setItem("theme", t); } catch (e) {}
+        }
+        if (old !== null) { try { localStorage.removeItem("darkMode"); } catch (e) {} }
         if (themes.indexOf(t) < 0) {
           var light = false;
           try { light = matchMedia("(prefers-color-scheme: light)").matches; } catch (e) {}

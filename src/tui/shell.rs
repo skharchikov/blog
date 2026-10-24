@@ -29,11 +29,15 @@ impl Targets {
     /// Publish this view's targets (all three, so nothing stale survives from
     /// the previous view). Intents are gated by the view kind, so views that
     /// never bind can't trigger a stale target.
-    pub fn bind(open: impl Fn() -> Option<String> + 'static, back: Option<&'static str>, github: impl Fn() -> Option<String> + 'static) {
+    pub fn bind(
+        open: impl Fn() -> Option<String> + 'static,
+        back: impl Fn() -> Option<String> + 'static,
+        github: impl Fn() -> Option<String> + 'static,
+    ) {
         let t = expect_context::<Targets>();
         create_effect(move |_| t.open.set(open()));
+        create_effect(move |_| t.back.set(back()));
         create_effect(move |_| t.github.set(github()));
-        t.back.set(back.map(String::from));
     }
 }
 
@@ -90,6 +94,23 @@ pub struct Selections {
     pub writing: RwSignal<usize>,
     pub projects: RwSignal<usize>,
     pub books: RwSignal<usize>,
+    /// The writing list as last shown (`/posts` or `/posts?tag=…`): where `q`
+    /// from a post goes back to.
+    pub writing_url: RwSignal<String>,
+    /// The post or project page last opened (its path). The list selects that
+    /// row when it next shows it, however the page was reached.
+    pub opened: RwSignal<Option<String>>,
+}
+
+impl Selections {
+    /// Select the row leading to the page last opened, if `hrefs` has it.
+    pub fn select_opened(self, selected: RwSignal<usize>, hrefs: &[String]) {
+        let Some(at) = self.opened.with_untracked(|o| o.as_ref().and_then(|o| hrefs.iter().position(|h| h == o))) else {
+            return;
+        };
+        selected.set(at);
+        self.opened.set(None);
+    }
 }
 
 /// Persist an explicit theme choice. Storage can be blocked (private mode);
@@ -125,6 +146,8 @@ pub fn TuiShell(children: Children) -> impl IntoView {
         writing: create_rw_signal(0),
         projects: create_rw_signal(0),
         books: create_rw_signal(0),
+        writing_url: create_rw_signal("/posts".to_string()),
+        opened: create_rw_signal(None),
     });
 
     create_effect(move |_| {
