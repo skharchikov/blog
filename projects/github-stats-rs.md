@@ -1,5 +1,5 @@
 ---
-order: 2
+order: 5
 name: GitHub Stats RS
 slug: github-stats-rs
 description: Automated GitHub statistics visualizer with SVG generation

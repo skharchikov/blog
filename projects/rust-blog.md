@@ -1,5 +1,5 @@
 ---
-order: 1
+order: 3
 name: Rust Blog
 slug: rust-blog
 description: Personal blog built with Leptos and Rust

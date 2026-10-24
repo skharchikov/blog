@@ -1,0 +1,14 @@
+<!doctype html>
+<!-- Screenshot harness: /__harness.html?theme=<name>&w=<px>&route=<path>
+     Sets the saved theme, then shows the route in an iframe of exactly w px,
+     so media queries see a real narrow viewport (headless Chrome windows
+     can't go below 500px). -->
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}iframe{border:0;display:block;height:900px}</style></head>
+<body><script>
+  const q = new URLSearchParams(location.search);
+  try { localStorage.setItem("theme", q.get("theme") || "skh"); } catch (e) {}
+  const f = document.createElement("iframe");
+  f.style.width = (q.get("w") || "1280") + "px";
+  f.src = q.get("route") || "/";
+  document.body.appendChild(f);
+</script></body></html>

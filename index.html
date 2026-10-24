@@ -1,27 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="skh">
   <head>
     <meta charset="UTF-8">
+    <!-- Theme before first paint: a saved choice wins, then the old site's
+         dark mode, else follow the OS (paper for light, skh for dark).
+         A copy of tui_core::theme::boot_script(); a test keeps them in step. -->
+    <script>
+      (function () {
+        var themes = ["skh", "tokyo-night", "gruvbox", "paper"], t = null, old = null;
+        try { t = localStorage.getItem("theme"); old = localStorage.getItem("darkMode"); } catch (e) {}
+        if (themes.indexOf(t) < 0 && old === "true") {
+          t = "skh";
+          try { localStorage.setItem("theme", t); } catch (e) {}
+        }
+        if (old !== null) { try { localStorage.removeItem("darkMode"); } catch (e) {} }
+        if (themes.indexOf(t) < 0) {
+          var light = false;
+          try { light = matchMedia("(prefers-color-scheme: light)").matches; } catch (e) {}
+          t = light ? "paper" : "skh";
+        }
+        document.documentElement.setAttribute("data-theme", t);
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Per-page meta. The prerender build step (Trunk post_build hook) rebuilds
          everything between META:START and META:END for each post/project page.
          Keep these markers; the homepage keeps the default values below. -->
     <!-- META:START -->
-    <title>skharchikov - Software Engineer | Rust | Scala</title>
-    <meta name="title" content="skharchikov - Software Engineer | Rust | Scala">
-    <meta name="description" content="Personal blog of skharchikov. Software Engineer working with Rust and Scala.">
+    <title>skh — software engineer (Rust, Scala)</title>
+    <meta name="title" content="skh — software engineer (Rust, Scala)">
+    <meta name="description" content="Notes from a software engineer on Rust, algorithms and the things I build.">
     <link rel="canonical" href="https://skh.rs">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://skh.rs">
-    <meta property="og:title" content="skharchikov - Software Engineer | Rust | Scala">
-    <meta property="og:description" content="Personal blog of skharchikov. Software Engineer working with Rust and Scala.">
-    <meta property="og:site_name" content="Sergei Kharchikov">
+    <meta property="og:title" content="skh — software engineer (Rust, Scala)">
+    <meta property="og:description" content="Notes from a software engineer on Rust, algorithms and the things I build.">
+    <meta property="og:site_name" content="skh">
     <meta property="og:image" content="https://skh.rs/computer_7268855.png">
     <!-- META:END -->
 
-    <meta name="keywords" content="rust developer, scala developer, software engineer, backend engineer, rust programming, backend, distributed systems, hire rust developer, hire scala developer">
-    <meta name="author" content="Sergei Kharchikov">
     <meta name="robots" content="index, follow">
 
     <!-- Favicon -->
@@ -36,15 +54,14 @@
       src="//gc.zgo.at/count.js"
     ></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link data-trunk rel="copy-dir" href="public/fonts" />
+    <link rel="stylesheet" href="/fonts/fonts.css">
     <link data-trunk rel="rust" data-bin="blog" />
     <link data-trunk rel="css" href="src/styles.css" />
     <link data-trunk rel="copy-file" href="public/robots.txt" />
     <link data-trunk rel="copy-file" href="public/_redirects" />
     <link data-trunk rel="copy-file" href="public/computer_7268855.png" />
-    <link data-trunk rel="copy-file" href="public/programmer.gif" />
+    <link data-trunk rel="copy-dir" href="public/sprites" />
   </head>
   <body></body>
 </html>
